@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.1.0';
+  var APP_VERSION = '1.2.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -79,6 +79,7 @@
   function selectPlan(plan, manual) {
     state.plan = plan;
     state.days = resolveDays(plan);
+    if (state.program.yoga) state.days.push(state.program.yoga);
     if (manual) { store.set('plan', { id: plan.id, month: thisMonth() }); state.day = 0; }
     else state.day = Math.min(store.get('day', 0), state.days.length - 1);
     store.set('day', state.day);
@@ -129,10 +130,18 @@
     return v;
   }
 
+  // Sezioni del giorno + defaticamento yoga aggiunto sempre in fondo
+  function daySections(day) {
+    var secs = currentSections(day).sections.slice();
+    var cd = state.program.cooldown;
+    if (cd && !day.noCooldown) secs.push(cd);
+    return secs;
+  }
+
   function renderDay() {
     var day = state.days[state.day];
     var cur = currentSections(day);
-    var h = '<h1 class="day-title"><small>' + esc(state.plan.name) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') + '</h1>';
+    var h = '<h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') + '</h1>';
     if (day.sameAs) h += '<div class="note-box"><b>Uguale</b> alla scheda ' + esc(day.sameAs) + '.</div>';
 
     if (day.variants) {
@@ -142,7 +151,7 @@
     }
     if (cur.note) h += '<div class="note-box"><b>Nota</b> · ' + esc(cur.note) + '</div>';
 
-    cur.sections.forEach(function (sec, si) {
+    daySections(day).forEach(function (sec, si) {
       if (sec.type === 'note') {
         h += '<div class="note-box"><b>' + esc(sec.label) + '</b>' + (sec.text ? ' · ' + esc(sec.text) : '') + '</div>';
       } else if (sec.type === 'intervals') {
@@ -165,14 +174,26 @@
 
   function renderBlock(sec, si) {
     var ex = state.program.exercises;
-    var mob = sec.type === 'mobility';
-    var head = mob
-      ? '<div class="letter">MOB</div><div class="block-meta"><div class="block-kind">' + esc(sec.label) + '</div><div class="block-sub">Attivazione</div></div>'
+    var mob = sec.type === 'mobility' || sec.type === 'list';
+    var guided = sec.type === 'hiit' || sec.type === 'cooldown';
+    var badge = sec.badge || (sec.type === 'hiit' ? 'HIIT' : sec.type === 'cooldown' ? 'YOGA' : 'MOB');
+    var sub = sec.sub || (sec.type === 'mobility' ? 'Attivazione' : '');
+    if (sec.type === 'hiit') {
+      var tot = sec.rounds * (sec.items.length * sec.work + (sec.items.length - 1) * sec.rest) + (sec.rounds - 1) * (sec.roundRest || 0);
+      sub = fmtRest(sec.work) + ' lavoro · ' + fmtRest(sec.rest) + ' recupero · ' + sec.rounds + ' giri · circa ' + Math.round(tot / 60) + "'";
+    }
+    if (sec.type === 'cooldown') {
+      var tc = 0; sec.items.forEach(function (it) { if (it.sec) tc += it.sec * (it.sides || 1); });
+      sub = sub || ('Guidato, ' + Math.round(tc / 60) + "' · una posizione alla volta");
+    }
+    var head = (mob || guided)
+      ? '<div class="letter sm">' + esc(badge) + '</div><div class="block-meta"><div class="block-kind">' + esc(sec.label) + '</div><div class="block-sub">' + esc(sub) + '</div></div>'
       : '<div class="letter">' + esc(sec.letter) + '</div><div class="block-meta"><div class="block-kind">' + kindOf(sec) + ' ×' + sec.sets + '</div><div class="block-sub">' + sec.sets + ' serie' + (sec.rest ? ' · recupero ' + fmtRest(sec.rest) : '') + '</div></div>';
 
     var rows = sec.items.map(function (it) {
       var e = ex[it.ex] || { name: it.ex };
       var name = it.name || e.name;
+      var reps = it.reps || (sec.type === 'hiit' ? fmtRest(sec.work) : it.sec ? fmtRest(it.sec) + ((it.sides || 1) > 1 ? ' per lato' : '') : '');
       var hasMedia = e.equip !== 'Corsa';
       var thumb = e.img ? '<img src="' + photoSrc(e, 0) + '" alt="" loading="lazy">'
         : e.video ? '<img src="' + ytThumb(e.video) + '" alt="" loading="lazy">'
@@ -180,24 +201,27 @@
       var kg = e.kg
         ? '<div class="kg"><input type="text" inputmode="decimal" enterkeyhint="done" data-kg="' + esc(it.ex) + '" value="' + esc(store.get('kg.' + it.ex, '')) + '" placeholder="–" aria-label="Kg ' + esc(name) + '"><label>kg</label></div>'
         : '';
-      return '<div class="ex' + (hasMedia ? '' : ' static') + '" data-ex="' + esc(it.ex) + '" data-reps="' + esc(it.reps) + '" data-name="' + esc(name) + '"' + (hasMedia ? ' role="button" tabindex="0"' : '') + '>' +
+      return '<div class="ex' + (hasMedia ? '' : ' static') + '" data-ex="' + esc(it.ex) + '" data-reps="' + esc(reps) + '" data-name="' + esc(name) + '"' + (hasMedia ? ' role="button" tabindex="0"' : '') + '>' +
         '<div class="thumb">' + thumb + '</div>' +
         '<div class="ex-main">' + (it.code ? '<div class="ex-code">' + esc(it.code) + '</div>' : '') +
         '<div class="ex-name">' + esc(name) + '</div>' +
-        '<div class="ex-info"><b>' + esc(it.reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
+        '<div class="ex-info"><b>' + esc(reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
     }).join('');
 
     var lbl = 'Recupero blocco ' + esc(sec.letter);
-    var rest = mob ? '' : sec.rest
+    var rest = mob ? '' : guided
+      ? '<div class="rest"><div class="rest-txt">Timer guidato<span>' + (sec.type === 'hiit' ? 'lavoro / recupero con segnale' : 'cambio posizione con segnale') + '</span></div>' +
+        '<button class="btn-start" data-guided="' + si + '">Avvia</button></div>'
+      : sec.rest
       ? '<div class="rest"><div class="rest-txt">Recupero ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
         '<button class="btn-start" data-rest="' + sec.rest + '" data-label="' + lbl + '">Avvia</button></div>'
       : '<div class="rest rest-free"><div class="rest-txt">Recupero<span>scegli e parte il timer</span></div><div class="rest-chips">' +
         [60, 75, 90, 120].map(function (r) { return '<button class="btn-start chip" data-rest="' + r + '" data-label="' + lbl + '">' + fmtRest(r) + '</button>'; }).join('') + '</div></div>';
 
-    return '<section class="block' + (mob ? ' mob' : '') + '"><div class="block-head">' + head + '</div>' + rows + rest + '</section>';
+    return '<section class="block' + (mob ? ' mob' : '') + (sec.type === 'cooldown' ? ' yoga' : '') + '"><div class="block-head">' + head + '</div>' + rows + rest + '</section>';
   }
 
-  function renderIntervals(sec) {
+  function renderIntervals(sec, si) {
     var max = 0, totalMin = 0;
     sec.steps.forEach(function (s) { max = Math.max(max, s[0] + s[1]); totalMin += s[0] + s[1]; });
     var rows = sec.steps.map(function (s, i) {
@@ -211,7 +235,7 @@
       '<div class="iv-grid">' + rows + '</div>' +
       '<div class="iv-legend"><span><i style="background:var(--red)"></i>Corsa (min)</span><span><i style="background:#e8dcd0"></i>Recupero (min)</span></div>' +
       '<div class="rest"><div class="rest-txt">Timer guidato<span>corsa / recupero con segnale</span></div>' +
-      '<button class="btn-start" data-intervals="1">Avvia</button></div></section>';
+      '<button class="btn-start" data-guided="' + si + '">Avvia</button></div></section>';
   }
 
   /* ---------- Eventi lista ---------- */
@@ -221,7 +245,7 @@
     var st = e.target.closest('.btn-start');
     if (st) {
       unlockAudio();
-      if (st.dataset.intervals) startIntervals();
+      if (st.dataset.guided) startGuided(+st.dataset.guided);
       else startTimer(+st.dataset.rest, st.dataset.label);
       return;
     }
@@ -390,23 +414,50 @@
   $('tPlus').onclick = function () { if (T.done) return; T.end += 15000; T.total += 15; tick(); };
   $('tMinus').onclick = function () { if (T.done) return; T.end -= 15000; T.total = Math.max(1, T.total - 15); tick(); };
 
-  /* ---------- Timer intervalli ---------- */
+  /* ---------- Timer guidato (intervalli, HIIT, yoga) ---------- */
   var iv = $('ivTimer');
-  var I = { phases: [], idx: 0, end: 0, paused: false, pauseLeft: 0, raf: 0, lastBeep: -1, total: 0, startAll: 0 };
+  var I = { phases: [], idx: 0, end: 0, paused: false, pauseLeft: 0, raf: 0, lastBeep: -1, total: 0 };
 
-  function findIntervals() {
-    var day = state.days[state.day];
-    var secs = currentSections(day).sections;
-    for (var i = 0; i < secs.length; i++) if (secs[i].type === 'intervals') return secs[i];
-    return null;
+  function exImg(e, n) { return e && e.img ? photoSrc(e, n) : e && e.video ? ytThumb(e.video) : null; }
+  function buildPhases(sec) {
+    var ex = state.program.exercises, ph = [];
+    if (sec.type === 'intervals') {
+      sec.steps.forEach(function (s, i) {
+        var step = 'Intervallo ' + (i + 1) + ' di ' + sec.steps.length;
+        ph.push({ title: 'CORSA', step: step, sec: s[0] * 60, kind: 'work' });
+        ph.push({ title: 'RECUPERO', step: step, sec: s[1] * 60, kind: 'rest' });
+      });
+    } else if (sec.type === 'hiit') {
+      var n = sec.items.length;
+      for (var r = 1; r <= sec.rounds; r++) {
+        sec.items.forEach(function (it, j) {
+          var e = ex[it.ex] || {}, name = it.name || e.name;
+          var step = 'Giro ' + r + ' di ' + sec.rounds + ' · esercizio ' + (j + 1) + ' di ' + n;
+          ph.push({ title: name, step: step, sec: sec.work, kind: 'work', img: exImg(e, 0) });
+          if (j < n - 1 && sec.rest) {
+            var nx = ex[sec.items[j + 1].ex] || {};
+            ph.push({ title: 'RECUPERO', step: step, sec: sec.rest, kind: 'rest', img: exImg(nx, 0) });
+          }
+        });
+        if (r < sec.rounds && sec.roundRest) {
+          ph.push({ title: 'RECUPERO GIRO', step: 'Fine giro ' + r + ' di ' + sec.rounds, sec: sec.roundRest, kind: 'rest', img: exImg(ex[sec.items[0].ex], 0) });
+        }
+      }
+    } else if (sec.type === 'cooldown') {
+      var poses = sec.items.filter(function (it) { return it.sec; });
+      poses.forEach(function (it, j) {
+        var e = ex[it.ex] || {}, name = it.name || e.name, sides = it.sides || 1;
+        for (var k = 0; k < sides; k++) {
+          ph.push({ title: name + (sides > 1 ? (k === 0 ? ' · lato destro' : ' · lato sinistro') : ''),
+            step: 'Posizione ' + (j + 1) + ' di ' + poses.length, sec: it.sec, kind: 'yoga', img: exImg(e, 1) });
+        }
+      });
+    }
+    return ph;
   }
-  function startIntervals() {
-    var sec = findIntervals(); if (!sec) return;
-    I.phases = [];
-    sec.steps.forEach(function (s, i) {
-      I.phases.push({ kind: 'run', sec: s[0] * 60, step: i + 1, n: sec.steps.length });
-      I.phases.push({ kind: 'rec', sec: s[1] * 60, step: i + 1, n: sec.steps.length });
-    });
+  function startGuided(si) {
+    var sec = daySections(state.days[state.day])[si]; if (!sec) return;
+    I.phases = buildPhases(sec); if (!I.phases.length) return;
     I.total = I.phases.reduce(function (a, p) { return a + p.sec; }, 0);
     I.idx = 0; I.paused = false;
     iv.hidden = false;
@@ -417,13 +468,15 @@
     var p = I.phases[I.idx];
     I.end = from + p.sec * 1000; I.lastBeep = -1;
     $('ivPause').textContent = 'Pausa'; I.paused = false;
-    iv.className = 'overlay iv' + (p.kind === 'rec' ? ' rec' : '');
-    $('ivPhase').textContent = p.kind === 'run' ? 'CORSA' : 'RECUPERO';
-    $('ivStep').textContent = 'Intervallo ' + p.step + ' di ' + p.n;
+    iv.className = 'overlay iv ' + (p.kind === 'rest' ? 'rec' : p.kind);
+    $('ivPhase').textContent = p.title;
+    $('ivStep').textContent = p.step || '';
+    var img = $('ivImg');
+    if (p.img) { img.src = p.img; img.hidden = false; } else { img.hidden = true; img.removeAttribute('src'); }
     var nx = I.phases[I.idx + 1];
-    $('ivNext').textContent = nx ? 'Poi: ' + (nx.kind === 'run' ? 'corsa ' : 'recupero ') + (nx.sec / 60) + "'" : 'Ultima fase';
-    beep(p.kind === 'run' ? 1046 : 587, 0.45);
-    buzz(p.kind === 'run' ? [400] : [200, 100, 200]);
+    $('ivNext').textContent = nx ? 'Poi: ' + nx.title + ' ' + fmtRest(nx.sec) : 'Ultima fase';
+    beep(p.kind === 'work' ? 1046 : p.kind === 'yoga' ? 523 : 587, 0.45);
+    buzz(p.kind === 'work' ? [400] : [200, 100, 200]);
     ivTick();
   }
   function elapsedBefore(idx) { var a = 0; for (var i = 0; i < idx; i++) a += I.phases[i].sec; return a; }
@@ -439,6 +492,7 @@
       iv.className = 'overlay iv done';
       $('ivPhase').textContent = 'FINITO';
       $('ivStep').textContent = 'Ottimo lavoro';
+      $('ivImg').hidden = true;
       $('ivNext').textContent = '';
       $('ivTotal').textContent = '';
       beep(880, 0.3); beep(1175, 0.3, 0.35); beep(1568, 0.6, 0.7);
@@ -450,7 +504,7 @@
     var done = elapsedBefore(I.idx) + (p.sec - left);
     $('ivFill').style.width = (done / I.total * 100) + '%';
     $('ivTotal').textContent = 'Totale ' + fmtClock(done) + ' / ' + fmtClock(I.total);
-    if (s <= 3 && s !== I.lastBeep) { I.lastBeep = s; beep(660, 0.12); }
+    if (p.kind !== 'yoga' && s <= 3 && s !== I.lastBeep) { I.lastBeep = s; beep(660, 0.12); }
     I.raf = setTimeout(ivTick, 200);
   }
   $('ivPause').onclick = function () {

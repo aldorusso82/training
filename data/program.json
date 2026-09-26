@@ -359,6 +359,125 @@
    "name": "Pike (TRX)",
    "video": "xk4FBzaUFE4",
    "equip": "TRX"
+  },
+  "snatch": {
+   "name": "Snatch",
+   "img": "One-Arm_Kettlebell_Snatch",
+   "equip": "Kettlebell / manubrio",
+   "kg": true
+  },
+  "run_200": {
+   "name": "Run 200 m",
+   "equip": "Corsa"
+  },
+  "skater_jump": {
+   "name": "Skater jump",
+   "video": "GUiZb0uROnE",
+   "equip": "Corpo libero"
+  },
+  "bike_500": {
+   "name": "Bike 500 m",
+   "img": "Bicycling_Stationary",
+   "equip": "Bike"
+  },
+  "wall_ball": {
+   "name": "Wall ball",
+   "video": "U_wNNwNXKr8",
+   "equip": "Palla medica",
+   "kg": true
+  },
+  "row_1km": {
+   "name": "Vogatore 1 km",
+   "img": "Rowing_Stationary",
+   "equip": "Vogatore"
+  },
+  "trx_squat_jump": {
+   "name": "TRX squat jump",
+   "video": "R9FgSeoy2ME",
+   "equip": "TRX"
+  },
+  "trx_row": {
+   "name": "TRX row",
+   "img": "Suspended_Row",
+   "equip": "TRX"
+  },
+  "trx_lunge": {
+   "name": "TRX lunge",
+   "img": "Suspended_Split_Squat",
+   "equip": "TRX",
+   "cue": "Piede dietro nella maniglia. Cambia gamba a metà tempo."
+  },
+  "trx_mountain": {
+   "name": "TRX mountain climber",
+   "video": "InIKovtYzCQ",
+   "equip": "TRX"
+  },
+  "yoga_childs": {
+   "name": "Balasana (posizione del bambino)",
+   "img": "Childs_Pose",
+   "equip": "Tappetino",
+   "cue": "Glutei verso i talloni, fronte a terra, respiro lento nella schiena."
+  },
+  "yoga_cat": {
+   "name": "Gatto – mucca",
+   "img": "Cat_Stretch",
+   "equip": "Tappetino",
+   "cue": "Inspira apri il petto, espira arrotonda la schiena. Movimento lento."
+  },
+  "yoga_lunge": {
+   "name": "Anjaneyasana (affondo basso)",
+   "img": "Kneeling_Hip_Flexor",
+   "equip": "Tappetino",
+   "cue": "Ginocchio dietro a terra, bacino in avanti: allunga lo psoas."
+  },
+  "yoga_janu": {
+   "name": "Janu Sirsasana (piegamento su una gamba)",
+   "img": "Seated_Floor_Hamstring_Stretch",
+   "equip": "Tappetino",
+   "cue": "Schiena lunga, piegati dall'anca verso la gamba tesa."
+  },
+  "yoga_fig4": {
+   "name": "Figura 4 supina",
+   "img": "Ankle_On_The_Knee",
+   "equip": "Tappetino",
+   "cue": "Caviglia sul ginocchio opposto, porta le gambe verso il petto: gluteo e piriforme."
+  },
+  "yoga_twist": {
+   "name": "Torsione supina",
+   "img": "Knee_Across_The_Body",
+   "equip": "Tappetino",
+   "cue": "Spalle a terra, ginocchio verso il lato opposto, sguardo dall'altra parte."
+  },
+  "yoga_apana": {
+   "name": "Apanasana (ginocchia al petto)",
+   "img": "Hug_Knees_To_Chest",
+   "equip": "Tappetino",
+   "cue": "Abbraccia le ginocchia, rilassa la zona lombare, respiro lungo."
+  },
+  "yoga_cool_video": {
+   "name": "In alternativa: video guidato",
+   "video": "dy8ESKLjASc",
+   "equip": "Tappetino"
+  },
+  "yoga_flex_1": {
+   "name": "Yoga for Flexibility – Intermediate",
+   "video": "H1qW38xd18E",
+   "equip": "Marina Alexeeva"
+  },
+  "yoga_flex_2": {
+   "name": "Yoga for Flexibility – Deep Stretch",
+   "video": "0h7taISrO7c",
+   "equip": "Yoga with Kassandra"
+  },
+  "yoga_str_1": {
+   "name": "Power Yoga – Feel Strong",
+   "video": "mrhfHpDwFdk",
+   "equip": "Charlie Follows"
+  },
+  "yoga_str_2": {
+   "name": "Power Yoga – Strength & Stretch",
+   "video": "UxUAV0a1UvQ",
+   "equip": "Travis Eliot"
   }
  },
  "plans": [
@@ -1002,11 +1121,130 @@
      "id": "d4",
      "tab": "Day 4",
      "title": "",
-     "sections": [
+     "variants": [
       {
-       "type": "note",
-       "label": "Attività",
-       "text": "Padel, running o circuito."
+       "id": "padel",
+       "label": "Padel / Running",
+       "sections": [
+        {
+         "type": "note",
+         "label": "Attività",
+         "text": "Padel o running."
+        }
+       ]
+      },
+      {
+       "id": "hiit",
+       "label": "HIIT TRX",
+       "note": "A casa. Proposta: 6 esercizi a tempo, 3 giri.",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Mobilità 5'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "5'"
+          }
+         ]
+        },
+        {
+         "type": "hiit",
+         "label": "HIIT TRX",
+         "work": 40,
+         "rest": 20,
+         "rounds": 3,
+         "roundRest": 60,
+         "items": [
+          {
+           "ex": "trx_squat_jump"
+          },
+          {
+           "ex": "trx_row"
+          },
+          {
+           "ex": "atomic_pushup"
+          },
+          {
+           "ex": "trx_lunge"
+          },
+          {
+           "ex": "trx_mountain"
+          },
+          {
+           "ex": "trx_pike"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "cond",
+       "label": "Conditioning",
+       "note": "In palestra.",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Mobilità 5'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "5'"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "A",
+         "sets": 4,
+         "items": [
+          {
+           "code": "A1",
+           "ex": "snatch",
+           "reps": "6/6"
+          },
+          {
+           "code": "A2",
+           "ex": "run_200",
+           "reps": "200 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "B",
+         "sets": 3,
+         "items": [
+          {
+           "code": "B1",
+           "ex": "skater_jump",
+           "reps": "6/6"
+          },
+          {
+           "code": "B2",
+           "ex": "bike_500",
+           "reps": "500 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "C",
+         "sets": 2,
+         "items": [
+          {
+           "code": "C1",
+           "ex": "wall_ball",
+           "reps": "10"
+          },
+          {
+           "code": "C2",
+           "ex": "row_1km",
+           "reps": "1 km"
+          }
+         ]
+        }
+       ]
       }
      ]
     }
@@ -1194,15 +1432,221 @@
      "id": "d4",
      "tab": "Day 4",
      "title": "",
-     "sections": [
+     "variants": [
       {
-       "type": "note",
-       "label": "Attività",
-       "text": "Padel, running o circuito."
+       "id": "padel",
+       "label": "Padel / Running",
+       "sections": [
+        {
+         "type": "note",
+         "label": "Attività",
+         "text": "Padel o running."
+        }
+       ]
+      },
+      {
+       "id": "hiit",
+       "label": "HIIT TRX",
+       "note": "A casa. Proposta: 6 esercizi a tempo, 3 giri.",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Mobilità 5'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "5'"
+          }
+         ]
+        },
+        {
+         "type": "hiit",
+         "label": "HIIT TRX",
+         "work": 40,
+         "rest": 20,
+         "rounds": 3,
+         "roundRest": 60,
+         "items": [
+          {
+           "ex": "trx_squat_jump"
+          },
+          {
+           "ex": "trx_row"
+          },
+          {
+           "ex": "atomic_pushup"
+          },
+          {
+           "ex": "trx_lunge"
+          },
+          {
+           "ex": "trx_mountain"
+          },
+          {
+           "ex": "trx_pike"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "cond",
+       "label": "Conditioning",
+       "note": "In palestra.",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Mobilità 5'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "5'"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "A",
+         "sets": 4,
+         "items": [
+          {
+           "code": "A1",
+           "ex": "snatch",
+           "reps": "6/6"
+          },
+          {
+           "code": "A2",
+           "ex": "run_200",
+           "reps": "200 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "B",
+         "sets": 3,
+         "items": [
+          {
+           "code": "B1",
+           "ex": "skater_jump",
+           "reps": "6/6"
+          },
+          {
+           "code": "B2",
+           "ex": "bike_500",
+           "reps": "500 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "C",
+         "sets": 2,
+         "items": [
+          {
+           "code": "C1",
+           "ex": "wall_ball",
+           "reps": "10"
+          },
+          {
+           "code": "C2",
+           "ex": "row_1km",
+           "reps": "1 km"
+          }
+         ]
+        }
+       ]
       }
      ]
     }
    ]
   }
- ]
+ ],
+ "cooldown": {
+  "type": "cooldown",
+  "label": "Defaticamento yoga",
+  "items": [
+   {
+    "ex": "yoga_childs",
+    "sec": 60
+   },
+   {
+    "ex": "yoga_cat",
+    "sec": 60
+   },
+   {
+    "ex": "yoga_lunge",
+    "sec": 60,
+    "sides": 2
+   },
+   {
+    "ex": "yoga_janu",
+    "sec": 60,
+    "sides": 2
+   },
+   {
+    "ex": "yoga_fig4",
+    "sec": 60,
+    "sides": 2
+   },
+   {
+    "ex": "yoga_twist",
+    "sec": 60,
+    "sides": 2
+   },
+   {
+    "ex": "yoga_apana",
+    "sec": 60
+   },
+   {
+    "ex": "yoga_cool_video",
+    "reps": "13'"
+   }
+  ]
+ },
+ "yoga": {
+  "id": "yoga",
+  "tab": "Yoga",
+  "title": "Pratica libera",
+  "noCooldown": true,
+  "sections": [
+   {
+    "type": "note",
+    "label": "Quando vuoi",
+    "text": "Aggiungi una pratica in qualsiasi giorno. Livello intermedio, circa 30'. Serve internet per i video."
+   },
+   {
+    "type": "list",
+    "badge": "FLEX",
+    "label": "Flexibility",
+    "sub": "Mobilità di anche, femorali e schiena",
+    "items": [
+     {
+      "ex": "yoga_flex_1",
+      "reps": "33'"
+     },
+     {
+      "ex": "yoga_flex_2",
+      "reps": "32'"
+     }
+    ]
+   },
+   {
+    "type": "list",
+    "badge": "FORZA",
+    "label": "Forza",
+    "sub": "Power yoga: core, spalle, gambe",
+    "items": [
+     {
+      "ex": "yoga_str_1",
+      "reps": "30'"
+     },
+     {
+      "ex": "yoga_str_2",
+      "reps": "32'"
+     }
+    ]
+   }
+  ]
+ }
 }
