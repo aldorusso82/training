@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>TRAIN.ALDO</title>
+  <meta name="theme-color" content="#8b1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TRAIN.ALDO">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">TRAIN<span>.</span>ALDO</div>
+    <nav class="tabs" id="tabs" role="tablist"></nav>
+  </header>
+
+  <main id="main" class="main">
+    <p class="loading">Caricamento…</p>
+  </main>
+
+  <footer class="foot">
+    <p>Foto esercizi: <a href="https://github.com/yuhonas/free-exercise-db" target="_blank" rel="noopener">free-exercise-db</a> di yuhonas, rilasciate in pubblico dominio (The Unlicense). Video: YouTube, dei rispettivi autori.</p>
+    <p id="version" class="ver"></p>
+  </footer>
+
+  <!-- Scheda esercizio -->
+  <div class="sheet" id="sheet" hidden>
+    <div class="sheet-bar">
+      <button class="btn-close" id="sheetClose" aria-label="Chiudi">✕</button>
+      <div class="sheet-title" id="sheetTitle"></div>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+
+  <!-- Timer recupero -->
+  <div class="overlay" id="timer" hidden>
+    <div class="t-label" id="tLabel">Recupero</div>
+    <div class="ring-wrap">
+      <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="ring-bg" cx="100" cy="100" r="88"/>
+        <circle class="ring-fg" id="ringFg" cx="100" cy="100" r="88"/>
+      </svg>
+      <div class="t-num" id="tNum">0:00</div>
+    </div>
+    <div class="t-actions">
+      <button class="btn-ghost" id="tMinus">−15''</button>
+      <button class="btn-ghost" id="tPlus">+15''</button>
+    </div>
+    <button class="btn-big btn-light" id="tStop">Chiudi</button>
+  </div>
+
+  <!-- Timer intervalli -->
+  <div class="overlay iv" id="ivTimer" hidden>
+    <div class="iv-step" id="ivStep"></div>
+    <div class="iv-phase" id="ivPhase">CORSA</div>
+    <div class="t-num iv-num" id="ivNum">0:00</div>
+    <div class="iv-next" id="ivNext"></div>
+    <div class="iv-bar"><div class="iv-fill" id="ivFill"></div></div>
+    <div class="iv-total" id="ivTotal"></div>
+    <div class="t-actions">
+      <button class="btn-ghost" id="ivPause">Pausa</button>
+      <button class="btn-ghost" id="ivSkip">Salta ›</button>
+    </div>
+    <button class="btn-big btn-light" id="ivStop">Termina</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

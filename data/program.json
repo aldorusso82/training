@@ -1,0 +1,166 @@
+{
+  "updated": "2026-09-26",
+  "exercises": {
+    "leg_ext_iso":      { "name": "Leg extension iso monolaterale", "img": "Single-Leg_Leg_Extension", "equip": "Leg extension", "cue": "Tieni la gamba tesa in alto 20'' e spingi il quadricipite. Una gamba alla volta." },
+    "plank_tap":        { "name": "Elbow plank shoulder tap", "video": "xWlvlCjmCYE", "equip": "Corpo libero", "cue": "Plank sui gomiti, tocca la spalla opposta senza far ruotare il bacino." },
+    "goblet_squat":     { "name": "Goblet squat", "img": "Goblet_Squat", "equip": "Manubrio / KB", "kg": true },
+    "chin_up":          { "name": "Chin up", "img": "Chin-Up", "equip": "Sbarra", "kg": true, "cue": "Presa supina. Zavorra opzionale." },
+    "db_back_lunge":    { "name": "DB back lunge", "img": "Dumbbell_Rear_Lunge", "equip": "Manubri", "kg": true },
+    "australian_pu":    { "name": "Australian pull up", "img": "Inverted_Row", "equip": "Bilanciere / Smith", "cue": "Corpo rigido, porta il petto alla sbarra." },
+    "cossack":          { "name": "Cossack squat", "video": "JaCbmoDqUc4", "equip": "Corpo libero / KB", "kg": true },
+    "db_row":           { "name": "DB row", "img": "One-Arm_Dumbbell_Row", "equip": "Manubrio + panca", "kg": true },
+    "sa_lat":           { "name": "Single arm lat machine", "img": "One_Arm_Lat_Pulldown", "equip": "Lat machine", "kg": true },
+    "reverse_fly":      { "name": "Reverse fly", "img": "Reverse_Flyes", "equip": "Manubri", "kg": true },
+
+    "jump_rope":        { "name": "Jump rope", "img": "Rope_Jumping", "equip": "Corda" },
+    "step_up":          { "name": "Step up", "img": "Dumbbell_Step_Ups", "equip": "Manubri + box", "kg": true },
+    "run_1000":         { "name": "Run 1000 m", "equip": "Corsa" },
+    "run_500":          { "name": "Run 500 m", "equip": "Corsa" },
+    "box_jump":         { "name": "Box jump", "img": "Front_Box_Jump", "equip": "Box" },
+    "triceps_ext":      { "name": "Triceps extension", "img": "Standing_Dumbbell_Triceps_Extension", "equip": "Manubrio", "kg": true },
+    "hammer_curl":      { "name": "Hammer curl", "img": "Alternate_Hammer_Curl", "equip": "Manubri", "kg": true },
+
+    "bridge_iso":       { "name": "Bridge iso monolaterale", "img": "Single_Leg_Glute_Bridge", "equip": "Corpo libero", "cue": "Bacino alto e fermo 20'' su una gamba." },
+    "pushup_toetap":    { "name": "Push up to toe tap", "video": "M-JiOxy5l1Q", "equip": "Corpo libero" },
+    "deadlift":         { "name": "Deadlift", "img": "Barbell_Deadlift", "equip": "Bilanciere", "kg": true },
+    "db_bench":         { "name": "DB bench press", "img": "Dumbbell_Bench_Press", "equip": "Manubri + panca", "kg": true },
+    "sl_rdl":           { "name": "SL RDL", "img": "Kettlebell_One-Legged_Deadlift", "equip": "Manubrio / KB", "kg": true, "cue": "Stacco rumeno su una gamba: anca indietro, schiena neutra." },
+    "db_incline":       { "name": "DB incline bench", "img": "Incline_Dumbbell_Press", "equip": "Manubri + panca inclinata", "kg": true },
+    "sl_hip_thrust":    { "name": "SL hip thrust (panca)", "img": "Barbell_Hip_Thrust", "equip": "Panca", "kg": true, "cue": "Foto con bilanciere: tu lo fai su una gamba, schiena appoggiata alla panca." },
+    "chest_fly":        { "name": "Chest fly", "img": "Dumbbell_Flyes", "equip": "Manubri + panca", "kg": true },
+    "db_military":      { "name": "DB military press", "img": "Dumbbell_One-Arm_Shoulder_Press", "equip": "Manubrio", "kg": true },
+    "lateral_raise":    { "name": "Alzate laterali", "img": "Side_Lateral_Raise", "equip": "Manubri", "kg": true },
+
+    "trx_fallout":      { "name": "TRX fallout", "img": "Suspended_Fallout", "equip": "TRX" },
+    "trx_squat_row":    { "name": "TRX squat to row", "video": "oawE3Eo47RY", "img": "Suspended_Row", "equip": "TRX", "cue": "Le foto mostrano la parte di row; il video mostra il movimento completo." },
+    "trx_pushup_feet":  { "name": "TRX push up (piedi nel TRX)", "video": "nWyiY6ym0qo", "equip": "TRX" },
+    "trx_sl_squat":     { "name": "TRX single leg squat", "video": "taKk_7PTMdk", "equip": "TRX" },
+    "trx_incline_pu":   { "name": "TRX incline push up (mani nel TRX)", "img": "Suspended_Push-Up", "equip": "TRX" },
+    "trx_hip_press":    { "name": "TRX hip press monolaterale", "video": "w0ZK6TGE_XU", "equip": "TRX" },
+    "trx_chest_fly":    { "name": "TRX chest fly", "video": "VeiB4nfSpeQ", "equip": "TRX" },
+    "trx_y_raise":      { "name": "TRX Y raise", "video": "znRC93cGltY", "equip": "TRX" },
+    "trx_t_fly":        { "name": "TRX T fly", "video": "eCu-wLNpdkk", "equip": "TRX" },
+
+    "front_raise":      { "name": "Front raises", "img": "Front_Dumbbell_Raise", "equip": "Manubri", "kg": true },
+    "barbell_curl":     { "name": "Barbell curl", "img": "Barbell_Curl", "equip": "Bilanciere", "kg": true },
+    "french_press":     { "name": "French press", "img": "Lying_Triceps_Press", "equip": "Bilanciere EZ + panca", "kg": true }
+  },
+
+  "days": [
+    {
+      "id": "d1", "tab": "Day 1", "title": "Legs + Pull",
+      "sections": [
+        { "type": "mobility", "label": "Mobilità 5'", "items": [
+          { "ex": "leg_ext_iso", "reps": "20'' ×3" },
+          { "ex": "plank_tap", "reps": "8+8" }
+        ]},
+        { "type": "block", "letter": "A", "sets": 4, "rest": 90, "items": [
+          { "code": "A1", "ex": "goblet_squat", "reps": "8" },
+          { "code": "A2", "ex": "chin_up", "reps": "5" }
+        ]},
+        { "type": "block", "letter": "B", "sets": 4, "rest": 90, "items": [
+          { "code": "B1", "ex": "db_back_lunge", "reps": "5/5" },
+          { "code": "B2", "ex": "australian_pu", "reps": "max" }
+        ]},
+        { "type": "block", "letter": "C", "sets": 3, "rest": 75, "items": [
+          { "code": "C1", "ex": "cossack", "reps": "6/6" },
+          { "code": "C2", "ex": "db_row", "reps": "6/6" }
+        ]},
+        { "type": "block", "letter": "D", "sets": 4, "rest": 75, "items": [
+          { "code": "D1", "ex": "sa_lat", "reps": "6" },
+          { "code": "D2", "ex": "reverse_fly", "reps": "6" }
+        ]}
+      ]
+    },
+    {
+      "id": "d2", "tab": "Day 2", "title": "Metabolic + Cardio",
+      "sections": [
+        { "type": "mobility", "label": "Mobilità 5'", "items": [
+          { "ex": "jump_rope", "reps": "10-20-30-40-50-40-30-20-10" }
+        ]},
+        { "type": "block", "letter": "A", "sets": 3, "rest": 120, "items": [
+          { "code": "A1", "ex": "step_up", "reps": "6/6" },
+          { "code": "A2", "ex": "run_1000", "reps": "1000 m" }
+        ]},
+        { "type": "block", "letter": "B", "sets": 3, "rest": 90, "items": [
+          { "code": "B1", "ex": "box_jump", "reps": "6" },
+          { "code": "B2", "ex": "run_500", "reps": "500 m" }
+        ]},
+        { "type": "block", "letter": "C", "sets": 3, "rest": 60, "items": [
+          { "code": "C1", "ex": "triceps_ext", "reps": "8" },
+          { "code": "C2", "ex": "hammer_curl", "reps": "8" }
+        ]}
+      ]
+    },
+    {
+      "id": "d3", "tab": "Day 3", "title": "Legs + Push",
+      "variants": [
+        {
+          "id": "gym", "label": "Palestra",
+          "sections": [
+            { "type": "mobility", "label": "Mobilità 5'", "items": [
+              { "ex": "bridge_iso", "reps": "20'' ×3" },
+              { "ex": "pushup_toetap", "reps": "8 ×3" }
+            ]},
+            { "type": "block", "letter": "A", "sets": 4, "rest": 120, "items": [
+              { "code": "A1", "ex": "deadlift", "reps": "6" },
+              { "code": "A2", "ex": "db_bench", "reps": "6" }
+            ]},
+            { "type": "block", "letter": "B", "sets": 4, "rest": 90, "items": [
+              { "code": "B1", "ex": "sl_rdl", "reps": "6/6" },
+              { "code": "B2", "ex": "db_incline", "reps": "6/6" }
+            ]},
+            { "type": "block", "letter": "C", "sets": 3, "rest": 75, "items": [
+              { "code": "C1", "ex": "sl_hip_thrust", "reps": "6/6" },
+              { "code": "C2", "ex": "chest_fly", "reps": "5" }
+            ]},
+            { "type": "block", "letter": "D", "sets": 3, "rest": 60, "items": [
+              { "code": "D1", "ex": "db_military", "reps": "6/6" },
+              { "code": "D2", "ex": "lateral_raise", "reps": "6" }
+            ]}
+          ]
+        },
+        {
+          "id": "trx", "label": "TRX",
+          "note": "Progressione: aumenta il carico con l'angolo del corpo → tempo sotto tensione (3'' in discesa) → lavoro monolaterale.",
+          "sections": [
+            { "type": "mobility", "label": "Mobilità 5'", "items": [
+              { "ex": "bridge_iso", "reps": "20'' ×3" },
+              { "ex": "trx_fallout", "reps": "8 ×3" }
+            ]},
+            { "type": "block", "letter": "A", "sets": 4, "rest": 120, "items": [
+              { "code": "A1", "ex": "trx_squat_row", "reps": "6" },
+              { "code": "A2", "ex": "trx_pushup_feet", "reps": "6" }
+            ]},
+            { "type": "block", "letter": "B", "sets": 4, "rest": 90, "items": [
+              { "code": "B1", "ex": "trx_sl_squat", "reps": "6/6" },
+              { "code": "B2", "ex": "trx_incline_pu", "reps": "6" }
+            ]},
+            { "type": "block", "letter": "C", "sets": 3, "rest": 75, "items": [
+              { "code": "C1", "ex": "trx_hip_press", "reps": "6/6" },
+              { "code": "C2", "ex": "trx_chest_fly", "reps": "5" }
+            ]},
+            { "type": "block", "letter": "D", "sets": 3, "rest": 60, "items": [
+              { "code": "D1", "ex": "trx_y_raise", "reps": "8" },
+              { "code": "D2", "ex": "trx_t_fly", "reps": "8" }
+            ]},
+            { "type": "note", "label": "Finisher opzionale", "text": "Blazepod dopo il blocco D." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d4", "tab": "Day 4", "title": "Intervals + Arms",
+      "sections": [
+        { "type": "intervals", "label": "Running interval 30'", "pace": "5'20\"–5'30\"/km",
+          "steps": [[1,1],[2,2],[3,3],[3,3],[2,2],[1,1]] },
+        { "type": "block", "letter": "A", "sets": 4, "rest": 75, "items": [
+          { "code": "A1", "ex": "front_raise", "reps": "8" },
+          { "code": "A2", "ex": "barbell_curl", "reps": "8" },
+          { "code": "A3", "ex": "french_press", "reps": "8" }
+        ]},
+        { "type": "note", "label": "Alternativa Day 4", "text": "Tennis, running o padel 60'." }
+      ]
+    }
+  ]
+}

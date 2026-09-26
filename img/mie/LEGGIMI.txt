@@ -1,0 +1,2 @@
+Metti qui le tue foto degli esercizi senza immagini.
+Nome file = chiave esercizio in data/program.json, es: cossack.jpg, plank_tap.jpg, trx_y_raise.jpg
