@@ -25,6 +25,10 @@
 ## Programma attuale (base)
 Se Aldo incolla una scheda aggiornata, quella ha la priorità e sostituisce questa.
 Tieni il programma in `data/program.json`, separato dal codice, così si aggiorna senza toccare l'interfaccia.
+- Più schede periodiche in `plans[]` (id, name libero, months = mesi in cui si apre da sola, days). Menu "Scheda" in alto per consultarle.
+- Un giorno identico a un'altra scheda si scrive `{"id":"d2","tab":"Day 2","same":{"plan":"lug-set","day":"d2"}}`.
+- Senza `rest` nel blocco l'app mostra i pulsanti di recupero 1'/75''/90''/2'. `note` su un esercizio = testo mostrato accanto alle reps; `name` su un esercizio = nome diverso per quella scheda.
+- Schede attuali: Luglio–Settembre (sotto), Ottobre, Novembre (vedi program.json).
 
 Day 1 — Legs + Pull
 - Mobilità 5': Leg extension iso monolaterale 20'' ×3 · Elbow plank shoulder tap 8+8

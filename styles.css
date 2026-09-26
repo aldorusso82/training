@@ -38,8 +38,29 @@ img { display: block; max-width: 100%; }
   padding: calc(var(--safe-t) + 8px) 12px 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-.brand { font-weight: 800; font-size: 20px; letter-spacing: .08em; text-align: center; margin-bottom: 8px; }
+.brand { font-weight: 800; font-size: 20px; letter-spacing: .08em; text-align: center; margin-bottom: 6px; }
 .brand span { color: #f0d9b5; }
+.plan-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; max-width: 720px; min-height: 44px; margin: 0 auto 8px;
+  border: 1.5px solid rgba(255,255,255,.45); border-radius: 12px;
+  background: rgba(0,0,0,.12); color: #fff; font-weight: 800; font-size: 17px;
+}
+.plan-lbl { font-weight: 600; opacity: .8; }
+.plan-caret { font-size: 14px; opacity: .9; }
+.plan-list { display: grid; gap: 10px; max-width: 560px; }
+.plan-item {
+  display: flex; align-items: center; gap: 10px; min-height: 60px; padding: 0 16px;
+  border: 1.5px solid var(--line); border-radius: 14px; background: #fff; text-align: left;
+}
+.plan-item.on { border-color: var(--red); background: var(--red-soft); }
+.plan-n { flex: 1; font-size: 19px; font-weight: 800; }
+.plan-badge { font-size: 13px; font-weight: 800; color: #fff; background: var(--green); padding: 3px 8px; border-radius: 7px; }
+.plan-check { font-size: 20px; font-weight: 900; color: var(--red); }
+.plan-hint { font-size: 15px; color: var(--ink-2); margin: 6px 2px; }
+.rest-free { flex-wrap: wrap; }
+.rest-chips { display: flex; gap: 6px; }
+.btn-start.chip { min-width: 0; min-height: 48px; padding: 0 12px; font-size: 17px; }
 .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; max-width: 720px; margin: 0 auto; }
 .tab {
   min-height: 44px; border: 0; border-radius: 10px;

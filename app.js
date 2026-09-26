@@ -2,9 +2,9 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.0.0';
+  var APP_VERSION = '1.1.0';
   var IMG_BASE = 'img/';
-  var state = { program: null, day: 0, variant: {} };
+  var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
   var $ = function (id) { return document.getElementById(id); };
   var store = {
@@ -39,20 +39,77 @@
     .then(function (r) { return r.json(); })
     .then(function (p) {
       state.program = p;
-      state.day = Math.min(store.get('day', 0), p.days.length - 1);
       state.variant = store.get('variant', {});
-      $('version').textContent = 'v' + APP_VERSION + ' · scheda aggiornata al ' + (p.updated || '—');
-      renderTabs();
-      renderDay();
+      $('version').textContent = 'v' + APP_VERSION + ' · schede aggiornate al ' + (p.updated || '—');
+      selectPlan(pickPlan(), false);
     })
     .catch(function () {
       $('main').innerHTML = '<p class="loading">Impossibile caricare la scheda. Controlla la connessione e riapri l\'app.</p>';
     });
 
+  /* ---------- Schede (piani) ---------- */
+  function thisMonth() { return new Date().getMonth() + 1; }
+  function planForMonth(m) {
+    var plans = state.program.plans;
+    for (var i = 0; i < plans.length; i++) if ((plans[i].months || []).indexOf(m) >= 0) return plans[i];
+    return null;
+  }
+  // Scelta manuale valida solo nel mese in cui è stata fatta; poi torna alla scheda del mese
+  function pickPlan() {
+    var plans = state.program.plans;
+    var saved = store.get('plan', null);
+    if (saved && saved.month === thisMonth()) {
+      var hit = plans.filter(function (x) { return x.id === saved.id; })[0];
+      if (hit) return hit;
+    }
+    return planForMonth(thisMonth()) || plans[plans.length - 1];
+  }
+  function resolveDays(plan) {
+    return plan.days.map(function (d) {
+      if (!d.same) return d;
+      var src = state.program.plans.filter(function (x) { return x.id === d.same.plan; })[0];
+      var sd = src && src.days.filter(function (x) { return x.id === d.same.day; })[0];
+      if (!sd) return d;
+      var copy = {}; for (var k in sd) copy[k] = sd[k];
+      copy.tab = d.tab || sd.tab;
+      copy.sameAs = src.name;
+      return copy;
+    });
+  }
+  function selectPlan(plan, manual) {
+    state.plan = plan;
+    state.days = resolveDays(plan);
+    if (manual) { store.set('plan', { id: plan.id, month: thisMonth() }); state.day = 0; }
+    else state.day = Math.min(store.get('day', 0), state.days.length - 1);
+    store.set('day', state.day);
+    $('planName').textContent = plan.name;
+    renderTabs();
+    renderDay();
+    window.scrollTo(0, 0);
+  }
+  function openPlans() {
+    var cur = planForMonth(thisMonth());
+    $('sheetTitle').textContent = 'Schede';
+    $('sheetBody').innerHTML = '<div class="sheet-inner plan-list">' + state.program.plans.map(function (pl) {
+      return '<button class="plan-item' + (pl.id === state.plan.id ? ' on' : '') + '" data-plan="' + esc(pl.id) + '">' +
+        '<span class="plan-n">' + esc(pl.name) + '</span>' +
+        (cur && cur.id === pl.id ? '<span class="plan-badge">questo mese</span>' : '') +
+        (pl.id === state.plan.id ? '<span class="plan-check">✓</span>' : '') + '</button>';
+    }).join('') + '<p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p></div>';
+    showSheet();
+    $('sheetBody').querySelector('.plan-list').onclick = function (e) {
+      var b = e.target.closest('.plan-item'); if (!b) return;
+      var pl = state.program.plans.filter(function (x) { return x.id === b.dataset.plan; })[0];
+      closeSheet(false);
+      if (pl) selectPlan(pl, true);
+    };
+  }
+  $('planBtn').onclick = function () { if (state.program) openPlans(); };
+
   /* ---------- Tab ---------- */
   function renderTabs() {
     var nav = $('tabs');
-    nav.innerHTML = state.program.days.map(function (d, i) {
+    nav.innerHTML = state.days.map(function (d, i) {
       return '<button class="tab" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + esc(d.tab) + '</button>';
     }).join('');
     nav.onclick = function (e) {
@@ -67,15 +124,16 @@
   /* ---------- Giorno ---------- */
   function currentSections(day) {
     if (!day.variants) return { sections: day.sections, note: day.note };
-    var vid = state.variant[day.id] || day.variants[0].id;
+    var vid = state.variant[state.plan.id + '/' + day.id] || state.variant[day.id] || day.variants[0].id;
     var v = day.variants.filter(function (x) { return x.id === vid; })[0] || day.variants[0];
     return v;
   }
 
   function renderDay() {
-    var day = state.program.days[state.day];
+    var day = state.days[state.day];
     var cur = currentSections(day);
-    var h = '<h1 class="day-title"><small>' + esc(day.tab) + '</small>' + esc(day.title) + '</h1>';
+    var h = '<h1 class="day-title"><small>' + esc(state.plan.name) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') + '</h1>';
+    if (day.sameAs) h += '<div class="note-box"><b>Uguale</b> alla scheda ' + esc(day.sameAs) + '.</div>';
 
     if (day.variants) {
       h += '<div class="switch" role="group" aria-label="Variante">' + day.variants.map(function (v) {
@@ -86,7 +144,7 @@
 
     cur.sections.forEach(function (sec, si) {
       if (sec.type === 'note') {
-        h += '<div class="note-box"><b>' + esc(sec.label) + '</b> · ' + esc(sec.text) + '</div>';
+        h += '<div class="note-box"><b>' + esc(sec.label) + '</b>' + (sec.text ? ' · ' + esc(sec.text) : '') + '</div>';
       } else if (sec.type === 'intervals') {
         h += renderIntervals(sec, si);
       } else {
@@ -100,7 +158,7 @@
     var sw = main.querySelector('.switch');
     if (sw) sw.onclick = function (e) {
       var b = e.target.closest('button'); if (!b) return;
-      state.variant[day.id] = b.dataset.v; store.set('variant', state.variant);
+      state.variant[state.plan.id + '/' + day.id] = b.dataset.v; store.set('variant', state.variant);
       renderDay();
     };
   }
@@ -110,27 +168,31 @@
     var mob = sec.type === 'mobility';
     var head = mob
       ? '<div class="letter">MOB</div><div class="block-meta"><div class="block-kind">' + esc(sec.label) + '</div><div class="block-sub">Attivazione</div></div>'
-      : '<div class="letter">' + esc(sec.letter) + '</div><div class="block-meta"><div class="block-kind">' + kindOf(sec) + ' ×' + sec.sets + '</div><div class="block-sub">' + sec.sets + ' serie · recupero ' + fmtRest(sec.rest) + '</div></div>';
+      : '<div class="letter">' + esc(sec.letter) + '</div><div class="block-meta"><div class="block-kind">' + kindOf(sec) + ' ×' + sec.sets + '</div><div class="block-sub">' + sec.sets + ' serie' + (sec.rest ? ' · recupero ' + fmtRest(sec.rest) : '') + '</div></div>';
 
     var rows = sec.items.map(function (it) {
       var e = ex[it.ex] || { name: it.ex };
-      var hasMedia = !!(e.img || e.video);
+      var name = it.name || e.name;
+      var hasMedia = e.equip !== 'Corsa';
       var thumb = e.img ? '<img src="' + photoSrc(e, 0) + '" alt="" loading="lazy">'
         : e.video ? '<img src="' + ytThumb(e.video) + '" alt="" loading="lazy">'
-        : 'RUN';
+        : e.equip === 'Corsa' ? 'RUN' : '';
       var kg = e.kg
-        ? '<div class="kg"><input type="text" inputmode="decimal" enterkeyhint="done" data-kg="' + esc(it.ex) + '" value="' + esc(store.get('kg.' + it.ex, '')) + '" placeholder="–" aria-label="Kg ' + esc(e.name) + '"><label>kg</label></div>'
+        ? '<div class="kg"><input type="text" inputmode="decimal" enterkeyhint="done" data-kg="' + esc(it.ex) + '" value="' + esc(store.get('kg.' + it.ex, '')) + '" placeholder="–" aria-label="Kg ' + esc(name) + '"><label>kg</label></div>'
         : '';
-      return '<div class="ex' + (hasMedia ? '' : ' static') + '" data-ex="' + esc(it.ex) + '" data-reps="' + esc(it.reps) + '"' + (hasMedia ? ' role="button" tabindex="0"' : '') + '>' +
+      return '<div class="ex' + (hasMedia ? '' : ' static') + '" data-ex="' + esc(it.ex) + '" data-reps="' + esc(it.reps) + '" data-name="' + esc(name) + '"' + (hasMedia ? ' role="button" tabindex="0"' : '') + '>' +
         '<div class="thumb">' + thumb + '</div>' +
         '<div class="ex-main">' + (it.code ? '<div class="ex-code">' + esc(it.code) + '</div>' : '') +
-        '<div class="ex-name">' + esc(e.name) + '</div>' +
-        '<div class="ex-info"><b>' + esc(it.reps) + '</b> · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
+        '<div class="ex-name">' + esc(name) + '</div>' +
+        '<div class="ex-info"><b>' + esc(it.reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
     }).join('');
 
-    var rest = mob || !sec.rest ? '' :
-      '<div class="rest"><div class="rest-txt">Recupero ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
-      '<button class="btn-start" data-rest="' + sec.rest + '" data-label="Recupero blocco ' + esc(sec.letter) + '">Avvia</button></div>';
+    var lbl = 'Recupero blocco ' + esc(sec.letter);
+    var rest = mob ? '' : sec.rest
+      ? '<div class="rest"><div class="rest-txt">Recupero ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
+        '<button class="btn-start" data-rest="' + sec.rest + '" data-label="' + lbl + '">Avvia</button></div>'
+      : '<div class="rest rest-free"><div class="rest-txt">Recupero<span>scegli e parte il timer</span></div><div class="rest-chips">' +
+        [60, 75, 90, 120].map(function (r) { return '<button class="btn-start chip" data-rest="' + r + '" data-label="' + lbl + '">' + fmtRest(r) + '</button>'; }).join('') + '</div></div>';
 
     return '<section class="block' + (mob ? ' mob' : '') + '"><div class="block-head">' + head + '</div>' + rows + rest + '</section>';
   }
@@ -164,7 +226,7 @@
       return;
     }
     var row = e.target.closest('.ex');
-    if (row && !row.classList.contains('static')) openSheet(row.dataset.ex, row.dataset.reps);
+    if (row && !row.classList.contains('static')) openSheet(row.dataset.ex, row.dataset.reps, row.dataset.name);
   });
   main.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && e.target.classList.contains('ex')) e.target.click();
@@ -182,9 +244,10 @@
 
   /* ---------- Scheda esercizio ---------- */
   var sheet = $('sheet');
-  function openSheet(key, reps) {
+  function openSheet(key, reps, name) {
     var e = state.program.exercises[key]; if (!e) return;
-    $('sheetTitle').textContent = e.name;
+    name = name || e.name;
+    $('sheetTitle').textContent = name;
     var h = '<div class="sheet-inner">';
 
     if (e.video) {
@@ -213,9 +276,7 @@
     h += '</div>';
 
     $('sheetBody').innerHTML = h;
-    $('sheetBody').scrollTop = 0;
-    sheet.hidden = false;
-    document.body.style.overflow = 'hidden';
+    showSheet();
 
     var own = $('ownImg');
     if (own) {
@@ -234,6 +295,11 @@
       photos.onclick = function () { cur = 1 - cur; show(cur); };
       $('dots').onclick = function (ev) { var b = ev.target.closest('button'); if (b) { cur = +b.dataset.p; show(cur); } };
     }
+  }
+  function showSheet() {
+    $('sheetBody').scrollTop = 0;
+    sheet.hidden = false;
+    document.body.style.overflow = 'hidden';
     history.pushState({ sheet: 1 }, '');
   }
   function closeSheet(fromPop) {
@@ -329,7 +395,7 @@
   var I = { phases: [], idx: 0, end: 0, paused: false, pauseLeft: 0, raf: 0, lastBeep: -1, total: 0, startAll: 0 };
 
   function findIntervals() {
-    var day = state.program.days[state.day];
+    var day = state.days[state.day];
     var secs = currentSections(day).sections;
     for (var i = 0; i < secs.length; i++) if (secs[i].type === 'intervals') return secs[i];
     return null;
