@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.2.0';
+  var APP_VERSION = '1.3.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -79,7 +79,7 @@
   function selectPlan(plan, manual) {
     state.plan = plan;
     state.days = resolveDays(plan);
-    if (state.program.yoga) state.days.push(state.program.yoga);
+    if (state.program.yoga) state.days.push(buildYogaDay());
     if (manual) { store.set('plan', { id: plan.id, month: thisMonth() }); state.day = 0; }
     else state.day = Math.min(store.get('day', 0), state.days.length - 1);
     store.set('day', state.day);
@@ -130,10 +130,52 @@
     return v;
   }
 
+  /* ---------- Rotazione yoga ---------- */
+  var DAY_MS = 864e5;
+  function utcDay(d) { return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function rotStart() {
+    var r = (state.program.rotation && state.program.rotation.start || '2026-09-21').split('-');
+    return Date.UTC(+r[0], +r[1] - 1, +r[2]);
+  }
+  function weekIndex() { return Math.max(0, Math.floor((utcDay(new Date()) - rotStart()) / (7 * DAY_MS))); }
+  function fmtDate(ms) { var d = new Date(ms); return d.getUTCDate() + '/' + (d.getUTCMonth() + 1); }
+
+  // Defaticamento: stessa sequenza per N settimane (default 2), poi la successiva
+  function currentCooldown() {
+    var list = state.program.cooldowns; if (!list || !list.length) return null;
+    var per = (state.program.rotation && state.program.rotation.cooldownWeeks) || 2;
+    var k = Math.floor(weekIndex() / per);
+    var c = list[k % list.length], nx = list[(k + 1) % list.length];
+    var from = rotStart() + k * per * 7 * DAY_MS, to = from + (per * 7 - 1) * DAY_MS;
+    var tot = 0; c.items.forEach(function (it) { if (it.sec) tot += it.sec * (it.sides || 1); });
+    return { type: 'cooldown', label: 'Defaticamento yoga · ' + c.name, items: c.items,
+      sub: tot / 60 + "' guidati · dal " + fmtDate(from) + ' al ' + fmtDate(to) + ', poi: ' + nx.name };
+  }
+
+  // Pratica libera: un video diverso ogni settimana, alternando Flexibility e Forza
+  function buildYogaDay() {
+    var y = state.program.yoga, ex = state.program.exercises;
+    var order = [];
+    for (var i = 0; i < Math.max(y.flex.length, y.forza.length); i++) {
+      if (y.flex[i]) order.push(y.flex[i]);
+      if (y.forza[i]) order.push(y.forza[i]);
+    }
+    var pick = order[weekIndex() % order.length];
+    var isFlex = y.flex.indexOf(pick) >= 0;
+    var nextMon = rotStart() + (weekIndex() + 1) * 7 * DAY_MS;
+    function list(keys) { return keys.map(function (k) { return { ex: k, reps: ex[k].dur || '' }; }); }
+    return { id: y.id, tab: y.tab, title: y.title, noCooldown: true, sections: [
+      { type: 'list', badge: 'SETT', label: 'Questa settimana · ' + (isFlex ? 'Flexibility' : 'Forza'), sub: 'Cambia lunedì ' + fmtDate(nextMon), items: list([pick]) },
+      { type: 'note', label: 'Oppure', text: 'scegli tu una pratica su Nike Training Club (livello intermedio). Per i video serve internet.' },
+      { type: 'list', badge: 'FLEX', label: 'Flexibility', sub: 'Mobilità di anche, femorali e schiena', items: list(y.flex) },
+      { type: 'list', badge: 'FORZA', label: 'Forza', sub: 'Power yoga: core, spalle, gambe', items: list(y.forza) }
+    ] };
+  }
+
   // Sezioni del giorno + defaticamento yoga aggiunto sempre in fondo
   function daySections(day) {
     var secs = currentSections(day).sections.slice();
-    var cd = state.program.cooldown;
+    var cd = currentCooldown();
     if (cd && !day.noCooldown) secs.push(cd);
     return secs;
   }
@@ -182,10 +224,6 @@
       var tot = sec.rounds * (sec.items.length * sec.work + (sec.items.length - 1) * sec.rest) + (sec.rounds - 1) * (sec.roundRest || 0);
       sub = fmtRest(sec.work) + ' lavoro · ' + fmtRest(sec.rest) + ' recupero · ' + sec.rounds + ' giri · circa ' + Math.round(tot / 60) + "'";
     }
-    if (sec.type === 'cooldown') {
-      var tc = 0; sec.items.forEach(function (it) { if (it.sec) tc += it.sec * (it.sides || 1); });
-      sub = sub || ('Guidato, ' + Math.round(tc / 60) + "' · una posizione alla volta");
-    }
     var head = (mob || guided)
       ? '<div class="letter sm">' + esc(badge) + '</div><div class="block-meta"><div class="block-kind">' + esc(sec.label) + '</div><div class="block-sub">' + esc(sub) + '</div></div>'
       : '<div class="letter">' + esc(sec.letter) + '</div><div class="block-meta"><div class="block-kind">' + kindOf(sec) + ' ×' + sec.sets + '</div><div class="block-sub">' + sec.sets + ' serie' + (sec.rest ? ' · recupero ' + fmtRest(sec.rest) : '') + '</div></div>';
@@ -193,7 +231,7 @@
     var rows = sec.items.map(function (it) {
       var e = ex[it.ex] || { name: it.ex };
       var name = it.name || e.name;
-      var reps = it.reps || (sec.type === 'hiit' ? fmtRest(sec.work) : it.sec ? fmtRest(it.sec) + ((it.sides || 1) > 1 ? ' per lato' : '') : '');
+      var reps = it.reps || (sec.type === 'hiit' ? fmtRest(sec.work) : it.sec ? fmtRest(it.sec) + ((it.sides || 1) > 1 ? ' per lato' : '') : e.dur || '');
       var hasMedia = e.equip !== 'Corsa';
       var thumb = e.img ? '<img src="' + photoSrc(e, 0) + '" alt="" loading="lazy">'
         : e.video ? '<img src="' + ytThumb(e.video) + '" alt="" loading="lazy">'

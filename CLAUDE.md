@@ -29,8 +29,8 @@ Tieni il programma in `data/program.json`, separato dal codice, così si aggiorn
 - Un giorno identico a un'altra scheda si scrive `{"id":"d2","tab":"Day 2","same":{"plan":"lug-set","day":"d2"}}`.
 - Senza `rest` nel blocco l'app mostra i pulsanti di recupero 1'/75''/90''/2'. `note` su un esercizio = testo mostrato accanto alle reps; `name` su un esercizio = nome diverso per quella scheda.
 - Schede attuali: Luglio–Settembre (sotto), Ottobre, Novembre (vedi program.json).
-- `cooldown` in program.json = defaticamento yoga (≥10') aggiunto in fondo a OGNI giorno, con timer guidato posizione per posizione.
-- `yoga` in program.json = tab "Yoga" sempre visibile: pratiche Flexibility e Forza (livello intermedio, video).
+- `cooldowns` in program.json = 4 sequenze di defaticamento yoga (≥10', foto reali, timer guidato) aggiunte in fondo a OGNI giorno. Ruotano ogni 2 settimane da `rotation.start` (lunedì 21/9/2026): A Completa → B Anche → C Schiena e spalle → D Post-corsa. Motivo: stessa sequenza 2–3 settimane per imparare le posizioni e misurare i progressi.
+- `yoga` in program.json = tab "Yoga" sempre visibile: 4 video Flexibility + 4 Forza (intermedio, ~30'). Ogni lunedì cambia il "video della settimana", alternando Flexibility e Forza. Aldo può anche scegliere su Nike Training Club.
 - Day 4 di Ottobre/Novembre: varianti Padel/Running · HIIT TRX (casa) · Conditioning (palestra). Sezione `hiit` = work/rest/rounds/roundRest con timer guidato.
 
 Day 1 — Legs + Pull

@@ -457,27 +457,158 @@
   "yoga_cool_video": {
    "name": "In alternativa: video guidato",
    "video": "dy8ESKLjASc",
-   "equip": "Tappetino"
+   "equip": "Yoga with Kassandra",
+   "dur": "13'"
   },
   "yoga_flex_1": {
    "name": "Yoga for Flexibility – Intermediate",
    "video": "H1qW38xd18E",
-   "equip": "Marina Alexeeva"
+   "equip": "Marina Alexeeva",
+   "dur": "33'"
   },
   "yoga_flex_2": {
    "name": "Yoga for Flexibility – Deep Stretch",
    "video": "0h7taISrO7c",
-   "equip": "Yoga with Kassandra"
+   "equip": "Yoga with Kassandra",
+   "dur": "32'"
   },
   "yoga_str_1": {
    "name": "Power Yoga – Feel Strong",
    "video": "mrhfHpDwFdk",
-   "equip": "Charlie Follows"
+   "equip": "Charlie Follows",
+   "dur": "30'"
   },
   "yoga_str_2": {
    "name": "Power Yoga – Strength & Stretch",
    "video": "UxUAV0a1UvQ",
-   "equip": "Travis Eliot"
+   "equip": "Travis Eliot",
+   "dur": "32'"
+  },
+  "yoga_baddha": {
+   "name": "Baddha Konasana (farfalla)",
+   "img": "Groin_and_Back_Stretch",
+   "equip": "Tappetino",
+   "cue": "Piante dei piedi unite, schiena lunga poi piegati in avanti."
+  },
+  "yoga_lizard": {
+   "name": "Lucertola (Utthan Pristhasana)",
+   "img": "Worlds_Greatest_Stretch",
+   "equip": "Tappetino",
+   "cue": "Affondo profondo, mani a terra dentro il piede avanti, anca che scende."
+  },
+  "yoga_pigeon": {
+   "name": "Piccione (variante)",
+   "img": "IT_Band_and_Glute_Stretch",
+   "equip": "Tappetino",
+   "cue": "Gamba avanti piegata, gamba dietro distesa: gluteo e fascia laterale."
+  },
+  "yoga_straddle": {
+   "name": "Upavistha Konasana (gambe divaricate)",
+   "img": "The_Straddle",
+   "equip": "Tappetino",
+   "cue": "Gambe larghe, piegati dall'anca con la schiena lunga."
+  },
+  "yoga_sphinx": {
+   "name": "Sfinge / Cobra",
+   "img": "Lower_Back_Curl",
+   "equip": "Tappetino",
+   "cue": "Pube a terra, spingi il petto avanti, spalle lontane dalle orecchie."
+  },
+  "yoga_camel": {
+   "name": "Cammello facilitato (Ustrasana)",
+   "img": "Looking_At_Ceiling",
+   "equip": "Tappetino",
+   "cue": "In ginocchio, mani sui talloni, apri il petto verso il soffitto. Collo morbido."
+  },
+  "yoga_side_seated": {
+   "name": "Allungamento laterale seduto",
+   "img": "Seated_Overhead_Stretch",
+   "equip": "Tappetino",
+   "cue": "Braccio sopra la testa verso la gamba opposta, allunga tutto il fianco."
+  },
+  "yoga_seated_twist": {
+   "name": "Ardha Matsyendrasana (torsione seduta)",
+   "img": "Dancers_Stretch",
+   "equip": "Tappetino",
+   "cue": "Schiena alta, ruota dal torace, gomito contro il ginocchio."
+  },
+  "yoga_shoulder": {
+   "name": "Spalla incrociata",
+   "img": "Shoulder_Stretch",
+   "equip": "In piedi",
+   "cue": "Braccio teso davanti al petto, l'altro braccio lo avvicina. Spalla bassa."
+  },
+  "yoga_uttanasana": {
+   "name": "Uttanasana (piegamento in avanti)",
+   "img": "Standing_Toe_Touches",
+   "equip": "In piedi",
+   "cue": "Ginocchia morbide, lascia pendere testa e braccia."
+  },
+  "yoga_pyramid": {
+   "name": "Piramide (Parsvottanasana)",
+   "img": "Runners_Stretch",
+   "equip": "In piedi",
+   "cue": "Gamba avanti tesa, bacino dritto, petto verso la coscia."
+  },
+  "yoga_calf": {
+   "name": "Polpaccio al muro",
+   "img": "Calf_Stretch_Hands_Against_Wall",
+   "equip": "Muro",
+   "cue": "Tallone dietro a terra, ginocchio dietro teso."
+  },
+  "yoga_quad_side": {
+   "name": "Quadricipite sul fianco",
+   "img": "On_Your_Side_Quad_Stretch",
+   "equip": "Tappetino",
+   "cue": "Sul fianco, tallone verso il gluteo, ginocchia unite, bacino avanti."
+  },
+  "yoga_supta": {
+   "name": "Supta Padangusthasana (gamba in alto)",
+   "img": "Leg-Up_Hamstring_Stretch",
+   "equip": "Tappetino",
+   "cue": "Sdraiato, gamba tesa verso il soffitto, l'altra distesa a terra."
+  },
+  "yoga_cool_lower": {
+   "name": "In alternativa: video guidato",
+   "video": "-ZPyCILWvT0",
+   "equip": "SarahBethYoga",
+   "dur": "11'"
+  },
+  "yoga_cool_upper": {
+   "name": "In alternativa: video guidato",
+   "video": "X3-gKPNyrTA",
+   "equip": "Yoga With Adriene",
+   "dur": "11'"
+  },
+  "yoga_cool_run": {
+   "name": "In alternativa: video guidato",
+   "video": "qBAvv2Tv7Tk",
+   "equip": "Lucy Reynolds",
+   "dur": "13'"
+  },
+  "yoga_flex_3": {
+   "name": "Slow Flow – Hips & Hamstrings",
+   "video": "lQ7xA9dzwcA",
+   "equip": "Yoga with Kassandra",
+   "dur": "33'"
+  },
+  "yoga_flex_4": {
+   "name": "Balance & Flexibility – Intermediate",
+   "video": "ukENBXP5Pso",
+   "equip": "Yoga with Kassandra",
+   "dur": "34'"
+  },
+  "yoga_str_3": {
+   "name": "Intermediate Power Yoga Flow",
+   "video": "j6Fdbn7nATU",
+   "equip": "Yoga With Tim",
+   "dur": "31'"
+  },
+  "yoga_str_4": {
+   "name": "Power Yoga Flow – Intermediate",
+   "video": "j7GzcNQR2ik",
+   "equip": "Cat Meffan",
+   "dur": "29'"
   }
  },
  "plans": [
@@ -1562,91 +1693,187 @@
    ]
   }
  ],
- "cooldown": {
-  "type": "cooldown",
-  "label": "Defaticamento yoga",
-  "items": [
-   {
-    "ex": "yoga_childs",
-    "sec": 60
-   },
-   {
-    "ex": "yoga_cat",
-    "sec": 60
-   },
-   {
-    "ex": "yoga_lunge",
-    "sec": 60,
-    "sides": 2
-   },
-   {
-    "ex": "yoga_janu",
-    "sec": 60,
-    "sides": 2
-   },
-   {
-    "ex": "yoga_fig4",
-    "sec": 60,
-    "sides": 2
-   },
-   {
-    "ex": "yoga_twist",
-    "sec": 60,
-    "sides": 2
-   },
-   {
-    "ex": "yoga_apana",
-    "sec": 60
-   },
-   {
-    "ex": "yoga_cool_video",
-    "reps": "13'"
-   }
-  ]
- },
  "yoga": {
   "id": "yoga",
   "tab": "Yoga",
   "title": "Pratica libera",
   "noCooldown": true,
-  "sections": [
-   {
-    "type": "note",
-    "label": "Quando vuoi",
-    "text": "Aggiungi una pratica in qualsiasi giorno. Livello intermedio, circa 30'. Serve internet per i video."
-   },
-   {
-    "type": "list",
-    "badge": "FLEX",
-    "label": "Flexibility",
-    "sub": "Mobilità di anche, femorali e schiena",
-    "items": [
-     {
-      "ex": "yoga_flex_1",
-      "reps": "33'"
-     },
-     {
-      "ex": "yoga_flex_2",
-      "reps": "32'"
-     }
-    ]
-   },
-   {
-    "type": "list",
-    "badge": "FORZA",
-    "label": "Forza",
-    "sub": "Power yoga: core, spalle, gambe",
-    "items": [
-     {
-      "ex": "yoga_str_1",
-      "reps": "30'"
-     },
-     {
-      "ex": "yoga_str_2",
-      "reps": "32'"
-     }
-    ]
-   }
+  "flex": [
+   "yoga_flex_1",
+   "yoga_flex_2",
+   "yoga_flex_3",
+   "yoga_flex_4"
+  ],
+  "forza": [
+   "yoga_str_1",
+   "yoga_str_2",
+   "yoga_str_3",
+   "yoga_str_4"
   ]
+ },
+ "cooldowns": [
+  {
+   "id": "A",
+   "name": "Completa",
+   "items": [
+    {
+     "ex": "yoga_childs",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_cat",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_lunge",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_janu",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_fig4",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_twist",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_apana",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_cool_video"
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "name": "Anche",
+   "items": [
+    {
+     "ex": "yoga_childs",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_baddha",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_lizard",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_pigeon",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_straddle",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_fig4",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_apana",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_cool_lower"
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "name": "Schiena e spalle",
+   "items": [
+    {
+     "ex": "yoga_childs",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_cat",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_sphinx",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_camel",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_side_seated",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_seated_twist",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_shoulder",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_cool_upper"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "name": "Post-corsa",
+   "items": [
+    {
+     "ex": "yoga_uttanasana",
+     "sec": 60
+    },
+    {
+     "ex": "yoga_pyramid",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_calf",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_quad_side",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_supta",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_lunge",
+     "sec": 60,
+     "sides": 2
+    },
+    {
+     "ex": "yoga_cool_run"
+    }
+   ]
+  }
+ ],
+ "rotation": {
+  "start": "2026-09-21",
+  "cooldownWeeks": 2
  }
 }
