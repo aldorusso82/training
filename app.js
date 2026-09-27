@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.3.0';
+  var APP_VERSION = '1.4.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -31,6 +31,7 @@
     var n = sec.items.length;
     return n === 1 ? 'Serie' : n === 2 ? 'Superset' : n === 3 ? 'Triset' : 'Circuito';
   }
+  function isoDate(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function photoSrc(ex, n) { return IMG_BASE + ex.img + '/' + n + '.jpg'; }
   function ytThumb(id) { return 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg'; }
 
@@ -192,6 +193,8 @@
       }).join('') + '</div>';
     }
     if (cur.note) h += '<div class="note-box"><b>Nota</b> · ' + esc(cur.note) + '</div>';
+    var desc = cur.desc || day.desc;
+    if (desc) h += '<p class="day-desc">' + esc(desc) + '</p>';
 
     daySections(day).forEach(function (sec, si) {
       if (sec.type === 'note') {
@@ -203,8 +206,14 @@
       }
     });
 
+    h += '<div class="log-cta"><button class="btn-log" id="logBtn">✓ Registra allenamento</button></div>';
+
     var main = $('main');
     main.innerHTML = h;
+    $('logBtn').onclick = function () {
+      var v = day.variants ? ' · ' + cur.label : '';
+      openLogForm(day.id === 'yoga' ? 'Yoga' : 'Allenamento', day.id === 'yoga' ? 'Yoga' : state.plan.name + ' · ' + day.tab + v);
+    };
 
     var sw = main.querySelector('.switch');
     if (sw) sw.onclick = function (e) {
@@ -298,6 +307,12 @@
     if (!k) return;
     var v = e.target.value.replace(',', '.').replace(/[^0-9.]/g, '');
     store.set('kg.' + k, v);
+    if (v) {
+      var hist = store.get('kgh.' + k, []), today = isoDate(new Date());
+      if (hist.length && hist[hist.length - 1].d === today) hist[hist.length - 1].v = v;
+      else hist.push({ d: today, v: v });
+      store.set('kgh.' + k, hist);
+    }
     document.querySelectorAll('[data-kg="' + k + '"]').forEach(function (inp) { if (inp !== e.target) inp.value = v; });
   });
   document.addEventListener('keydown', function (e) {
@@ -306,6 +321,7 @@
 
   /* ---------- Scheda esercizio ---------- */
   var sheet = $('sheet');
+  var sheetAnim = 0, ignorePop = false;
   function openSheet(key, reps, name) {
     var e = state.program.exercises[key]; if (!e) return;
     name = name || e.name;
@@ -321,8 +337,7 @@
       h += '<div class="photos" id="photos">' +
         '<figure class="on"><img src="' + photoSrc(e, 0) + '" alt="' + esc(e.name) + ' — inizio"><figcaption>INIZIO</figcaption></figure>' +
         '<figure><img src="' + photoSrc(e, 1) + '" alt="' + esc(e.name) + ' — fine"><figcaption>FINE</figcaption></figure></div>' +
-        '<div class="dots" id="dots"><button aria-pressed="true" data-p="0">Inizio</button><button aria-pressed="false" data-p="1">Fine</button></div>' +
-        '<p class="photo-hint">Tocca la foto per cambiare posizione</p>';
+        '<div class="dots" id="dots"><button aria-pressed="false" data-p="0">Inizio</button><button aria-pressed="false" data-p="1">Fine</button><button aria-pressed="true" data-p="anim">▶ Movimento</button></div>';
     }
 
     h += '<div class="facts"><div class="fact"><small>Reps</small><b>' + esc(reps || '—') + '</b></div>' +
@@ -330,6 +345,9 @@
       (e.kg ? '<div class="fact"><small>Kg</small><input type="text" inputmode="decimal" enterkeyhint="done" data-kg="' + esc(key) + '" value="' + esc(store.get('kg.' + key, '')) + '" placeholder="–"></div>' : '') +
       '</div>';
     if (e.cue) h += '<div class="cue">' + esc(e.cue) + '</div>';
+    var yt = e.video ? 'https://www.youtube.com/watch?v=' + encodeURIComponent(e.video)
+      : 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.q || (e.name + ' exercise tutorial'));
+    h += '<a class="yt-link" href="' + yt + '" target="_blank" rel="noopener">▶ ' + (e.video ? 'Apri il video su YouTube' : 'Cerca il video su YouTube') + '</a>';
 
     if (!e.img) {
       h += '<div class="own"><img id="ownImg" src="img/mie/' + esc(key) + '.jpg" alt="Foto di Aldo" hidden>' +
@@ -350,12 +368,25 @@
       var show = function (p) {
         photos.children[0].classList.toggle('on', p === 0);
         photos.children[1].classList.toggle('on', p === 1);
-        $('dots').children[0].setAttribute('aria-pressed', p === 0);
-        $('dots').children[1].setAttribute('aria-pressed', p === 1);
+        if (!sheetAnim) {
+          $('dots').children[0].setAttribute('aria-pressed', p === 0);
+          $('dots').children[1].setAttribute('aria-pressed', p === 1);
+        }
       };
+      // Animazione: alterna inizio/fine per far vedere il movimento
       var cur = 0;
-      photos.onclick = function () { cur = 1 - cur; show(cur); };
-      $('dots').onclick = function (ev) { var b = ev.target.closest('button'); if (b) { cur = +b.dataset.p; show(cur); } };
+      var anim = function (on) {
+        clearInterval(sheetAnim); sheetAnim = 0;
+        $('dots').children[2].setAttribute('aria-pressed', on);
+        if (on) sheetAnim = setInterval(function () { cur = 1 - cur; show(cur); }, 1000);
+      };
+      var pick = function (p) { anim(false); cur = p; show(cur); };
+      show(0); $('dots').children[0].setAttribute('aria-pressed', false); anim(true);
+      photos.onclick = function () { if (sheetAnim) pick(cur); else anim(true); };
+      $('dots').onclick = function (ev) {
+        var b = ev.target.closest('button'); if (!b) return;
+        if (b.dataset.p === 'anim') anim(!sheetAnim); else pick(+b.dataset.p);
+      };
     }
   }
   function showSheet() {
@@ -367,12 +398,123 @@
   function closeSheet(fromPop) {
     if (sheet.hidden) return;
     sheet.hidden = true;
+    clearInterval(sheetAnim); sheetAnim = 0;
     $('sheetBody').innerHTML = '';
     document.body.style.overflow = '';
-    if (!fromPop && history.state && history.state.sheet) history.back();
+    if (!fromPop && history.state && history.state.sheet) { ignorePop = true; history.back(); }
   }
   $('sheetClose').onclick = function () { closeSheet(false); };
-  window.addEventListener('popstate', function () { closeSheet(true); });
+  window.addEventListener('popstate', function () { if (ignorePop) { ignorePop = false; return; } closeSheet(true); });
+
+
+  /* ---------- Diario: allenamenti, fisioterapia, progressi ---------- */
+  var PLACES = ['Palestra', 'Casa', 'Aperto', 'Campo'];
+  var TYPES = ['Allenamento', 'Fisioterapia', 'Padel', 'Corsa', 'Yoga'];
+  function getLog() { return store.get('log', []); }
+  function localDT(d) { return isoDate(d) + 'T' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+  function chips(name, list, sel) {
+    return '<div class="chips" data-name="' + name + '">' + list.map(function (x) {
+      return '<button type="button" aria-pressed="' + (x === sel) + '" data-v="' + esc(x) + '">' + esc(x) + '</button>';
+    }).join('') + '</div>';
+  }
+  function openLogForm(type, label) {
+    $('sheetTitle').textContent = 'Registra';
+    var lastPlace = store.get('lastPlace', 'Palestra');
+    $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
+      '<label class="f-l">Tipo</label>' + chips('type', TYPES, type) +
+      '<label class="f-l" for="fLabel">Cosa</label><input class="f-in" id="fLabel" value="' + esc(label || '') + '" placeholder="es. Day 1, seduta fisio…">' +
+      '<label class="f-l">Luogo</label>' + chips('place', PLACES, lastPlace) +
+      '<label class="f-l" for="fWhen">Data e ora</label><input class="f-in" id="fWhen" type="datetime-local" value="' + localDT(new Date()) + '">' +
+      '<label class="f-l" for="fDur">Durata (minuti)</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo">' +
+      '<label class="f-l" for="fNote">Note</label><textarea class="f-in" id="fNote" rows="3" placeholder="come è andata, dolori, sensazioni…"></textarea>' +
+      '<button class="btn-big btn-red" id="fSave">Salva</button></div>';
+    showSheet();
+    var body = $('sheetBody');
+    body.querySelectorAll('.chips').forEach(function (c) {
+      c.onclick = function (ev) {
+        var b = ev.target.closest('button'); if (!b) return;
+        c.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+        if (c.dataset.name === 'type' && b.dataset.v === 'Fisioterapia' && !$('fLabel').value.match(/fisio/i)) $('fLabel').value = 'Seduta di fisioterapia';
+      };
+    });
+    $('fSave').onclick = function () {
+      var val = function (n) { var b = body.querySelector('.chips[data-name="' + n + '"] [aria-pressed="true"]'); return b ? b.dataset.v : ''; };
+      var entry = { id: Date.now(), when: $('fWhen').value || localDT(new Date()), type: val('type'), place: val('place'),
+        label: $('fLabel').value.trim(), dur: +$('fDur').value || 0, note: $('fNote').value.trim() };
+      var log = getLog(); log.push(entry);
+      log.sort(function (a, b) { return a.when < b.when ? -1 : 1; });
+      store.set('log', log); store.set('lastPlace', entry.place);
+      closeSheet(false);
+      setTimeout(function () { openDiary('Salvato ✓'); }, 50);
+    };
+  }
+
+  function openDiary(flash) {
+    var log = getLog(), now = new Date();
+    var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
+    var mStart = isoDate(new Date(now.getFullYear(), now.getMonth(), 1)), wStart = isoDate(monday);
+    var inMonth = log.filter(function (x) { return x.when.slice(0, 10) >= mStart; });
+    var inWeek = log.filter(function (x) { return x.when.slice(0, 10) >= wStart; });
+    var count = function (arr, f) { var o = {}; arr.forEach(function (x) { o[x[f]] = (o[x[f]] || 0) + 1; }); return o; };
+    var byPlace = count(inMonth, 'place'), byType = count(inMonth, 'type');
+    var pills = function (o) { var k = Object.keys(o); return k.length ? k.map(function (x) { return '<span class="pill">' + esc(x) + ' <b>' + o[x] + '</b></span>'; }).join('') : '<span class="muted">nessuno</span>'; };
+
+    // Progressi kg: primo e ultimo valore registrato per esercizio
+    var ex = state.program.exercises, prog = [];
+    Object.keys(ex).forEach(function (k) {
+      var hst = store.get('kgh.' + k, []);
+      if (hst.length) prog.push({ name: ex[k].name, first: hst[0], last: hst[hst.length - 1], n: hst.length });
+    });
+    var fmtD = function (d) { var p = d.split('-'); return +p[2] + '/' + +p[1]; };
+
+    var h = '<div class="sheet-inner diary">' + (flash ? '<div class="flash">' + esc(flash) + '</div>' : '') +
+      '<div class="stats"><div class="stat"><b>' + inWeek.length + '</b><small>questa settimana</small></div>' +
+      '<div class="stat"><b>' + inMonth.length + '</b><small>questo mese</small></div>' +
+      '<div class="stat"><b>' + log.length + '</b><small>totale</small></div></div>' +
+      '<div class="d-row"><small>Luogo (mese)</small>' + pills(byPlace) + '</div>' +
+      '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
+      '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button></div>' +
+      '<h3>Progressi carichi</h3>' +
+      (prog.length ? prog.map(function (p) {
+        var diff = (parseFloat(p.last.v) - parseFloat(p.first.v));
+        return '<div class="prog"><span class="p-n">' + esc(p.name) + '</span><span class="p-v">' + esc(p.first.v) + ' → <b>' + esc(p.last.v) + ' kg</b>' +
+          (p.n > 1 && diff ? ' <em class="' + (diff > 0 ? 'up' : 'down') + '">' + (diff > 0 ? '+' : '') + Math.round(diff * 10) / 10 + '</em>' : '') +
+          '</span><small>dal ' + fmtD(p.first.d) + (p.n > 1 ? ' al ' + fmtD(p.last.d) : '') + '</small></div>';
+      }).join('') : '<p class="muted">Scrivi i kg negli esercizi: qui vedrai come crescono nel tempo.</p>') +
+      '<h3>Storico</h3>' +
+      (log.length ? log.slice().reverse().map(function (x) {
+        var d = x.when.split('T');
+        return '<div class="entry"><div class="e-top"><b>' + fmtD(d[0]) + '</b> · ' + esc(d[1] || '') + ' · <span class="e-type">' + esc(x.type) + '</span>' +
+          '<button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕</button></div>' +
+          '<div>' + esc(x.label || '') + (x.place ? ' · ' + esc(x.place) : '') + (x.dur ? ' · ' + x.dur + "'" : '') + '</div>' +
+          (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') + '</div>';
+      }).join('') : '<p class="muted">Ancora nessun allenamento registrato.</p>') +
+      '<button class="btn-ghost-dark" id="dExport">Esporta backup dei dati</button>' +
+      '<p class="muted small">I dati restano su questo dispositivo.</p></div>';
+
+    $('sheetTitle').textContent = 'Diario e progressi';
+    $('sheetBody').innerHTML = h;
+    if (sheet.hidden) showSheet(); else $('sheetBody').scrollTop = 0;
+    $('sheetBody').querySelector('.diary').onclick = function (ev) {
+      var n = ev.target.closest('[data-new]');
+      if (n) { closeSheet(false); setTimeout(function () { openLogForm(n.dataset.new, n.dataset.new === 'Fisioterapia' ? 'Seduta di fisioterapia' : ''); }, 50); return; }
+      var del = ev.target.closest('[data-del]');
+      if (del && confirm('Eliminare questa registrazione?')) {
+        store.set('log', getLog().filter(function (x) { return String(x.id) !== del.dataset.del; }));
+        openDiary();
+      }
+      if (ev.target.id === 'dExport') exportData();
+    };
+  }
+  function exportData() {
+    var data = {};
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k.indexOf('trainaldo.') === 0) data[k] = localStorage.getItem(k); } } catch (e) {}
+    var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'trainaldo-backup-' + isoDate(new Date()) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
 
   /* ---------- Audio, vibrazione, schermo acceso ---------- */
   var actx = null, wakeLock = null;

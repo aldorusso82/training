@@ -5,7 +5,8 @@
    "name": "Leg extension iso monolaterale",
    "img": "Single-Leg_Leg_Extension",
    "equip": "Leg extension",
-   "cue": "Tieni la gamba tesa in alto 20'' e spingi il quadricipite. Una gamba alla volta."
+   "cue": "Tieni la gamba tesa in alto 20'' e spingi il quadricipite. Una gamba alla volta.",
+   "q": "single leg extension isometric hold"
   },
   "plank_tap": {
    "name": "Elbow plank shoulder tap",
@@ -30,13 +31,15 @@
    "name": "DB back lunge",
    "img": "Dumbbell_Rear_Lunge",
    "equip": "Manubri",
-   "kg": true
+   "kg": true,
+   "q": "dumbbell reverse lunge tutorial"
   },
   "australian_pu": {
    "name": "Australian pull up",
    "img": "Inverted_Row",
    "equip": "Bilanciere / Smith",
-   "cue": "Corpo rigido, porta il petto alla sbarra."
+   "cue": "Corpo rigido, porta il petto alla sbarra.",
+   "q": "australian pull up inverted row tutorial"
   },
   "cossack": {
    "name": "Cossack squat",
@@ -65,7 +68,8 @@
   "jump_rope": {
    "name": "Jump rope",
    "img": "Rope_Jumping",
-   "equip": "Corda"
+   "equip": "Corda",
+   "q": "jump rope technique beginner"
   },
   "step_up": {
    "name": "Step up",
@@ -102,7 +106,8 @@
    "name": "Bridge iso monolaterale",
    "img": "Single_Leg_Glute_Bridge",
    "equip": "Corpo libero",
-   "cue": "Bacino alto e fermo 20'' su una gamba."
+   "cue": "Bacino alto e fermo 20'' su una gamba.",
+   "q": "single leg glute bridge hold"
   },
   "pushup_toetap": {
    "name": "Push up to toe tap",
@@ -126,43 +131,50 @@
    "img": "Kettlebell_One-Legged_Deadlift",
    "equip": "Manubrio / KB",
    "kg": true,
-   "cue": "Stacco rumeno su una gamba: anca indietro, schiena neutra."
+   "cue": "Stacco rumeno su una gamba: anca indietro, schiena neutra.",
+   "q": "single leg romanian deadlift tutorial"
   },
   "db_incline": {
    "name": "DB incline bench",
    "img": "Incline_Dumbbell_Press",
    "equip": "Manubri + panca inclinata",
-   "kg": true
+   "kg": true,
+   "q": "incline dumbbell press tutorial"
   },
   "sl_hip_thrust": {
    "name": "SL hip thrust (panca)",
    "img": "Barbell_Hip_Thrust",
    "equip": "Panca",
    "kg": true,
-   "cue": "Foto con bilanciere: tu lo fai su una gamba, schiena appoggiata alla panca."
+   "cue": "Foto con bilanciere: tu lo fai su una gamba, schiena appoggiata alla panca.",
+   "q": "single leg hip thrust bench tutorial"
   },
   "chest_fly": {
    "name": "Chest fly",
    "img": "Dumbbell_Flyes",
    "equip": "Manubri + panca",
-   "kg": true
+   "kg": true,
+   "q": "dumbbell chest fly tutorial"
   },
   "db_military": {
    "name": "DB military press",
    "img": "Dumbbell_One-Arm_Shoulder_Press",
    "equip": "Manubrio",
-   "kg": true
+   "kg": true,
+   "q": "dumbbell shoulder press tutorial"
   },
   "lateral_raise": {
    "name": "Alzate laterali",
    "img": "Side_Lateral_Raise",
    "equip": "Manubri",
-   "kg": true
+   "kg": true,
+   "q": "dumbbell lateral raise tutorial"
   },
   "trx_fallout": {
    "name": "TRX fallout",
    "img": "Suspended_Fallout",
-   "equip": "TRX"
+   "equip": "TRX",
+   "q": "TRX fallout tutorial"
   },
   "trx_squat_row": {
    "name": "TRX squat to row",
@@ -184,7 +196,8 @@
   "trx_incline_pu": {
    "name": "TRX incline push up (mani nel TRX)",
    "img": "Suspended_Push-Up",
-   "equip": "TRX"
+   "equip": "TRX",
+   "q": "TRX push up tutorial"
   },
   "trx_hip_press": {
    "name": "TRX hip press monolaterale",
@@ -210,7 +223,8 @@
    "name": "Front raises",
    "img": "Front_Dumbbell_Raise",
    "equip": "Manubri",
-   "kg": true
+   "kg": true,
+   "q": "dumbbell front raise tutorial"
   },
   "barbell_curl": {
    "name": "Barbell curl",
@@ -244,13 +258,15 @@
    "name": "Bench press",
    "img": "One_Arm_Dumbbell_Bench_Press",
    "equip": "Manubrio + panca",
-   "kg": true
+   "kg": true,
+   "q": "single arm dumbbell bench press"
   },
   "walking_lunge": {
    "name": "Walking lunge",
    "img": "Bodyweight_Walking_Lunge",
    "equip": "Manubri",
-   "kg": true
+   "kg": true,
+   "q": "dumbbell walking lunge tutorial"
   },
   "military_press": {
    "name": "Military press",
@@ -263,12 +279,14 @@
    "img": "Barbell_Curl",
    "equip": "Bilanciere / EZ",
    "kg": true,
-   "cue": "21 = 7 ripetizioni metà bassa + 7 metà alta + 7 complete, senza pausa."
+   "cue": "21 = 7 ripetizioni metà bassa + 7 metà alta + 7 complete, senza pausa.",
+   "q": "barbell 21s biceps curl"
   },
   "leg_raise": {
    "name": "Leg raises",
    "img": "Flat_Bench_Lying_Leg_Raise",
-   "equip": "Panca / tappetino"
+   "equip": "Panca / tappetino",
+   "q": "lying leg raise tutorial"
   },
   "pallof": {
    "name": "Pallof press",
@@ -286,19 +304,22 @@
    "name": "Plank row",
    "img": "Alternating_Renegade_Row",
    "equip": "Manubri / KB",
-   "kg": true
+   "kg": true,
+   "q": "plank row renegade row tutorial"
   },
   "pull_up": {
    "name": "Trazioni",
    "img": "Pullups",
    "equip": "Sbarra",
-   "kg": true
+   "kg": true,
+   "q": "pull up exercise tutorial"
   },
   "russian_twist": {
    "name": "Russian twist",
    "img": "Russian_Twist",
    "equip": "Palla / disco",
-   "kg": true
+   "kg": true,
+   "q": "russian twist tutorial"
   },
   "bulgarian": {
    "name": "Bulgarian squat",
@@ -308,7 +329,8 @@
   },
   "tk_core": {
    "name": "TK x core",
-   "equip": "—"
+   "equip": "—",
+   "q": "tall kneeling core exercise"
   },
   "clean": {
    "name": "Clean",
@@ -330,13 +352,15 @@
   "trx_rollout": {
    "name": "Rollout TRX",
    "img": "Suspended_Fallout",
-   "equip": "TRX"
+   "equip": "TRX",
+   "q": "TRX rollout fallout"
   },
   "lateral_lunge": {
    "name": "Affondi laterali",
    "img": "Barbell_Side_Split_Squat",
    "equip": "Bilanciere / manubri",
-   "kg": true
+   "kg": true,
+   "q": "lateral lunge exercise tutorial"
   },
   "hk_chop": {
    "name": "HK chop",
@@ -364,7 +388,8 @@
    "name": "Snatch",
    "img": "One-Arm_Kettlebell_Snatch",
    "equip": "Kettlebell / manubrio",
-   "kg": true
+   "kg": true,
+   "q": "kettlebell single arm snatch tutorial"
   },
   "run_200": {
    "name": "Run 200 m",
@@ -378,7 +403,8 @@
   "bike_500": {
    "name": "Bike 500 m",
    "img": "Bicycling_Stationary",
-   "equip": "Bike"
+   "equip": "Bike",
+   "q": "stationary bike workout technique"
   },
   "wall_ball": {
    "name": "Wall ball",
@@ -389,7 +415,8 @@
   "row_1km": {
    "name": "Vogatore 1 km",
    "img": "Rowing_Stationary",
-   "equip": "Vogatore"
+   "equip": "Vogatore",
+   "q": "rowing machine technique"
   },
   "trx_squat_jump": {
    "name": "TRX squat jump",
@@ -399,13 +426,15 @@
   "trx_row": {
    "name": "TRX row",
    "img": "Suspended_Row",
-   "equip": "TRX"
+   "equip": "TRX",
+   "q": "TRX row tutorial"
   },
   "trx_lunge": {
    "name": "TRX lunge",
    "img": "Suspended_Split_Squat",
    "equip": "TRX",
-   "cue": "Piede dietro nella maniglia. Cambia gamba a metà tempo."
+   "cue": "Piede dietro nella maniglia. Cambia gamba a metà tempo.",
+   "q": "TRX lunge suspended"
   },
   "trx_mountain": {
    "name": "TRX mountain climber",
@@ -416,43 +445,50 @@
    "name": "Balasana (posizione del bambino)",
    "img": "Childs_Pose",
    "equip": "Tappetino",
-   "cue": "Glutei verso i talloni, fronte a terra, respiro lento nella schiena."
+   "cue": "Glutei verso i talloni, fronte a terra, respiro lento nella schiena.",
+   "q": "child's pose balasana yoga"
   },
   "yoga_cat": {
    "name": "Gatto – mucca",
    "img": "Cat_Stretch",
    "equip": "Tappetino",
-   "cue": "Inspira apri il petto, espira arrotonda la schiena. Movimento lento."
+   "cue": "Inspira apri il petto, espira arrotonda la schiena. Movimento lento.",
+   "q": "cat cow pose yoga"
   },
   "yoga_lunge": {
    "name": "Anjaneyasana (affondo basso)",
    "img": "Kneeling_Hip_Flexor",
    "equip": "Tappetino",
-   "cue": "Ginocchio dietro a terra, bacino in avanti: allunga lo psoas."
+   "cue": "Ginocchio dietro a terra, bacino in avanti: allunga lo psoas.",
+   "q": "low lunge anjaneyasana yoga"
   },
   "yoga_janu": {
    "name": "Janu Sirsasana (piegamento su una gamba)",
    "img": "Seated_Floor_Hamstring_Stretch",
    "equip": "Tappetino",
-   "cue": "Schiena lunga, piegati dall'anca verso la gamba tesa."
+   "cue": "Schiena lunga, piegati dall'anca verso la gamba tesa.",
+   "q": "janu sirsasana head to knee pose yoga"
   },
   "yoga_fig4": {
    "name": "Figura 4 supina",
    "img": "Ankle_On_The_Knee",
    "equip": "Tappetino",
-   "cue": "Caviglia sul ginocchio opposto, porta le gambe verso il petto: gluteo e piriforme."
+   "cue": "Caviglia sul ginocchio opposto, porta le gambe verso il petto: gluteo e piriforme.",
+   "q": "supine figure four stretch yoga"
   },
   "yoga_twist": {
    "name": "Torsione supina",
    "img": "Knee_Across_The_Body",
    "equip": "Tappetino",
-   "cue": "Spalle a terra, ginocchio verso il lato opposto, sguardo dall'altra parte."
+   "cue": "Spalle a terra, ginocchio verso il lato opposto, sguardo dall'altra parte.",
+   "q": "supine spinal twist yoga"
   },
   "yoga_apana": {
    "name": "Apanasana (ginocchia al petto)",
    "img": "Hug_Knees_To_Chest",
    "equip": "Tappetino",
-   "cue": "Abbraccia le ginocchia, rilassa la zona lombare, respiro lungo."
+   "cue": "Abbraccia le ginocchia, rilassa la zona lombare, respiro lungo.",
+   "q": "apanasana knees to chest yoga"
   },
   "yoga_cool_video": {
    "name": "In alternativa: video guidato",
@@ -488,85 +524,99 @@
    "name": "Baddha Konasana (farfalla)",
    "img": "Groin_and_Back_Stretch",
    "equip": "Tappetino",
-   "cue": "Piante dei piedi unite, schiena lunga poi piegati in avanti."
+   "cue": "Piante dei piedi unite, schiena lunga poi piegati in avanti.",
+   "q": "baddha konasana butterfly pose yoga"
   },
   "yoga_lizard": {
    "name": "Lucertola (Utthan Pristhasana)",
    "img": "Worlds_Greatest_Stretch",
    "equip": "Tappetino",
-   "cue": "Affondo profondo, mani a terra dentro il piede avanti, anca che scende."
+   "cue": "Affondo profondo, mani a terra dentro il piede avanti, anca che scende.",
+   "q": "lizard pose yoga"
   },
   "yoga_pigeon": {
    "name": "Piccione (variante)",
    "img": "IT_Band_and_Glute_Stretch",
    "equip": "Tappetino",
-   "cue": "Gamba avanti piegata, gamba dietro distesa: gluteo e fascia laterale."
+   "cue": "Gamba avanti piegata, gamba dietro distesa: gluteo e fascia laterale.",
+   "q": "pigeon pose yoga"
   },
   "yoga_straddle": {
    "name": "Upavistha Konasana (gambe divaricate)",
    "img": "The_Straddle",
    "equip": "Tappetino",
-   "cue": "Gambe larghe, piegati dall'anca con la schiena lunga."
+   "cue": "Gambe larghe, piegati dall'anca con la schiena lunga.",
+   "q": "upavistha konasana wide legged forward fold"
   },
   "yoga_sphinx": {
    "name": "Sfinge / Cobra",
    "img": "Lower_Back_Curl",
    "equip": "Tappetino",
-   "cue": "Pube a terra, spingi il petto avanti, spalle lontane dalle orecchie."
+   "cue": "Pube a terra, spingi il petto avanti, spalle lontane dalle orecchie.",
+   "q": "sphinx pose cobra yoga"
   },
   "yoga_camel": {
    "name": "Cammello facilitato (Ustrasana)",
    "img": "Looking_At_Ceiling",
    "equip": "Tappetino",
-   "cue": "In ginocchio, mani sui talloni, apri il petto verso il soffitto. Collo morbido."
+   "cue": "In ginocchio, mani sui talloni, apri il petto verso il soffitto. Collo morbido.",
+   "q": "camel pose ustrasana beginner"
   },
   "yoga_side_seated": {
    "name": "Allungamento laterale seduto",
    "img": "Seated_Overhead_Stretch",
    "equip": "Tappetino",
-   "cue": "Braccio sopra la testa verso la gamba opposta, allunga tutto il fianco."
+   "cue": "Braccio sopra la testa verso la gamba opposta, allunga tutto il fianco.",
+   "q": "seated side bend stretch yoga"
   },
   "yoga_seated_twist": {
    "name": "Ardha Matsyendrasana (torsione seduta)",
    "img": "Dancers_Stretch",
    "equip": "Tappetino",
-   "cue": "Schiena alta, ruota dal torace, gomito contro il ginocchio."
+   "cue": "Schiena alta, ruota dal torace, gomito contro il ginocchio.",
+   "q": "ardha matsyendrasana seated twist"
   },
   "yoga_shoulder": {
    "name": "Spalla incrociata",
    "img": "Shoulder_Stretch",
    "equip": "In piedi",
-   "cue": "Braccio teso davanti al petto, l'altro braccio lo avvicina. Spalla bassa."
+   "cue": "Braccio teso davanti al petto, l'altro braccio lo avvicina. Spalla bassa.",
+   "q": "cross body shoulder stretch"
   },
   "yoga_uttanasana": {
    "name": "Uttanasana (piegamento in avanti)",
    "img": "Standing_Toe_Touches",
    "equip": "In piedi",
-   "cue": "Ginocchia morbide, lascia pendere testa e braccia."
+   "cue": "Ginocchia morbide, lascia pendere testa e braccia.",
+   "q": "uttanasana standing forward fold"
   },
   "yoga_pyramid": {
    "name": "Piramide (Parsvottanasana)",
    "img": "Runners_Stretch",
    "equip": "In piedi",
-   "cue": "Gamba avanti tesa, bacino dritto, petto verso la coscia."
+   "cue": "Gamba avanti tesa, bacino dritto, petto verso la coscia.",
+   "q": "pyramid pose parsvottanasana"
   },
   "yoga_calf": {
    "name": "Polpaccio al muro",
    "img": "Calf_Stretch_Hands_Against_Wall",
    "equip": "Muro",
-   "cue": "Tallone dietro a terra, ginocchio dietro teso."
+   "cue": "Tallone dietro a terra, ginocchio dietro teso.",
+   "q": "calf stretch wall"
   },
   "yoga_quad_side": {
    "name": "Quadricipite sul fianco",
    "img": "On_Your_Side_Quad_Stretch",
    "equip": "Tappetino",
-   "cue": "Sul fianco, tallone verso il gluteo, ginocchia unite, bacino avanti."
+   "cue": "Sul fianco, tallone verso il gluteo, ginocchia unite, bacino avanti.",
+   "q": "side lying quad stretch"
   },
   "yoga_supta": {
    "name": "Supta Padangusthasana (gamba in alto)",
    "img": "Leg-Up_Hamstring_Stretch",
    "equip": "Tappetino",
-   "cue": "Sdraiato, gamba tesa verso il soffitto, l'altra distesa a terra."
+   "cue": "Sdraiato, gamba tesa verso il soffitto, l'altra distesa a terra.",
+   "q": "supta padangusthasana reclined hand to big toe"
   },
   "yoga_cool_lower": {
    "name": "In alternativa: video guidato",
@@ -712,7 +762,8 @@
         }
        ]
       }
-     ]
+     ],
+     "desc": "Forza gambe (squat, affondi, cossack) in superset con tirate (chin up, rematori, lat). Circa 50'."
     },
     {
      "id": "d2",
@@ -783,7 +834,8 @@
         }
        ]
       }
-     ]
+     ],
+     "desc": "Lavoro metabolico: step up e box jump alternati alla corsa, chiusura braccia. Circa 45'."
     },
     {
      "id": "d3",
@@ -880,7 +932,8 @@
           }
          ]
         }
-       ]
+       ],
+       "desc": "Stacco e spinte con manubri, lavoro monolaterale per anche e glutei, chiusura spalle. Circa 55'."
       },
       {
        "id": "trx",
@@ -978,7 +1031,8 @@
          "label": "Finisher opzionale",
          "text": "Blazepod dopo il blocco D."
         }
-       ]
+       ],
+       "desc": "Stessa struttura al TRX: squat, spinte, hip press e spalle. Progressione con l'angolo del corpo."
       }
      ]
     },
@@ -1046,7 +1100,8 @@
        "label": "Alternativa Day 4",
        "text": "Tennis, running o padel 60'."
       }
-     ]
+     ],
+     "desc": "Intervalli di corsa 30' a passo 5'20\"–5'30\"/km, poi triset spalle e braccia."
     }
    ]
   },
@@ -1148,7 +1203,8 @@
         }
        ]
       }
-     ]
+     ],
+     "desc": "Forza base: squat e panca, poi affondi camminati, military press, petto, spalle e core. Circa 55'."
     },
     {
      "id": "d2",
@@ -1246,7 +1302,8 @@
         }
        ]
       }
-     ]
+     ],
+     "desc": "Catena posteriore e core: stacco, step up, trazioni, con esercizi di stabilità del tronco. Circa 55'."
     },
     {
      "id": "d4",
@@ -1262,7 +1319,8 @@
          "label": "Attività",
          "text": "Padel o running."
         }
-       ]
+       ],
+       "desc": "Giornata di sport: padel o corsa, 60' a sensazione."
       },
       {
        "id": "hiit",
@@ -1307,7 +1365,8 @@
           }
          ]
         }
-       ]
+       ],
+       "desc": "Circuito a tempo al TRX, tutto il corpo: 40'' lavoro / 20'' recupero, 3 giri. Circa 25' con mobilità."
       },
       {
        "id": "cond",
@@ -1375,7 +1434,8 @@
           }
          ]
         }
-       ]
+       ],
+       "desc": "Conditioning in palestra: esercizi esplosivi alternati a corsa, bike e vogatore. Circa 35'."
       }
      ]
     }
@@ -1468,7 +1528,8 @@
         }
        ]
       }
-     ]
+     ],
+     "desc": "Potenza e unilaterale: bulgarian squat, clean, atomic push up, panca inclinata, core al TRX. Circa 55'."
     },
     {
      "id": "d2",
@@ -1557,7 +1618,8 @@
         }
        ]
       }
-     ]
+     ],
+     "desc": "Lavoro laterale e rotazionale (affondi laterali, chop), stacco monopodalico e tirate. Circa 55'."
     },
     {
      "id": "d4",
@@ -1573,7 +1635,8 @@
          "label": "Attività",
          "text": "Padel o running."
         }
-       ]
+       ],
+       "desc": "Giornata di sport: padel o corsa, 60' a sensazione."
       },
       {
        "id": "hiit",
@@ -1618,7 +1681,8 @@
           }
          ]
         }
-       ]
+       ],
+       "desc": "Circuito a tempo al TRX, tutto il corpo: 40'' lavoro / 20'' recupero, 3 giri. Circa 25' con mobilità."
       },
       {
        "id": "cond",
@@ -1686,7 +1750,8 @@
           }
          ]
         }
-       ]
+       ],
+       "desc": "Conditioning in palestra: esercizi esplosivi alternati a corsa, bike e vogatore. Circa 35'."
       }
      ]
     }
