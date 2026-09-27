@@ -71,7 +71,10 @@ Day 4 — Intervals + Arms
 - Aldo = link base (https://aldorusso82.github.io/training/), dati in data/program.json.
 - Altri atleti: file data/athletes/<id>.json con {name, plans[]} (stessa struttura dei plans; esercizi, yoga e defaticamento arrivano da program.json). Link: …/training/?atleta=<id>. L'atleta resta ricordato sul dispositivo; ?atleta=aldo torna ad Aldo.
 - Diario e kg di ogni atleta sono separati in localStorage (prefisso trainaldo.@<id>.). Il manifest NON ha start_url, così l'icona sulla Home mantiene il link personale.
-- Atleta di prova: test (scheda dimostrativa). Viviana: in sviluppo sul branch test-viviana.
+- Atleti: test (scheda dimostrativa), viviana (programma 6–7 settimane dal suo PDF). Elenco in data/athletes/index.json (serve al selettore atleta).
+- Un file atleta può avere `exercises` propri (chiavi con prefisso, es. v_), `yoga:false`, `cooldown:false`, e nel piano `note` (regole mostrate in ogni giorno).
+- Selettore atleta nel menu Scheda: visibile solo sul dispositivo di Aldo (flag localStorage trainaldo-coach, impostato aprendo ?atleta=aldo o senza parametro).
+- Tipi di sezione in più: esercizio a tempo (`time` sull'item → pulsante ▶ timer di lavoro), `rest: 0` = senza recupero, `emom` (minutes + items; `editable` = reps modificabili), `run` (minutes, pace, note), `timer` (durata impostabile), giorno `optional`.
 
 ## Funzioni
 - Tab per i 4 giorni; per ogni blocco: lettera, tipo (superset/circuito/triset), serie, recupero.

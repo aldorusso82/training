@@ -100,7 +100,7 @@ img { display: block; max-width: 100%; }
   display: grid; place-items: center;
 }
 .block.mob .letter { background: var(--red-soft); color: var(--red); font-size: 15px; }
-.letter.sm { font-size: 15px; }
+.letter.sm { font-size: 13px; letter-spacing: -.02em; }
 .block-meta { flex: 1; min-width: 0; }
 .block-kind { font-weight: 800; font-size: 18px; }
 .block-sub { color: var(--ink-2); font-size: 15px; }
@@ -302,3 +302,17 @@ img { display: block; max-width: 100%; }
 .muted { color: var(--ink-2); }
 .small { font-size: 13px; }
 .btn-ghost-dark { width: 100%; min-height: 48px; margin-top: 18px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; font-weight: 700; }
+
+/* ---------- Superserie, esercizi a tempo, EMOM, corsa ---------- */
+.block-head { flex-wrap: wrap; }
+.flow { flex-basis: 100%; font-size: 15px; font-weight: 700; color: var(--red); background: var(--red-soft); border-radius: 10px; padding: 6px 10px; }
+.flow.info { color: var(--ink); background: #fff7e8; font-weight: 500; }
+.btn-work { flex: none; min-width: 76px; min-height: 48px; border: 0; border-radius: 12px; background: var(--red); color: #fff; font-weight: 800; font-size: 17px; }
+.btn-work:active { background: var(--red-dark); }
+.opt { display: inline-block; vertical-align: middle; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: #fff; background: #4f5d3e; border-radius: 7px; padding: 3px 8px; }
+.tab.opt-tab { font-style: italic; }
+.solo { display: flex; align-items: center; gap: 14px; padding: 12px 14px; font-size: 16px; }
+.solo-big { font-size: 40px; font-weight: 900; color: var(--red); min-width: 70px; text-align: center; }
+.solo-in { font-weight: 700; white-space: nowrap; }
+.solo-in input { width: 70px; height: 44px; margin: 0 6px; border: 1.5px solid var(--line); border-radius: 10px; text-align: center; font: 700 18px/1 inherit; font-family: inherit; }
+.coach-h { font-size: 16px; margin: 22px 0 8px; color: var(--ink-2); }

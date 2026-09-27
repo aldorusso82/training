@@ -1,0 +1,517 @@
+{
+ "name": "Viviana",
+ "yoga": false,
+ "cooldown": false,
+ "exercises": {
+  "v_frog": {
+   "name": "Frog stretch",
+   "video": "NHEPdNlHF2c",
+   "equip": "Tappetino"
+  },
+  "v_hip_airplane": {
+   "name": "Hip airplane",
+   "video": "9svtEV4vkp0",
+   "equip": "Corpo libero"
+  },
+  "v_crunch": {
+   "name": "Crunch",
+   "img": "Crunches",
+   "equip": "Tappetino"
+  },
+  "v_plank_leg": {
+   "name": "Plank con elevazione gamba alternata",
+   "video": "_EyYoPV6lXA",
+   "equip": "Tappetino"
+  },
+  "v_mountain": {
+   "name": "Mountain climber",
+   "img": "Mountain_Climbers",
+   "equip": "Corpo libero"
+  },
+  "v_db_press": {
+   "name": "Press con manubri in piedi",
+   "img": "Standing_Dumbbell_Press",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "v_pushdown": {
+   "name": "Push down alla poliercolina",
+   "img": "Triceps_Pushdown",
+   "equip": "Poliercolina",
+   "kg": true
+  },
+  "v_jj": {
+   "name": "Jumping jack",
+   "video": "aknTmegKiIg",
+   "equip": "Corpo libero"
+  },
+  "v_bw_squat": {
+   "name": "Squat a corpo libero",
+   "img": "Bodyweight_Squat",
+   "equip": "Corpo libero"
+  },
+  "v_bosu_squat": {
+   "name": "Squat isometrico su bosu",
+   "video": "yk3YJhihsDs",
+   "equip": "Bosu"
+  },
+  "v_floor_press": {
+   "name": "Floor press con manubri",
+   "img": "Dumbbell_Floor_Press",
+   "equip": "Manubri",
+   "kg": true,
+   "cue": "Bacino in estensione e glutei in isometria per tutta la serie."
+  },
+  "v_burpee": {
+   "name": "Burpees",
+   "video": "G2hv_NYhM-A",
+   "equip": "Corpo libero"
+  },
+  "v_squat_press": {
+   "name": "Squat e press con manubrio",
+   "video": "C3U5P8iubaY",
+   "equip": "Manubrio",
+   "kg": true
+  },
+  "v_cable_row_sup": {
+   "name": "Rematore presa supina ai cavi bassi",
+   "video": "Uj19fFUMbIs",
+   "equip": "Poliercolina",
+   "kg": true
+  },
+  "v_cable_curl": {
+   "name": "Curl ai cavi bassi",
+   "img": "Standing_Biceps_Cable_Curl",
+   "equip": "Poliercolina",
+   "kg": true
+  },
+  "v_arm_circles": {
+   "name": "Circonduzione braccia",
+   "img": "Arm_Circles",
+   "equip": "Corpo libero"
+  },
+  "v_aperture": {
+   "name": "Aperture",
+   "equip": "—",
+   "q": "arm openers chest opener warm up"
+  },
+  "v_rdl_db": {
+   "name": "Stacchi RDL con manubri",
+   "img": "Stiff-Legged_Dumbbell_Deadlift",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "v_db_row": {
+   "name": "Rematore con manubri in piedi",
+   "img": "Bent_Over_Two-Dumbbell_Row",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "v_single_under": {
+   "name": "Single under (corda)",
+   "img": "Rope_Jumping",
+   "equip": "Corda",
+   "cue": "In alternativa: jumping jack."
+  },
+  "v_plank": {
+   "name": "Plank",
+   "img": "Plank",
+   "equip": "Tappetino"
+  },
+  "v_lateral": {
+   "name": "Alzate laterali con manubri",
+   "img": "Side_Lateral_Raise",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "v_db_curl": {
+   "name": "Curl con manubri",
+   "img": "Dumbbell_Bicep_Curl",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "v_butterfly_situp": {
+   "name": "Butterfly sit up",
+   "video": "Qgb_8ySniQY",
+   "equip": "Tappetino"
+  },
+  "v_step_up": {
+   "name": "Step up su due step",
+   "img": "Dumbbell_Step_Ups",
+   "equip": "Step"
+  },
+  "v_back_lunge": {
+   "name": "Affondi posteriori con manubrio",
+   "img": "Dumbbell_Rear_Lunge",
+   "equip": "Manubrio",
+   "kg": true
+  }
+ },
+ "plans": [
+  {
+   "id": "v-6sett",
+   "name": "Programma 6–7 settimane",
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "note": "4 giorni obbligatori + 1 facoltativo, con almeno un giorno di riposo tra le sedute quando possibile. La corsa si fa SEMPRE dopo l'allenamento.",
+   "days": [
+    {
+     "id": "d1",
+     "tab": "Day 1",
+     "title": "",
+     "desc": "Mobilità, core, gambe e spinta, poi finale cardio a tempo. Corsa alla fine.",
+     "sections": [
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 1,
+       "rest": 0,
+       "items": [
+        {
+         "code": "A1",
+         "ex": "v_frog",
+         "reps": "15"
+        },
+        {
+         "code": "A2",
+         "ex": "v_hip_airplane",
+         "reps": "10 per coscia"
+        }
+       ],
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 2,
+       "rest": 30,
+       "items": [
+        {
+         "code": "B1",
+         "ex": "v_crunch",
+         "reps": "15"
+        },
+        {
+         "code": "B2",
+         "ex": "v_plank_leg",
+         "reps": "16 (alterna sx/dx)"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "rest": 60,
+       "items": [
+        {
+         "code": "C1",
+         "ex": "v_back_lunge",
+         "reps": "16 (alterna sx/dx)"
+        },
+        {
+         "code": "C2",
+         "ex": "v_mountain",
+         "reps": "20 (alterna sx/dx)"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 3,
+       "rest": 60,
+       "items": [
+        {
+         "code": "D1",
+         "ex": "v_db_press",
+         "reps": "10"
+        },
+        {
+         "code": "D2",
+         "ex": "v_pushdown",
+         "reps": "10"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "E",
+       "sets": 3,
+       "rest": 0,
+       "items": [
+        {
+         "code": "E1",
+         "ex": "v_jj",
+         "time": 60
+        },
+        {
+         "code": "E2",
+         "ex": "v_bw_squat",
+         "time": 60
+        }
+       ]
+      },
+      {
+       "type": "run",
+       "label": "Corsa 30'",
+       "sub": "Sempre DOPO l'allenamento, mai prima",
+       "minutes": 30,
+       "pace": "8'30\"/km",
+       "note": "Ritmo facile, zona 2: devi riuscire a parlare."
+      }
+     ]
+    },
+    {
+     "id": "d2",
+     "tab": "Day 2",
+     "title": "",
+     "desc": "Gambe in isometria, spinta, esercizio completo e tirata ai cavi. Corsa alla fine.",
+     "sections": [
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 2,
+       "rest": 20,
+       "items": [
+        {
+         "code": "A",
+         "ex": "v_bosu_squat",
+         "time": 40
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 3,
+       "rest": 60,
+       "items": [
+        {
+         "code": "B1",
+         "ex": "v_floor_press",
+         "reps": "10"
+        },
+        {
+         "code": "B2",
+         "ex": "v_burpee",
+         "reps": "8"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "rest": 60,
+       "items": [
+        {
+         "code": "C",
+         "ex": "v_squat_press",
+         "time": 60
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 3,
+       "rest": 60,
+       "items": [
+        {
+         "code": "D1",
+         "ex": "v_cable_row_sup",
+         "reps": "10"
+        },
+        {
+         "code": "D2",
+         "ex": "v_cable_curl",
+         "reps": "10"
+        }
+       ]
+      },
+      {
+       "type": "run",
+       "label": "Corsa 30'",
+       "sub": "Sempre DOPO l'allenamento, mai prima",
+       "minutes": 30,
+       "pace": "8'30\"/km",
+       "note": "Ritmo facile, zona 2: devi riuscire a parlare."
+      }
+     ]
+    },
+    {
+     "id": "d3",
+     "tab": "Day 3",
+     "title": "",
+     "desc": "Mobilità spalle, catena posteriore, cardio con la corda, braccia. Corsa alla fine.",
+     "sections": [
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 2,
+       "rest": 20,
+       "items": [
+        {
+         "code": "A1",
+         "ex": "v_arm_circles",
+         "reps": "10"
+        },
+        {
+         "code": "A2",
+         "ex": "v_aperture",
+         "reps": "10"
+        }
+       ],
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 3,
+       "rest": 60,
+       "items": [
+        {
+         "code": "B1",
+         "ex": "v_rdl_db",
+         "reps": "12"
+        },
+        {
+         "code": "B2",
+         "ex": "v_db_row",
+         "reps": "10"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 5,
+       "rest": 0,
+       "items": [
+        {
+         "code": "C1",
+         "ex": "v_single_under",
+         "time": 30
+        },
+        {
+         "code": "C2",
+         "ex": "v_plank",
+         "time": 30
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 3,
+       "rest": 60,
+       "items": [
+        {
+         "code": "D1",
+         "ex": "v_lateral",
+         "reps": "10"
+        },
+        {
+         "code": "D2",
+         "ex": "v_db_curl",
+         "reps": "10"
+        }
+       ]
+      },
+      {
+       "type": "run",
+       "label": "Corsa 30'",
+       "sub": "Sempre DOPO l'allenamento, mai prima",
+       "minutes": 30,
+       "pace": "8'30\"/km",
+       "note": "Ritmo facile, zona 2: devi riuscire a parlare."
+      }
+     ]
+    },
+    {
+     "id": "d4",
+     "tab": "Day 4",
+     "title": "EMOM 30'",
+     "desc": "Circuito EMOM di 30 minuti, poi la corsa.",
+     "sections": [
+      {
+       "type": "emom",
+       "label": "EMOM 30'",
+       "minutes": 30,
+       "info": "Ogni minuto esegui le ripetizioni previste; il tempo che avanza nel minuto è recupero. Poi passi all'esercizio successivo. Le 4 stazioni ruotano per 30 minuti.",
+       "items": [
+        {
+         "code": "Min 1",
+         "ex": "v_jj",
+         "reps": "30"
+        },
+        {
+         "code": "Min 2",
+         "ex": "v_bw_squat",
+         "reps": "20"
+        },
+        {
+         "code": "Min 3",
+         "ex": "v_butterfly_situp",
+         "editable": true
+        },
+        {
+         "code": "Min 4",
+         "ex": "v_step_up",
+         "reps": "40'' (alterna sx/dx)"
+        }
+       ]
+      },
+      {
+       "type": "run",
+       "label": "Corsa 30'",
+       "sub": "Sempre DOPO l'allenamento, mai prima",
+       "minutes": 30,
+       "pace": "8'30\"/km",
+       "note": "Ritmo facile, zona 2: devi riuscire a parlare."
+      }
+     ]
+    },
+    {
+     "id": "d5",
+     "tab": "Day 5",
+     "title": "",
+     "optional": true,
+     "desc": "Giornata facoltativa: yoga libero e, se vuoi, una corsa facile.",
+     "sections": [
+      {
+       "type": "timer",
+       "id": "v_yoga",
+       "label": "Yoga libero",
+       "sub": "Sessione a scelta",
+       "minutes": 30,
+       "note": "Scegli tu la pratica (anche da Nike Training Club)."
+      },
+      {
+       "type": "run",
+       "label": "Corsa facile 30'",
+       "sub": "Facoltativa, stesso ritmo di riferimento",
+       "minutes": 30,
+       "pace": "8'30\"/km",
+       "note": "Ritmo facile, zona 2: devi riuscire a parlare.",
+       "optional": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.5.0';
+  var APP_VERSION = '1.6.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -15,6 +15,7 @@
     var m = location.search.match(/[?&]atleta=([a-z0-9-]+)/i);
     var id = m ? m[1].toLowerCase() : (lsGet('trainaldo-athlete') || 'aldo');
     if (m) lsSet('trainaldo-athlete', id);
+    if (id === 'aldo') lsSet('trainaldo-coach', '1');
     return id;
   })();
   // Aldo mantiene le chiavi di sempre; gli altri atleti hanno uno spazio separato
@@ -57,6 +58,7 @@
         .then(function (a) {
           p.plans = a.plans;
           p.athleteName = a.name;
+          if (a.exercises) for (var k in a.exercises) p.exercises[k] = a.exercises[k];
           if (a.yoga === false) delete p.yoga;
           if (a.cooldown === false) delete p.cooldowns;
           return p;
@@ -64,7 +66,12 @@
     })
     .then(function (p) {
       state.program = p;
-      if (p.athleteName) { $('athlete').textContent = 'Atleta: ' + p.athleteName; $('athlete').hidden = false; document.title = 'TRAIN · ' + p.athleteName; }
+      if (p.athleteName) {
+        $('athlete').textContent = 'Atleta: ' + p.athleteName; $('athlete').hidden = false;
+        document.title = 'TRAIN.' + p.athleteName.toUpperCase();
+        document.querySelector('.brand').innerHTML = 'TRAIN<span>.</span>' + esc(p.athleteName.toUpperCase());
+        var mt = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (mt) mt.content = document.title;
+      }
       state.variant = store.get('variant', {});
       $('version').textContent = 'v' + APP_VERSION + ' · schede aggiornate al ' + (p.updated || '—');
       selectPlan(pickPlan(), false);
@@ -127,8 +134,18 @@
         '<span class="plan-n">' + esc(pl.name) + '</span>' +
         (cur && cur.id === pl.id ? '<span class="plan-badge">questo mese</span>' : '') +
         (pl.id === state.plan.id ? '<span class="plan-check">✓</span>' : '') + '</button>';
-    }).join('') + '<p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p></div>';
+    }).join('') + '<p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p>' +
+      (lsGet('trainaldo-coach') ? '<h3 class="coach-h">Atleta (solo per l\'allenatore)</h3><div class="plan-list" id="athList"></div>' : '') + '</div>';
     showSheet();
+    if (lsGet('trainaldo-coach')) {
+      fetch('data/athletes/index.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (list) {
+        var el = $('athList'); if (!el) return;
+        el.innerHTML = [{ id: 'aldo', name: 'Aldo' }].concat(list).map(function (a) {
+          return '<button class="plan-item' + (a.id === ATHLETE ? ' on' : '') + '" data-ath="' + esc(a.id) + '"><span class="plan-n">' + esc(a.name) + '</span>' + (a.id === ATHLETE ? '<span class="plan-check">✓</span>' : '') + '</button>';
+        }).join('');
+        el.onclick = function (ev) { var b = ev.target.closest('[data-ath]'); if (b) location.href = location.pathname + '?atleta=' + b.dataset.ath; };
+      }).catch(function () {});
+    }
     $('sheetBody').querySelector('.plan-list').onclick = function (e) {
       var b = e.target.closest('.plan-item'); if (!b) return;
       var pl = state.program.plans.filter(function (x) { return x.id === b.dataset.plan; })[0];
@@ -142,7 +159,7 @@
   function renderTabs() {
     var nav = $('tabs');
     nav.innerHTML = state.days.map(function (d, i) {
-      return '<button class="tab" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + esc(d.tab) + '</button>';
+      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + esc(d.tab) + '</button>';
     }).join('');
     nav.onclick = function (e) {
       var b = e.target.closest('.tab'); if (!b) return;
@@ -214,7 +231,9 @@
   function renderDay() {
     var day = state.days[state.day];
     var cur = currentSections(day);
-    var h = '<h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') + '</h1>';
+    var h = '<h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
+      (day.optional ? ' <span class="opt">opzionale</span>' : '') + '</h1>';
+    if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
     if (day.sameAs) h += '<div class="note-box"><b>Uguale</b> alla scheda ' + esc(day.sameAs) + '.</div>';
 
     if (day.variants) {
@@ -231,6 +250,8 @@
         h += '<div class="note-box"><b>' + esc(sec.label) + '</b>' + (sec.text ? ' · ' + esc(sec.text) : '') + '</div>';
       } else if (sec.type === 'intervals') {
         h += renderIntervals(sec, si);
+      } else if (sec.type === 'run' || sec.type === 'timer') {
+        h += renderSolo(sec, si);
       } else {
         h += renderBlock(sec, si);
       }
@@ -256,38 +277,52 @@
   function renderBlock(sec, si) {
     var ex = state.program.exercises;
     var mob = sec.type === 'mobility' || sec.type === 'list';
-    var guided = sec.type === 'hiit' || sec.type === 'cooldown';
-    var badge = sec.badge || (sec.type === 'hiit' ? 'HIIT' : sec.type === 'cooldown' ? 'YOGA' : 'MOB');
+    var guided = sec.type === 'hiit' || sec.type === 'cooldown' || sec.type === 'emom';
+    var badge = sec.badge || (sec.type === 'hiit' ? 'HIIT' : sec.type === 'cooldown' ? 'YOGA' : sec.type === 'emom' ? 'EMOM' : 'MOB');
     var sub = sec.sub || (sec.type === 'mobility' ? 'Attivazione' : '');
     if (sec.type === 'hiit') {
       var tot = sec.rounds * (sec.items.length * sec.work + (sec.items.length - 1) * sec.rest) + (sec.rounds - 1) * (sec.roundRest || 0);
       sub = fmtRest(sec.work) + ' lavoro · ' + fmtRest(sec.rest) + ' recupero · ' + sec.rounds + ' giri · circa ' + Math.round(tot / 60) + "'";
     }
+    if (sec.type === 'emom') {
+      var n = sec.items.length, full = Math.floor(sec.minutes / n), extra = sec.minutes % n;
+      sub = sec.minutes + "' · " + n + ' stazioni · ' + full + ' giri completi' + (extra ? ' + ' + extra + ' minut' + (extra > 1 ? 'i' : 'o') : '');
+    }
     var head = (mob || guided)
       ? '<div class="letter sm">' + esc(badge) + '</div><div class="block-meta"><div class="block-kind">' + esc(sec.label) + '</div><div class="block-sub">' + esc(sub) + '</div></div>'
-      : '<div class="letter">' + esc(sec.letter) + '</div><div class="block-meta"><div class="block-kind">' + kindOf(sec) + ' ×' + sec.sets + '</div><div class="block-sub">' + sec.sets + ' serie' + (sec.rest ? ' · recupero ' + fmtRest(sec.rest) : '') + '</div></div>';
+      : '<div class="letter">' + esc(sec.letter) + '</div><div class="block-meta"><div class="block-kind">' + kindOf(sec) + ' ×' + sec.sets + '</div><div class="block-sub">' + sec.sets + ' serie' + (sec.rest ? ' · recupero ' + fmtRest(sec.rest) : sec.rest === 0 ? ' · senza recupero' : '') + '</div></div>';
+    if (sec.type === 'block' && sec.items.length > 1) {
+      head += '<div class="flow">' + sec.items.map(function (it) { return esc(it.code || ''); }).join(' → subito ') +
+        (sec.rest ? ' → recupero ' + fmtRest(sec.rest) : ' → riparti') + '</div>';
+    }
+    if (sec.info) head += '<div class="flow info">' + esc(sec.info) + '</div>';
 
     var rows = sec.items.map(function (it) {
       var e = ex[it.ex] || { name: it.ex };
       var name = it.name || e.name;
-      var reps = it.reps || (sec.type === 'hiit' ? fmtRest(sec.work) : it.sec ? fmtRest(it.sec) + ((it.sides || 1) > 1 ? ' per lato' : '') : e.dur || '');
+      var reps = it.reps || (it.time ? it.time + "''" : sec.type === 'hiit' ? fmtRest(sec.work) : it.sec ? fmtRest(it.sec) + ((it.sides || 1) > 1 ? ' per lato' : '') : e.dur || '');
       var hasMedia = e.equip !== 'Corsa';
       var thumb = e.img ? '<img src="' + photoSrc(e, 0) + '" alt="" loading="lazy">'
         : e.video ? '<img src="' + ytThumb(e.video) + '" alt="" loading="lazy">'
         : e.equip === 'Corsa' ? 'RUN' : '';
-      var kg = e.kg
+      var side = it.time
+        ? '<button class="btn-work" data-work="' + it.time + '" data-label="' + esc(name) + '">▶ ' + it.time + "''</button>"
+        : it.editable
+        ? '<div class="kg"><input type="text" inputmode="numeric" enterkeyhint="done" data-repsin="' + esc(it.ex) + '" value="' + esc(store.get('reps.' + it.ex, '')) + '" placeholder="?" aria-label="Ripetizioni ' + esc(name) + '"><label>reps</label></div>'
+        : '';
+      var kg = side ? side : e.kg
         ? '<div class="kg"><input type="text" inputmode="decimal" enterkeyhint="done" data-kg="' + esc(it.ex) + '" value="' + esc(store.get('kg.' + it.ex, '')) + '" placeholder="–" aria-label="Kg ' + esc(name) + '"><label>kg</label></div>'
         : '';
       return '<div class="ex' + (hasMedia ? '' : ' static') + '" data-ex="' + esc(it.ex) + '" data-reps="' + esc(reps) + '" data-name="' + esc(name) + '"' + (hasMedia ? ' role="button" tabindex="0"' : '') + '>' +
         '<div class="thumb">' + thumb + '</div>' +
         '<div class="ex-main">' + (it.code ? '<div class="ex-code">' + esc(it.code) + '</div>' : '') +
         '<div class="ex-name">' + esc(name) + '</div>' +
-        '<div class="ex-info"><b>' + esc(reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
+        '<div class="ex-info"><b>' + esc(it.editable && !reps ? 'reps da definire' : reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
     }).join('');
 
     var lbl = 'Recupero blocco ' + esc(sec.letter);
-    var rest = mob ? '' : guided
-      ? '<div class="rest"><div class="rest-txt">Timer guidato<span>' + (sec.type === 'hiit' ? 'lavoro / recupero con segnale' : 'cambio posizione con segnale') + '</span></div>' +
+    var rest = mob || sec.rest === 0 ? '' : guided
+      ? '<div class="rest"><div class="rest-txt">Timer guidato<span>' + (sec.type === 'hiit' ? 'lavoro / recupero con segnale' : sec.type === 'emom' ? 'nuovo minuto con segnale' : 'cambio posizione con segnale') + '</span></div>' +
         '<button class="btn-start" data-guided="' + si + '">Avvia</button></div>'
       : sec.rest
       ? '<div class="rest"><div class="rest-txt">Recupero ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
@@ -296,6 +331,18 @@
         [60, 75, 90, 120].map(function (r) { return '<button class="btn-start chip" data-rest="' + r + '" data-label="' + lbl + '">' + fmtRest(r) + '</button>'; }).join('') + '</div></div>';
 
     return '<section class="block' + (mob ? ' mob' : '') + (sec.type === 'cooldown' ? ' yoga' : '') + '"><div class="block-head">' + head + '</div>' + rows + rest + '</section>';
+  }
+
+  // Card singola con timer: corsa (durata fissa) o timer libero (durata impostabile)
+  function renderSolo(sec, si) {
+    var run = sec.type === 'run';
+    var body = run
+      ? '<div class="solo"><div class="solo-big">' + sec.minutes + "'</div><div><b>Ritmo " + esc(sec.pace) + '</b><br>' + esc(sec.note || '') + '</div></div>'
+      : '<div class="solo"><label class="solo-in">Durata <input type="number" inputmode="numeric" min="1" max="120" data-tmin="' + esc(sec.id) + '" value="' + esc(store.get('tmin.' + sec.id, '') || sec.minutes) + '"> minuti</label><div>' + esc(sec.note || '') + '</div></div>';
+    return '<section class="block' + (run ? '' : ' yoga') + '"><div class="block-head"><div class="letter sm">' + (run ? 'RUN' : 'YOGA') + '</div><div class="block-meta">' +
+      '<div class="block-kind">' + esc(sec.label) + (sec.optional ? ' <span class="opt">facoltativa</span>' : '') + '</div><div class="block-sub">' + esc(sec.sub || '') + '</div></div></div>' + body +
+      '<div class="rest"><div class="rest-txt">Timer<span>' + (run ? 'segnale a fine corsa' : 'imposta i minuti e avvia') + '</span></div>' +
+      '<button class="btn-start" data-guided="' + si + '">Avvia</button></div></section>';
   }
 
   function renderIntervals(sec, si) {
@@ -318,7 +365,9 @@
   /* ---------- Eventi lista ---------- */
   var main = $('main');
   main.addEventListener('click', function (e) {
-    if (e.target.closest('.kg')) return;
+    if (e.target.closest('.kg') || e.target.closest('.solo-in')) return;
+    var wk = e.target.closest('.btn-work');
+    if (wk) { unlockAudio(); startTimer(+wk.dataset.work, wk.dataset.label, true); return; }
     var st = e.target.closest('.btn-start');
     if (st) {
       unlockAudio();
@@ -333,6 +382,10 @@
     if (e.key === 'Enter' && e.target.classList.contains('ex')) e.target.click();
   });
   document.addEventListener('input', function (e) {
+    var rk = e.target.dataset && e.target.dataset.repsin;
+    if (rk) { store.set('reps.' + rk, e.target.value.replace(/[^0-9]/g, '')); return; }
+    var tk = e.target.dataset && e.target.dataset.tmin;
+    if (tk) { store.set('tmin.' + tk, e.target.value.replace(/[^0-9]/g, '')); return; }
     var k = e.target.dataset && e.target.dataset.kg;
     if (!k) return;
     var v = e.target.value.replace(',', '.').replace(/[^0-9.]/g, '');
@@ -583,9 +636,9 @@
   ringFg.style.strokeDasharray = C;
   var T = { end: 0, total: 0, raf: 0, lastBeep: -1, done: false };
 
-  function startTimer(sec, label) {
-    T.total = sec; T.end = Date.now() + sec * 1000; T.done = false; T.lastBeep = -1;
-    $('tLabel').textContent = label || 'Recupero';
+  function startTimer(sec, label, work) {
+    T.total = sec; T.end = Date.now() + sec * 1000; T.done = false; T.lastBeep = -1; T.work = !!work;
+    $('tLabel').textContent = (work ? 'Lavoro · ' : '') + (label || 'Recupero');
     $('tStop').textContent = 'Chiudi';
     timer.className = 'overlay';
     timer.hidden = false;
@@ -601,7 +654,7 @@
       if (!T.done) {
         T.done = true;
         timer.className = 'overlay done';
-        $('tLabel').textContent = 'Via! Prossimo giro';
+        $('tLabel').textContent = T.work ? 'Fatto! Prossimo esercizio' : 'Via! Prossimo giro';
         $('tStop').textContent = 'OK';
         beep(880, 0.3); beep(1175, 0.5, 0.35);
         buzz([300, 120, 300]);
@@ -653,6 +706,19 @@
           ph.push({ title: 'RECUPERO GIRO', step: 'Fine giro ' + r + ' di ' + sec.rounds, sec: sec.roundRest, kind: 'rest', img: exImg(ex[sec.items[0].ex], 0) });
         }
       }
+    } else if (sec.type === 'emom') {
+      var ns = sec.items.length, rounds = Math.ceil(sec.minutes / ns);
+      for (var m = 0; m < sec.minutes; m++) {
+        var it2 = sec.items[m % ns], e2 = ex[it2.ex] || {};
+        var r2 = it2.editable ? store.get('reps.' + it2.ex, '') : (it2.reps || '');
+        ph.push({ title: (it2.name || e2.name) + (r2 ? ' × ' + r2 : ''), sec: 60, kind: 'work', img: exImg(e2, 0),
+          step: 'Minuto ' + (m + 1) + ' di ' + sec.minutes + ' · giro ' + (Math.floor(m / ns) + 1) + ' di ' + rounds });
+      }
+    } else if (sec.type === 'run') {
+      ph.push({ title: 'CORSA · ' + sec.pace, step: sec.label, sec: sec.minutes * 60, kind: 'work' });
+    } else if (sec.type === 'timer') {
+      var mins = +store.get('tmin.' + sec.id, '') || sec.minutes;
+      ph.push({ title: sec.label, step: mins + "'", sec: mins * 60, kind: 'yoga' });
     } else if (sec.type === 'cooldown') {
       var poses = sec.items.filter(function (it) { return it.sec; });
       poses.forEach(function (it, j) {
