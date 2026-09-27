@@ -71,7 +71,7 @@ Day 4 — Intervals + Arms
 - Aldo = link base (https://aldorusso82.github.io/training/), dati in data/program.json.
 - Altri atleti: file data/athletes/<id>.json con {name, plans[]} (stessa struttura dei plans; esercizi, yoga e defaticamento arrivano da program.json). Link: …/training/?atleta=<id>. L'atleta resta ricordato sul dispositivo; ?atleta=aldo torna ad Aldo.
 - Diario e kg di ogni atleta sono separati in localStorage (prefisso trainaldo.@<id>.). Il manifest NON ha start_url, così l'icona sulla Home mantiene il link personale.
-- Atleta di prova: test (scheda dimostrativa).
+- Atleti di prova: test, viviana (scheda dimostrativa in attesa della sua).
 
 ## Funzioni
 - Tab per i 4 giorni; per ogni blocco: lettera, tipo (superset/circuito/triset), serie, recupero.
