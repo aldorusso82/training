@@ -1,6 +1,6 @@
 /* TRAIN.ALDO — service worker
    A OGNI RILASCIO incrementa VERSION, altrimenti l'iPhone mostra la versione vecchia. */
-var VERSION = 'v5';
+var VERSION = 'v6';
 var CACHE = 'trainaldo-' + VERSION;
 var CORE = [
   './',
@@ -47,13 +47,12 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
 
   // Scheda: prima la rete (così gli aggiornamenti arrivano subito), poi la cache offline
-  if (url.origin === location.origin && url.pathname.endsWith('/data/program.json')) {
+  if (url.origin === location.origin && url.pathname.indexOf('/data/') >= 0 && url.pathname.endsWith('.json')) {
     e.respondWith(
       fetch(req).then(function (res) {
-        var copy = res.clone();
-        caches.open(CACHE).then(function (c) { c.put('data/program.json', copy); });
+        if (res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(url.pathname, copy); }); }
         return res;
-      }).catch(function () { return caches.match('data/program.json'); })
+      }).catch(function () { return caches.match(url.pathname); })
     );
     return;
   }

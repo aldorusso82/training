@@ -67,6 +67,12 @@ Day 4 — Intervals + Arms
 - A ×4 (rec 75''): A1 Front raises 8 · A2 Barbell curl 8 · A3 French press 8
 - Alternativa Day 4: tennis, running o padel 60'
 
+## Atleti (link personali)
+- Aldo = link base (https://aldorusso82.github.io/training/), dati in data/program.json.
+- Altri atleti: file data/athletes/<id>.json con {name, plans[]} (stessa struttura dei plans; esercizi, yoga e defaticamento arrivano da program.json). Link: …/training/?atleta=<id>. L'atleta resta ricordato sul dispositivo; ?atleta=aldo torna ad Aldo.
+- Diario e kg di ogni atleta sono separati in localStorage (prefisso trainaldo.@<id>.). Il manifest NON ha start_url, così l'icona sulla Home mantiene il link personale.
+- Atleta di prova: test (scheda dimostrativa).
+
 ## Funzioni
 - Tab per i 4 giorni; per ogni blocco: lettera, tipo (superset/circuito/triset), serie, recupero.
 - Riga esercizio: nome, reps, attrezzo, kg; tocco = si apre la scheda con le foto (e il video se presente).

@@ -2,14 +2,26 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.4.0';
+  var APP_VERSION = '1.5.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
   var $ = function (id) { return document.getElementById(id); };
+
+  // Atleta: ?atleta=nome nel link; poi resta ricordato sul dispositivo. Senza nome = Aldo.
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  var ATHLETE = (function () {
+    var m = location.search.match(/[?&]atleta=([a-z0-9-]+)/i);
+    var id = m ? m[1].toLowerCase() : (lsGet('trainaldo-athlete') || 'aldo');
+    if (m) lsSet('trainaldo-athlete', id);
+    return id;
+  })();
+  // Aldo mantiene le chiavi di sempre; gli altri atleti hanno uno spazio separato
+  var NS = ATHLETE === 'aldo' ? 'trainaldo.' : 'trainaldo.@' + ATHLETE + '.';
   var store = {
-    get: function (k, d) { try { var v = localStorage.getItem('trainaldo.' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
-    set: function (k, v) { try { localStorage.setItem('trainaldo.' + k, JSON.stringify(v)); } catch (e) {} }
+    get: function (k, d) { try { var v = localStorage.getItem(NS + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(NS + k, JSON.stringify(v)); } catch (e) {} }
   };
 
   function esc(s) {
@@ -39,12 +51,30 @@
   fetch('data/program.json', { cache: 'no-cache' })
     .then(function (r) { return r.json(); })
     .then(function (p) {
+      if (ATHLETE === 'aldo') return p;
+      return fetch('data/athletes/' + ATHLETE + '.json', { cache: 'no-cache' })
+        .then(function (r) { if (!r.ok) throw new Error('atleta'); return r.json(); })
+        .then(function (a) {
+          p.plans = a.plans;
+          p.athleteName = a.name;
+          if (a.yoga === false) delete p.yoga;
+          if (a.cooldown === false) delete p.cooldowns;
+          return p;
+        });
+    })
+    .then(function (p) {
       state.program = p;
+      if (p.athleteName) { $('athlete').textContent = 'Atleta: ' + p.athleteName; $('athlete').hidden = false; document.title = 'TRAIN · ' + p.athleteName; }
       state.variant = store.get('variant', {});
       $('version').textContent = 'v' + APP_VERSION + ' · schede aggiornate al ' + (p.updated || '—');
       selectPlan(pickPlan(), false);
     })
-    .catch(function () {
+    .catch(function (err) {
+      if (err && err.message === 'atleta') {
+        lsSet('trainaldo-athlete', 'aldo');
+        $('main').innerHTML = '<p class="loading">Atleta «' + esc(ATHLETE) + '» non trovato. Controlla il link ricevuto.</p>';
+        return;
+      }
       $('main').innerHTML = '<p class="loading">Impossibile caricare la scheda. Controlla la connessione e riapri l\'app.</p>';
     });
 
@@ -378,7 +408,7 @@
       var anim = function (on) {
         clearInterval(sheetAnim); sheetAnim = 0;
         $('dots').children[2].setAttribute('aria-pressed', on);
-        if (on) sheetAnim = setInterval(function () { cur = 1 - cur; show(cur); }, 1000);
+        if (on) sheetAnim = setInterval(function () { cur = 1 - cur; show(cur); }, 1600);
       };
       var pick = function (p) { anim(false); cur = p; show(cur); };
       show(0); $('dots').children[0].setAttribute('aria-pressed', false); anim(true);
@@ -508,10 +538,10 @@
   }
   function exportData() {
     var data = {};
-    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k.indexOf('trainaldo.') === 0) data[k] = localStorage.getItem(k); } } catch (e) {}
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k.indexOf(NS) === 0 && (ATHLETE !== 'aldo' || k.indexOf('trainaldo.@') !== 0)) data[k] = localStorage.getItem(k); } } catch (e) {}
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'trainaldo-backup-' + isoDate(new Date()) + '.json';
+    a.href = URL.createObjectURL(blob); a.download = 'trainaldo-' + ATHLETE + '-backup-' + isoDate(new Date()) + '.json';
     document.body.appendChild(a); a.click(); a.remove();
   }
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };

@@ -40,6 +40,8 @@ img { display: block; max-width: 100%; }
 }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: .08em; text-align: center; margin-bottom: 6px; }
 .brand span { color: #f0d9b5; }
+.athlete { text-align: center; font-size: 14px; font-weight: 700; color: #f0d9b5; margin: -4px 0 6px; }
+.athlete[hidden] { display: none; }
 .top-row { display: flex; gap: 8px; max-width: 720px; margin: 0 auto 8px; }
 .plan-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -175,9 +177,10 @@ img { display: block; max-width: 100%; }
 }
 .sheet-inner { max-width: 900px; margin: 0 auto; }
 
-.photos { position: relative; margin: 0 -16px 12px; }
-.photos figure { margin: 0; display: none; position: relative; }
-.photos figure.on { display: block; }
+.photos { position: relative; margin: 0 -16px 12px; display: grid; }
+/* Le due foto sovrapposte: la dissolvenza mostra il movimento */
+.photos figure { grid-area: 1 / 1; margin: 0; position: relative; opacity: 0; transition: opacity .9s ease-in-out; }
+.photos figure.on { opacity: 1; }
 .photos img { width: 100%; height: auto; background: #eee4da; }
 .photos figcaption {
   position: absolute; left: 10px; top: 10px;
