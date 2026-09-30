@@ -316,3 +316,30 @@ img { display: block; max-width: 100%; }
 .solo-in { font-weight: 700; white-space: nowrap; }
 .solo-in input { width: 70px; height: 44px; margin: 0 6px; border: 1.5px solid var(--line); border-radius: 10px; text-align: center; font: 700 18px/1 inherit; font-family: inherit; }
 .coach-h { font-size: 16px; margin: 22px 0 8px; color: var(--ink-2); }
+
+/* ---------- Prossimo giorno, promemoria, stop ---------- */
+.tab.next::after { content: ''; display: inline-block; width: 7px; height: 7px; margin-left: 4px; border-radius: 50%; background: #f0d9b5; vertical-align: middle; }
+.tab.next[aria-selected="true"]::after { background: var(--red); }
+.opt.nxt { background: var(--red); }
+.remind { border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-size: 16px; }
+.r-late { background: #fff1e6; border: 1.5px solid var(--orange); }
+.r-plan { background: #eef4ec; border: 1.5px solid var(--green); }
+.r-stop { background: #eef0f4; border: 1.5px solid #6b7a90; }
+.r-quote { margin: 8px 0 0; font-style: italic; color: var(--ink-2); }
+.r-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.r-btns button { min-height: 44px; padding: 0 14px; border: 1.5px solid var(--red); border-radius: 12px; background: #fff; color: var(--red); font-weight: 800; }
+.r-btns button.r-main { background: var(--red); color: #fff; }
+.alt-row { margin-top: 10px; display: grid; gap: 6px; }
+.alt-row small { font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.alt-row .chips button { border-color: var(--ink-2); color: var(--ink); }
+.f-group[hidden] { display: none; }
+.f-group { display: grid; gap: 6px; }
+.btn-start.gray { background: #5c5252; }
+.d-actions { grid-template-columns: 1fr 1fr; }
+.entry.e-stop { border-left: 4px solid #6b7a90; }
+.entry.e-note { border-left: 4px solid var(--line); background: #fffdf8; }
+.ord-list { display: grid; gap: 6px; }
+.ord-row { display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px 6px 6px 12px; }
+.ord-row span { flex: 1; }
+.ord-row button { width: 44px; height: 44px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); font-size: 16px; }
+.ord-row button:disabled { opacity: .3; }

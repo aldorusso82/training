@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.6.0';
+  var APP_VERSION = '1.7.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -114,12 +114,34 @@
       return copy;
     });
   }
+  // Ordine dei giorni scelto dall'atleta (per invertirli); il nome resta "Day 2" ecc.
+  function orderDays(plan, days) {
+    var ord = store.get('order.' + plan.id, null);
+    if (!ord) return days;
+    var byId = {}; days.forEach(function (d) { byId[d.id] = d; });
+    var out = ord.filter(function (id) { return byId[id]; }).map(function (id) { return byId[id]; });
+    days.forEach(function (d) { if (out.indexOf(d) < 0) out.push(d); });
+    return out;
+  }
+  // Prossimo giorno: quello dopo l'ultimo registrato (padel, corsa, stop non fanno avanzare)
+  function nextDayIndex() {
+    var log = getLog(), last = null;
+    for (var i = log.length - 1; i >= 0; i--) if (log[i].planId === state.plan.id && log[i].dayId) { last = log[i].dayId; break; }
+    var train = state.days.filter(function (d) { return d.id !== 'yoga' && !d.optional; });
+    if (!train.length) return 0;
+    var k = 0;
+    if (last) { var j = train.map(function (d) { return d.id; }).indexOf(last); k = j < 0 ? 0 : (j + 1) % train.length; }
+    return state.days.indexOf(train[k]);
+  }
   function selectPlan(plan, manual) {
     state.plan = plan;
-    state.days = resolveDays(plan);
+    state.days = orderDays(plan, resolveDays(plan));
     if (state.program.yoga) state.days.push(buildYogaDay());
-    if (manual) { store.set('plan', { id: plan.id, month: thisMonth() }); state.day = 0; }
+    var today = isoDate(new Date());
+    if (manual) { store.set('plan', { id: plan.id, month: thisMonth() }); state.day = nextDayIndex(); }
+    else if (store.get('lastOpen', '') !== today) state.day = nextDayIndex();
     else state.day = Math.min(store.get('day', 0), state.days.length - 1);
+    store.set('lastOpen', today);
     store.set('day', state.day);
     $('planName').textContent = plan.name;
     renderTabs();
@@ -135,8 +157,35 @@
         (cur && cur.id === pl.id ? '<span class="plan-badge">questo mese</span>' : '') +
         (pl.id === state.plan.id ? '<span class="plan-check">✓</span>' : '') + '</button>';
     }).join('') + '<p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p>' +
+      '<h3 class="coach-h">Ordine dei giorni · ' + esc(state.plan.name) + '</h3><div id="ordList" class="ord-list"></div>' +
+      '<button class="btn-ghost-dark" id="ordReset">Ripristina ordine originale</button>' +
       (lsGet('trainaldo-coach') ? '<h3 class="coach-h">Atleta (solo per l\'allenatore)</h3><div class="plan-list" id="athList"></div>' : '') + '</div>';
     showSheet();
+    var drawOrd = function () {
+      var list = state.days.filter(function (d) { return d.id !== 'yoga'; });
+      $('ordList').innerHTML = list.map(function (d, i) {
+        return '<div class="ord-row"><span>' + (i + 1) + '. <b>' + esc(d.tab) + '</b>' + (d.title ? ' · ' + esc(d.title) : '') + '</span>' +
+          '<button data-mv="-1" data-i="' + i + '" aria-label="Su"' + (i === 0 ? ' disabled' : '') + '>▲</button>' +
+          '<button data-mv="1" data-i="' + i + '" aria-label="Giù"' + (i === list.length - 1 ? ' disabled' : '') + '>▼</button></div>';
+      }).join('');
+    };
+    drawOrd();
+    $('ordList').onclick = function (ev) {
+      var b = ev.target.closest('[data-mv]'); if (!b) return;
+      var list = state.days.filter(function (d) { return d.id !== 'yoga'; }).map(function (d) { return d.id; });
+      var i = +b.dataset.i, j = i + (+b.dataset.mv), t = list[i]; list[i] = list[j]; list[j] = t;
+      store.set('order.' + state.plan.id, list);
+      var curId = state.days[state.day] && state.days[state.day].id;
+      state.days = orderDays(state.plan, resolveDays(state.plan));
+      if (state.program.yoga) state.days.push(buildYogaDay());
+      state.day = Math.max(0, state.days.map(function (d) { return d.id; }).indexOf(curId));
+      renderTabs(); renderDay(); drawOrd();
+    };
+    $('ordReset').onclick = function () {
+      store.set('order.' + state.plan.id, null);
+      state.days = resolveDays(state.plan); if (state.program.yoga) state.days.push(buildYogaDay());
+      renderTabs(); renderDay(); drawOrd();
+    };
     if (lsGet('trainaldo-coach')) {
       fetch('data/athletes/index.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (list) {
         var el = $('athList'); if (!el) return;
@@ -157,9 +206,9 @@
 
   /* ---------- Tab ---------- */
   function renderTabs() {
-    var nav = $('tabs');
+    var nav = $('tabs'), nxt = nextDayIndex();
     nav.innerHTML = state.days.map(function (d, i) {
-      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + esc(d.tab) + '</button>';
+      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + esc(d.tab) + '</button>';
     }).join('');
     nav.onclick = function (e) {
       var b = e.target.closest('.tab'); if (!b) return;
@@ -232,7 +281,9 @@
     var day = state.days[state.day];
     var cur = currentSections(day);
     var h = '<h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
-      (day.optional ? ' <span class="opt">opzionale</span>' : '') + '</h1>';
+      (day.optional ? ' <span class="opt">opzionale</span>' : '') +
+      (state.days.indexOf(day) === nextDayIndex() && day.id !== 'yoga' ? ' <span class="opt nxt">prossimo</span>' : '') + '</h1>';
+    h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
     if (day.sameAs) h += '<div class="note-box"><b>Uguale</b> alla scheda ' + esc(day.sameAs) + '.</div>';
 
@@ -257,14 +308,22 @@
       }
     });
 
-    h += '<div class="log-cta"><button class="btn-log" id="logBtn">✓ Registra allenamento</button></div>';
+    h += '<div class="log-cta"><button class="btn-log" id="logBtn">✓ Registra allenamento</button>' +
+      (day.id !== 'yoga' ? '<div class="alt-row"><small>Oggi ho fatto altro:</small><div class="chips">' +
+        ['Padel', 'Corsa', 'Stop'].map(function (t) { return '<button type="button" data-alt="' + t + '">' + (t === 'Stop' ? 'Stop / riposo' : t) + '</button>'; }).join('') +
+        '</div><small class="muted">Il ' + esc(day.tab) + ' resta il prossimo da fare.</small></div>' : '') + '</div>';
 
     var main = $('main');
     main.innerHTML = h;
     $('logBtn').onclick = function () {
       var v = day.variants ? ' · ' + cur.label : '';
-      openLogForm(day.id === 'yoga' ? 'Yoga' : 'Allenamento', day.id === 'yoga' ? 'Yoga' : state.plan.name + ' · ' + day.tab + v);
+      openLogForm(day.id === 'yoga' ? 'Yoga' : 'Allenamento', day.id === 'yoga' ? 'Yoga' : state.plan.name + ' · ' + day.tab + v,
+        day.id === 'yoga' ? null : { planId: state.plan.id, dayId: day.id });
     };
+    main.querySelectorAll('[data-alt]').forEach(function (b) {
+      b.onclick = function () { openLogForm(b.dataset.alt, b.dataset.alt === 'Stop' ? '' : b.dataset.alt); };
+    });
+    bindReminder();
 
     var sw = main.querySelector('.switch');
     if (sw) sw.onclick = function (e) {
@@ -490,9 +549,97 @@
   window.addEventListener('popstate', function () { if (ignorePop) { ignorePop = false; return; } closeSheet(true); });
 
 
+  /* ---------- Promemoria: giorni senza allenamento, prossimo allenamento, stop ---------- */
+  var DOW = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+  function dayDiff(a, b) { return Math.round((new Date(b + 'T12:00') - new Date(a + 'T12:00')) / DAY_MS); }
+  function activeStop() {
+    var t = isoDate(new Date()), log = getLog();
+    for (var i = log.length - 1; i >= 0; i--) { var x = log[i]; if (x.type === 'Stop' && x.when.slice(0, 10) <= t && x.until >= t) return x; }
+    return null;
+  }
+  function lastActive() {
+    var log = getLog();
+    for (var i = log.length - 1; i >= 0; i--) if (ACTIVE.indexOf(log[i].type) >= 0) return log[i];
+    return null;
+  }
+  function motivation() {
+    var list = (state.program.motivation || []);
+    return list.length ? list[Math.floor(Date.now() / DAY_MS) % list.length] : '';
+  }
+  function fmtWhen(dt) { var d = new Date(dt); return DOW[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) + ' alle ' + dt.slice(11, 16); }
+  function reminderHtml() {
+    var today = isoDate(new Date());
+    var st = activeStop();
+    if (st) return '<div class="remind r-stop"><b>Stop · ' + esc(st.reason || '') + '</b> fino al ' + st.until.split('-').reverse().slice(0, 2).join('/') +
+      '. Recupera bene: anche il riposo fa parte dell\'allenamento.</div>';
+    var pl = store.get('planned', null), h = '';
+    if (pl && pl.when.slice(0, 10) >= today) {
+      h += '<div class="remind r-plan"><b>Prossimo allenamento:</b> ' + esc(fmtWhen(pl.when)) + (pl.label ? ' · ' + esc(pl.label) : '') +
+        '<div class="r-btns"><button data-r="cal">Aggiungi al calendario</button><button data-r="plan">Cambia</button></div></div>';
+      return h;
+    }
+    var la = lastActive();
+    if (!la) return '';
+    var n = dayDiff(la.when.slice(0, 10), today);
+    if (n < 2 || store.get('remindSnooze', '') === today) return '';
+    return '<div class="remind r-late"><b>Non ti alleni da ' + n + ' giorni…</b> quando programmi il tuo prossimo allenamento?' +
+      '<p class="r-quote">' + esc(motivation()) + '</p>' +
+      '<div class="r-btns"><button data-r="plan" class="r-main">Programma</button><button data-r="later">Più tardi</button></div></div>';
+  }
+  function bindReminder() {
+    $('main').querySelectorAll('[data-r]').forEach(function (b) {
+      b.onclick = function () {
+        var a = b.dataset.r;
+        if (a === 'later') { store.set('remindSnooze', isoDate(new Date())); renderDay(); }
+        if (a === 'plan') openPlanForm();
+        if (a === 'cal') { var pl = store.get('planned', null); if (pl) downloadIcs(pl); }
+      };
+    });
+  }
+  function openPlanForm() {
+    var train = state.days.filter(function (d) { return d.id !== 'yoga'; });
+    var nx = state.days[nextDayIndex()];
+    var tmr = addDays(new Date(), 1); tmr.setHours(18, 30, 0, 0);
+    $('sheetTitle').textContent = 'Programma allenamento';
+    $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
+      '<label class="f-l" for="pWhen">Quando</label><input class="f-in" id="pWhen" type="datetime-local" value="' + localDT(tmr) + '">' +
+      '<label class="f-l">Cosa</label>' + chips('pday', train.map(function (d) { return d.tab; }).concat(['Padel', 'Corsa']), nx ? nx.tab : '') +
+      '<p class="muted small">Dopo il salvataggio si apre il Calendario dell\'iPhone: tocca «Aggiungi» e riceverai l\'avviso 30 minuti prima.</p>' +
+      '<button class="btn-big btn-red" id="pSave">Salva e aggiungi al calendario</button></div>';
+    showSheet();
+    var c = $('sheetBody').querySelector('.chips');
+    c.onclick = function (ev) { var b = ev.target.closest('button'); if (!b) return; c.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); };
+    $('pSave').onclick = function () {
+      var sel = c.querySelector('[aria-pressed="true"]');
+      var pl = { when: $('pWhen').value, label: sel ? sel.dataset.v : '' };
+      if (!pl.when) return;
+      store.set('planned', pl); store.set('remindSnooze', '');
+      downloadIcs(pl);
+      closeSheet(false); renderDay();
+    };
+  }
+  // Evento calendario con avviso: il Calendario dell'iPhone fa da notifica
+  function downloadIcs(pl) {
+    var d = new Date(pl.when), e = new Date(d.getTime() + 60 * 60000);
+    var f = function (x) { return x.getUTCFullYear() + ('0' + (x.getUTCMonth() + 1)).slice(-2) + ('0' + x.getUTCDate()).slice(-2) + 'T' + ('0' + x.getUTCHours()).slice(-2) + ('0' + x.getUTCMinutes()).slice(-2) + '00Z'; };
+    var who = state.program.athleteName ? ' · ' + state.program.athleteName : '';
+    var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//TRAIN.ALDO//IT', 'BEGIN:VEVENT',
+      'UID:' + Date.now() + '@trainaldo', 'DTSTAMP:' + f(new Date()), 'DTSTART:' + f(d), 'DTEND:' + f(e),
+      'SUMMARY:Allenamento ' + (pl.label || '') + who, 'DESCRIPTION:' + motivation().replace(/[,;]/g, ' ') + '\\nApri TRAIN: ' + location.origin + location.pathname,
+      'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Tra 30 minuti: allenamento!', 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+    a.download = 'allenamento.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
   /* ---------- Diario: allenamenti, fisioterapia, progressi ---------- */
   var PLACES = ['Palestra', 'Casa', 'Aperto', 'Campo'];
-  var TYPES = ['Allenamento', 'Fisioterapia', 'Padel', 'Corsa', 'Yoga'];
+  var TYPES = ['Allenamento', 'Padel', 'Corsa', 'Yoga', 'Fisioterapia', 'Nota', 'Stop'];
+  var ACTIVE = ['Allenamento', 'Padel', 'Corsa', 'Yoga'];          // contano come allenamento
+  var STOP_REASONS = ['Infortunio', 'Febbre / malattia', 'Impedimento', 'Riposo'];
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
   function getLog() { return store.get('log', []); }
   function localDT(d) { return isoDate(d) + 'T' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function chips(name, list, sel) {
@@ -500,34 +647,50 @@
       return '<button type="button" aria-pressed="' + (x === sel) + '" data-v="' + esc(x) + '">' + esc(x) + '</button>';
     }).join('') + '</div>';
   }
-  function openLogForm(type, label) {
+  function openLogForm(type, label, ref) {
     $('sheetTitle').textContent = 'Registra';
     var lastPlace = store.get('lastPlace', 'Palestra');
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
       '<label class="f-l">Tipo</label>' + chips('type', TYPES, type) +
-      '<label class="f-l" for="fLabel">Cosa</label><input class="f-in" id="fLabel" value="' + esc(label || '') + '" placeholder="es. Day 1, seduta fisio…">' +
+      '<div id="fStop" class="f-group"><label class="f-l">Motivo dello stop</label>' + chips('reason', STOP_REASONS, 'Infortunio') +
+      '<label class="f-l" for="fUntil">Fino al (compreso)</label><input class="f-in" id="fUntil" type="date" value="' + isoDate(addDays(new Date(), 2)) + '"></div>' +
+      '<div id="fAct" class="f-group"><label class="f-l" for="fLabel">Cosa</label><input class="f-in" id="fLabel" value="' + esc(label || '') + '" placeholder="es. Day 1, seduta fisio…">' +
       '<label class="f-l">Luogo</label>' + chips('place', PLACES, lastPlace) +
+      '<label class="f-l" for="fDur">Durata (minuti)</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo"></div>' +
       '<label class="f-l" for="fWhen">Data e ora</label><input class="f-in" id="fWhen" type="datetime-local" value="' + localDT(new Date()) + '">' +
-      '<label class="f-l" for="fDur">Durata (minuti)</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo">' +
       '<label class="f-l" for="fNote">Note</label><textarea class="f-in" id="fNote" rows="3" placeholder="come è andata, dolori, sensazioni…"></textarea>' +
       '<button class="btn-big btn-red" id="fSave">Salva</button></div>';
     showSheet();
     var body = $('sheetBody');
+    var setMode = function (t) {
+      $('fStop').hidden = t !== 'Stop';
+      $('fAct').hidden = t === 'Stop' || t === 'Nota';
+      $('fNote').placeholder = t === 'Stop' ? 'es. distorsione caviglia, 38° di febbre…' : t === 'Nota' ? 'scrivi la tua nota' : 'come è andata, dolori, sensazioni…';
+    };
+    setMode(type);
     body.querySelectorAll('.chips').forEach(function (c) {
       c.onclick = function (ev) {
         var b = ev.target.closest('button'); if (!b) return;
         c.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
-        if (c.dataset.name === 'type' && b.dataset.v === 'Fisioterapia' && !$('fLabel').value.match(/fisio/i)) $('fLabel').value = 'Seduta di fisioterapia';
+        if (c.dataset.name === 'type') {
+          setMode(b.dataset.v);
+          if (b.dataset.v === 'Fisioterapia' && !$('fLabel').value.match(/fisio/i)) $('fLabel').value = 'Seduta di fisioterapia';
+        }
       };
     });
     $('fSave').onclick = function () {
       var val = function (n) { var b = body.querySelector('.chips[data-name="' + n + '"] [aria-pressed="true"]'); return b ? b.dataset.v : ''; };
-      var entry = { id: Date.now(), when: $('fWhen').value || localDT(new Date()), type: val('type'), place: val('place'),
-        label: $('fLabel').value.trim(), dur: +$('fDur').value || 0, note: $('fNote').value.trim() };
+      var t = val('type'), act = t !== 'Stop' && t !== 'Nota';
+      var entry = { id: Date.now(), when: $('fWhen').value || localDT(new Date()), type: t,
+        place: act ? val('place') : '', label: act ? $('fLabel').value.trim() : '', dur: act ? (+$('fDur').value || 0) : 0, note: $('fNote').value.trim() };
+      if (t === 'Stop') { entry.reason = val('reason'); entry.until = $('fUntil').value || entry.when.slice(0, 10); entry.label = entry.reason; }
+      if (ref && t === 'Allenamento') { entry.planId = ref.planId; entry.dayId = ref.dayId; }
       var log = getLog(); log.push(entry);
       log.sort(function (a, b) { return a.when < b.when ? -1 : 1; });
-      store.set('log', log); store.set('lastPlace', entry.place);
+      store.set('log', log); if (entry.place) store.set('lastPlace', entry.place);
+      if (ACTIVE.indexOf(t) >= 0) store.set('remindSnooze', '');
       closeSheet(false);
+      renderTabs(); renderDay();
       setTimeout(function () { openDiary('Salvato ✓'); }, 50);
     };
   }
@@ -536,8 +699,14 @@
     var log = getLog(), now = new Date();
     var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
     var mStart = isoDate(new Date(now.getFullYear(), now.getMonth(), 1)), wStart = isoDate(monday);
-    var inMonth = log.filter(function (x) { return x.when.slice(0, 10) >= mStart; });
-    var inWeek = log.filter(function (x) { return x.when.slice(0, 10) >= wStart; });
+    var isAct = function (x) { return ACTIVE.indexOf(x.type) >= 0; };
+    var inMonth = log.filter(function (x) { return x.when.slice(0, 10) >= mStart && x.type !== 'Nota'; });
+    var inWeek = log.filter(function (x) { return x.when.slice(0, 10) >= wStart && isAct(x); });
+    var stopDays = 0;
+    log.forEach(function (x) {
+      if (x.type !== 'Stop') return;
+      for (var d = new Date(x.when.slice(0, 10) + 'T12:00'); isoDate(d) <= x.until; d = addDays(d, 1)) if (isoDate(d) >= mStart && isoDate(d) <= isoDate(now)) stopDays++;
+    });
     var count = function (arr, f) { var o = {}; arr.forEach(function (x) { o[x[f]] = (o[x[f]] || 0) + 1; }); return o; };
     var byPlace = count(inMonth, 'place'), byType = count(inMonth, 'type');
     var pills = function (o) { var k = Object.keys(o); return k.length ? k.map(function (x) { return '<span class="pill">' + esc(x) + ' <b>' + o[x] + '</b></span>'; }).join('') : '<span class="muted">nessuno</span>'; };
@@ -551,12 +720,13 @@
     var fmtD = function (d) { var p = d.split('-'); return +p[2] + '/' + +p[1]; };
 
     var h = '<div class="sheet-inner diary">' + (flash ? '<div class="flash">' + esc(flash) + '</div>' : '') +
-      '<div class="stats"><div class="stat"><b>' + inWeek.length + '</b><small>questa settimana</small></div>' +
-      '<div class="stat"><b>' + inMonth.length + '</b><small>questo mese</small></div>' +
-      '<div class="stat"><b>' + log.length + '</b><small>totale</small></div></div>' +
+      '<div class="stats"><div class="stat"><b>' + inWeek.length + '</b><small>allenamenti settimana</small></div>' +
+      '<div class="stat"><b>' + inMonth.filter(isAct).length + '</b><small>allenamenti mese</small></div>' +
+      '<div class="stat"><b>' + stopDays + '</b><small>giorni di stop (mese)</small></div></div>' +
       '<div class="d-row"><small>Luogo (mese)</small>' + pills(byPlace) + '</div>' +
       '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
-      '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button></div>' +
+      '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button>' +
+      '<button class="btn-start gray" data-new="Nota">+ Nota</button><button class="btn-start gray" data-new="Stop">+ Stop</button></div>' +
       '<h3>Progressi carichi</h3>' +
       (prog.length ? prog.map(function (p) {
         var diff = (parseFloat(p.last.v) - parseFloat(p.first.v));
@@ -567,7 +737,8 @@
       '<h3>Storico</h3>' +
       (log.length ? log.slice().reverse().map(function (x) {
         var d = x.when.split('T');
-        return '<div class="entry"><div class="e-top"><b>' + fmtD(d[0]) + '</b> · ' + esc(d[1] || '') + ' · <span class="e-type">' + esc(x.type) + '</span>' +
+        return '<div class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : '') + '"><div class="e-top"><b>' + fmtD(d[0]) + '</b> · ' + esc(d[1] || '') + ' · <span class="e-type">' + esc(x.type) + '</span>' +
+          (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') +
           '<button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕</button></div>' +
           '<div>' + esc(x.label || '') + (x.place ? ' · ' + esc(x.place) : '') + (x.dur ? ' · ' + x.dur + "'" : '') + '</div>' +
           (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') + '</div>';

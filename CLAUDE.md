@@ -83,6 +83,10 @@ Day 4 — Intervals + Arms
 - Timer di recupero: pulsante grande "Avvia" nella striscia del recupero, overlay a schermo intero con anello di countdown, colore arancio negli ultimi 10'', verde a fine; vibrazione/suono a fine se il dispositivo lo permette.
 - Day 4: griglia visiva degli intervalli, meglio se con timer guidato corsa/recupero.
 
+- Giorni: l'app apre il "prossimo" giorno (quello dopo l'ultimo Allenamento registrato con planId/dayId). Padel, Corsa, Stop non fanno avanzare. Ordine dei giorni modificabile nel menu Scheda (localStorage order.<planId>).
+- Promemoria (in app, nessun server): se non ci si allena da ≥2 giorni compare un avviso con frase motivazionale (program.json → motivation). "Programma" salva il prossimo allenamento e scarica un evento .ics con avviso 30' prima, così la notifica arriva dal Calendario dell'iPhone. Notifiche push vere richiedono un server (possibile con Cloudflare Workers).
+- Diario: tipi Allenamento, Padel, Corsa, Yoga (contano come allenamento), Fisioterapia, Nota, Stop (motivo + "fino al"). Durante uno stop niente avvisi.
+
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.
 - Leggibilità iPhone: testo base 17px, nomi esercizi 18px bold, aree toccabili almeno 44px, contrasto alto.
