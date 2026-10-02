@@ -352,7 +352,7 @@
       : '<div class="letter">' + esc(sec.letter) + '</div><div class="block-meta"><div class="block-kind">' + kindOf(sec) + ' ×' + sec.sets + '</div><div class="block-sub">' + sec.sets + ' serie' + (sec.rest ? ' · recupero ' + fmtRest(sec.rest) : sec.rest === 0 ? ' · senza recupero' : '') + '</div></div>';
     if (sec.type === 'block' && sec.items.length > 1) {
       head += '<div class="flow">' + sec.items.map(function (it) { return esc(it.code || ''); }).join(' → subito ') +
-        (sec.rest ? ' → recupero ' + fmtRest(sec.rest) : ' → riparti') + '</div>';
+        (sec.rest ? ' → recupero ' + fmtRest(sec.rest) : sec.rest === 0 ? ' → riparti' : ' → recupero a scelta') + '</div>';
     }
     if (sec.info) head += '<div class="flow info">' + esc(sec.info) + '</div>';
 
