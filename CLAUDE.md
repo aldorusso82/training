@@ -94,7 +94,7 @@ Day 4 — Intervals + Arms
 - Programma: promemoria ripetibili ogni settimana (RRULE nel .ics). Notifiche push vere = server (Cloudflare Worker + Web Push), non ancora fatto.
 
 - Timer recupero: campanello a 15'' dalla fine; a tutto schermo o ridotto a banner in basso (preferenza nel menu Scheda).
-- 📝 Nota per il coach su ogni esercizio (exnote.<ex>) + «💬 Invia sensazioni al coach» = messaggio WhatsApp precompilato (wa.me senza numero). Playlist preferite (Forza/Cardio/Yoga) nel menu Scheda → pulsanti 🎵 in cima ai giorni.
+- 📝 Nota per il coach su ogni esercizio (exnote.<ex>) + «💬 Invia sensazioni al coach» = messaggio WhatsApp precompilato (wa.me senza numero). Playlist preferite (Forza/Cardio/Yoga): icona verde 🎵 accanto a «Inverti con…» in ogni giorno (anche Yoga) → scelta playlist e impostazione link; link anche nel menu Scheda.
 
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.

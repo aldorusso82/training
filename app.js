@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.11.0';
+  var APP_VERSION = '1.12.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -385,13 +385,15 @@
       var others = state.days.filter(function (d) { return d.id !== 'yoga' && d.id !== day.id; });
       h += '<div class="day-tools">' +
         (dw ? '<span class="done-flag">✓ Fatto ' + esc(fmtWhen(dw.when)) + '</span>' : dn ? '<span class="done-last">Ultima volta: ' + esc(fmtWhen(dn.when)) + '</span>' : '') +
-        (others.length ? '<button class="swap-btn" id="swapBtn">⇄ Inverti con…</button>' : '') + '</div>' +
+        '<span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button>' +
+        (others.length ? '<button class="swap-btn" id="swapBtn">⇄ Inverti con…</button>' : '') + '</span></div>' +
         '<div class="swap-row" id="swapRow" hidden><small>Scambia il ' + esc(day.tab) + ' con:</small><div class="chips">' +
         others.map(function (d) { return '<button type="button" data-swap="' + esc(d.id) + '">' + esc(d.tab) + '</button>'; }).join('') + '</div></div>';
+    } else {
+      h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button></span></div>';
     }
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
-    if (day.sameAs) h += '<div class="note-box"><b>Uguale</b> alla scheda ' + esc(day.sameAs) + '.</div>';
 
     if (day.variants) {
       h += '<div class="switch" role="group" aria-label="Variante">' + day.variants.map(function (v) {
@@ -421,7 +423,8 @@
         '</div><small class="muted">Il ' + esc(day.tab) + ' resta il prossimo da fare.</small></div>' : '') + '</div>';
 
     var main = $('main');
-    main.innerHTML = musicBar(day) + h;
+    main.innerHTML = h;
+    $('musicBtn').onclick = function () { openMusic(day); };
     if ($('waBtn')) $('waBtn').onclick = function () { openCoachMessage(day, cur); };
     $('logBtn').onclick = function () {
       var v = day.variants ? ' · ' + cur.label : '';
@@ -805,15 +808,31 @@
 
   /* ---------- Playlist preferite (Spotify, Apple Music, YouTube Music) ---------- */
   var MUSIC = [{ id: 'forza', label: 'Forza' }, { id: 'cardio', label: 'Cardio' }, { id: 'yoga', label: 'Yoga' }];
-  function musicBar(day) {
-    var m = store.get('music', {}), set = MUSIC.filter(function (x) { return m[x.id]; });
-    if (!set.length) return '';
-    var first = day.id === 'yoga' ? 'yoga' : '';
-    set.sort(function (a, b) { return (b.id === first) - (a.id === first); });
-    return '<div class="music-bar">🎵 ' + set.map(function (x) {
-      return '<a class="music-btn" href="' + esc(m[x.id]) + '" target="_blank" rel="noopener">' + x.label + '</a>';
-    }).join('') + '</div>';
+  // 🎵 in cima a ogni giorno: scegli la playlist (si apre Spotify/Apple Music, la musica continua in sottofondo)
+  function openMusic(day) {
+    var m = store.get('music', {});
+    var first = day && day.id === 'yoga' ? 'yoga' : 'forza';
+    var list = MUSIC.slice().sort(function (a, b) { return (b.id === first) - (a.id === first); });
+    $('sheetTitle').textContent = '🎵 Musica';
+    $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
+      list.map(function (x) {
+        return m[x.id] ? '<a class="music-big" href="' + esc(m[x.id]) + '" target="_blank" rel="noopener">▶ ' + x.label + '</a>'
+          : '<div class="music-big off">' + x.label + ' · link non impostato</div>';
+      }).join('') +
+      '<details class="music-edit"' + (MUSIC.some(function (x) { return m[x.id]; }) ? '' : ' open') + '><summary>Imposta i link delle playlist</summary>' +
+      MUSIC.map(function (x) {
+        return '<label class="f-l" for="mu2_' + x.id + '">' + x.label + '</label><input class="f-in" id="mu2_' + x.id + '" data-music="' + x.id + '" inputmode="url" placeholder="incolla il link (Spotify, Apple Music, YouTube Music)" value="' + esc(m[x.id] || '') + '">';
+      }).join('') +
+      '<p class="plan-hint">In Spotify: playlist → ··· → Condividi → Copia link.</p><button class="btn-big btn-red" id="muSave">Salva</button></details></div>';
+    showSheet();
+    $('muSave').onclick = function () {
+      var mm = store.get('music', {});
+      $('sheetBody').querySelectorAll('[data-music]').forEach(function (inp) { mm[inp.dataset.music] = inp.value.trim(); });
+      store.set('music', mm);
+      openMusic(day);
+    };
   }
+
 
   /* ---------- Diario: allenamenti, fisioterapia, progressi ---------- */
   var PLACES = ['Palestra', 'Casa', 'Aperto', 'Campo'];

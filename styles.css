@@ -414,3 +414,12 @@ body { font-size: 16px; }
 .t-bar-txt b { font-size: 28px; font-variant-numeric: tabular-nums; }
 .t-bar button { min-height: 44px; min-width: 44px; padding: 0 12px; border: 2px solid rgba(255,255,255,.7); border-radius: 12px; background: transparent; color: #fff; font-weight: 800; }
 body.has-tbar .main, body.has-tbar .foot { padding-bottom: calc(var(--safe-b) + 90px); }
+
+/* ---------- 🎵 accanto a «Inverti con» ---------- */
+.tools-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.tools-right .swap-btn { margin-left: 0; }
+.music-ico { width: 44px; height: 44px; border: 0; border-radius: 12px; background: #1db954; color: #fff; font-size: 20px; }
+.music-big { display: flex; align-items: center; justify-content: center; min-height: 56px; border-radius: 14px; background: #1db954; color: #fff; font-weight: 800; font-size: 18px; text-decoration: none; }
+.music-big.off { background: #eee4da; color: var(--ink-2); font-weight: 600; font-size: 15px; }
+.music-edit { margin-top: 10px; }
+.music-edit summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; color: var(--red); cursor: pointer; }
