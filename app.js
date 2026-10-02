@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.10.0';
+  var APP_VERSION = '1.11.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -164,6 +164,11 @@
       '<h3 class="coach-h">La mia settimana inizia di</h3><div class="chips" id="wsChips">' +
       [1, 2, 3, 4, 5, 6, 0].map(function (g) { return '<button type="button" data-ws="' + g + '" aria-pressed="' + (g === weekStartDay()) + '">' + ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'][g] + '</button>'; }).join('') +
       '</div><p class="plan-hint">Es. se giochi il venerdì e riparti la domenica, scegli Dom. Cambia il conteggio «Settimana N di 4» e le statistiche settimanali.</p>' +
+      '<h3 class="coach-h">🎵 Le mie playlist</h3>' + MUSIC.map(function (x) {
+        return '<label class="f-l" for="mu_' + x.id + '">' + x.label + '</label><input class="f-in" id="mu_' + x.id + '" data-music="' + x.id + '" inputmode="url" placeholder="incolla il link (Spotify, Apple Music, YouTube Music)" value="' + esc((store.get('music', {}))[x.id] || '') + '">';
+      }).join('') + '<p class="plan-hint">In Spotify: playlist → ··· → Condividi → Copia link, poi incollalo qui. I pulsanti compaiono in cima ai giorni.</p>' +
+      '<h3 class="coach-h">Timer</h3>' + chips('tmode', ['A tutto schermo', 'Banner in basso'], store.get('timerMode', 'full') === 'banner' ? 'Banner in basso' : 'A tutto schermo') +
+      '<p class="plan-hint">Con il banner puoi consultare gli esercizi mentre il recupero scorre. Puoi anche ridurre il timer mentre è aperto.</p>' +
       (lsGet('trainaldo-coach') ? '<h3 class="coach-h">Atleta (solo per l\'allenatore)</h3><div class="plan-list" id="athList"></div>' : '') + '</div>';
     showSheet();
     var drawOrd = function () {
@@ -175,6 +180,15 @@
       }).join('');
     };
     drawOrd();
+    $('sheetBody').querySelectorAll('[data-music]').forEach(function (inp) {
+      inp.onchange = function () { var m = store.get('music', {}); m[inp.dataset.music] = inp.value.trim(); store.set('music', m); renderDay(); };
+    });
+    var tm = $('sheetBody').querySelector('.chips[data-name="tmode"]');
+    tm.onclick = function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      tm.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      store.set('timerMode', b.dataset.v === 'Banner in basso' ? 'banner' : 'full');
+    };
     $('wsChips').onclick = function (ev) {
       var b = ev.target.closest('[data-ws]'); if (!b) return;
       store.set('weekStart', +b.dataset.ws);
@@ -401,12 +415,14 @@
     });
 
     h += '<div class="log-cta"><button class="btn-log" id="logBtn">✓ Registra allenamento</button>' +
+      (day.id !== 'yoga' ? '<button class="btn-wa" id="waBtn">💬 Invia sensazioni al coach (WhatsApp)</button>' : '') +
       (day.id !== 'yoga' ? '<div class="alt-row"><small>Oggi ho fatto altro:</small><div class="chips">' +
         ['Padel', 'Corsa', 'Stop'].map(function (t) { return '<button type="button" data-alt="' + t + '">' + (t === 'Stop' ? 'Stop / riposo' : t) + '</button>'; }).join('') +
         '</div><small class="muted">Il ' + esc(day.tab) + ' resta il prossimo da fare.</small></div>' : '') + '</div>';
 
     var main = $('main');
-    main.innerHTML = h;
+    main.innerHTML = musicBar(day) + h;
+    if ($('waBtn')) $('waBtn').onclick = function () { openCoachMessage(day, cur); };
     $('logBtn').onclick = function () {
       var v = day.variants ? ' · ' + cur.label : '';
       openLogForm(day.id === 'yoga' ? 'Yoga' : 'Allenamento', day.id === 'yoga' ? 'Yoga' : state.plan.name + ' · ' + day.tab + v,
@@ -471,7 +487,7 @@
       return '<div class="ex' + (hasMedia ? '' : ' static') + '" data-ex="' + esc(it.ex) + '" data-reps="' + esc(reps) + '" data-name="' + esc(name) + '"' + (hasMedia ? ' role="button" tabindex="0"' : '') + '>' +
         '<div class="thumb">' + thumb + '</div>' +
         '<div class="ex-main">' + (it.code ? '<div class="ex-code">' + esc(it.code) + '</div>' : '') +
-        '<div class="ex-name">' + esc(name) + '</div>' +
+        '<div class="ex-name">' + esc(name) + (store.get('exnote.' + it.ex, null) ? ' <span class="has-note" title="nota per il coach">📝</span>' : '') + '</div>' +
         '<div class="ex-info"><b>' + esc(it.editable && !reps ? 'reps da definire' : reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
     }).join('');
 
@@ -537,6 +553,8 @@
     if (e.key === 'Enter' && e.target.classList.contains('ex')) e.target.click();
   });
   document.addEventListener('input', function (e) {
+    var nk = e.target.dataset && e.target.dataset.exnote;
+    if (nk) { var t = e.target.value; store.set('exnote.' + nk, t.trim() ? { t: t, d: isoDate(new Date()) } : null); return; }
     var rk = e.target.dataset && e.target.dataset.repsin;
     if (rk) { store.set('reps.' + rk, e.target.value.replace(/[^0-9]/g, '')); return; }
     var tk = e.target.dataset && e.target.dataset.tmin;
@@ -583,6 +601,10 @@
       (e.kg ? '<div class="fact"><small>Kg</small><input type="text" inputmode="decimal" enterkeyhint="done" data-kg="' + esc(key) + '" value="' + esc(store.get('kg.' + key, '')) + '" placeholder="–"></div>' : '') +
       '</div>';
     if (e.cue) h += '<div class="cue">' + esc(e.cue) + '</div>';
+    var en = store.get('exnote.' + key, null);
+    h += '<label class="f-l" for="exNote">📝 Nota per il coach</label>' +
+      '<textarea class="f-in ex-note" id="exNote" data-exnote="' + esc(key) + '" rows="2" placeholder="es. dolore spalla all\'ultima serie, carico facile…">' + esc(en ? en.t : '') + '</textarea>' +
+      (en && en.t ? '<p class="muted small">Scritta il ' + esc(en.d.split('-').reverse().slice(0, 2).join('/')) + '. Finisce nel messaggio WhatsApp al coach.</p>' : '<p class="muted small">Finisce nel messaggio WhatsApp al coach.</p>');
     var yt = e.video ? 'https://www.youtube.com/watch?v=' + encodeURIComponent(e.video)
       : 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.q || (e.name + ' exercise tutorial'));
     h += '<a class="yt-link" href="' + yt + '" target="_blank" rel="noopener">▶ ' + (e.video ? 'Apri il video su YouTube' : 'Cerca il video su YouTube') + '</a>';
@@ -741,6 +763,58 @@
     document.body.appendChild(a); a.click(); a.remove();
   }
 
+  /* ---------- Messaggio al coach (WhatsApp) ---------- */
+  function who() { return state.program.athleteName || 'Aldo'; }
+  function entryText(x) {
+    var d = x.when.split('T');
+    return '🏋️ ' + who() + ' · ' + x.type + (x.label ? ' · ' + x.label : '') + '\n📅 ' + d[0].split('-').reverse().join('/') + ' ' + (d[1] || '') +
+      (x.place ? '\n📍 ' + x.place : '') + (x.dur ? '\n⏱ ' + x.dur + ' min' : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '') +
+      (x.type === 'Stop' ? '\n⛔ ' + (x.reason || '') + ' fino al ' + x.until.split('-').reverse().slice(0, 2).join('/') : '') +
+      (x.note ? '\n💬 ' + x.note : '');
+  }
+  function sendWhatsApp(text) {
+    // senza numero: WhatsApp chiede a chi inviarlo (coach, preparatore, fisio)
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  }
+  function openCoachMessage(day, cur) {
+    var ex = state.program.exercises, lines = [];
+    (cur.sections || []).forEach(function (sec) {
+      (sec.items || []).forEach(function (it) {
+        var e = ex[it.ex] || {}, kg = e.kg ? store.get('kg.' + it.ex, '') : '', nt = store.get('exnote.' + it.ex, null);
+        if (kg || (nt && nt.t)) lines.push('• ' + (it.name || e.name) + (it.reps ? ' ' + it.reps : '') + (kg ? ' · ' + kg + ' kg' : '') + (nt && nt.t ? ' — ' + nt.t : ''));
+      });
+    });
+    var base = '🏋️ ' + who() + ' · ' + state.plan.name + ' · ' + day.tab + (day.variants ? ' · ' + cur.label : '') +
+      '\n📅 ' + new Date().toLocaleDateString('it-IT') + '\n\nSensazioni: ';
+    $('sheetTitle').textContent = 'Messaggio al coach';
+    $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
+      '<label class="f-l">Come è andata? (1 = pessimo, 5 = ottimo)</label>' + chips('feel', ['1', '2', '3', '4', '5'], '') +
+      '<label class="f-l" for="waTxt">Messaggio (puoi modificarlo)</label>' +
+      '<textarea class="f-in" id="waTxt" rows="10">' + esc(base + (lines.length ? '\n\nEsercizi:\n' + lines.join('\n') : '')) + '</textarea>' +
+      '<p class="muted small">Dentro ci sono i kg e le «📝 note per il coach» degli esercizi. Toccando il pulsante si apre WhatsApp e scegli a chi inviarlo.</p>' +
+      '<button class="btn-big btn-wa-big" id="waSend">Apri WhatsApp</button></div>';
+    showSheet();
+    var c = $('sheetBody').querySelector('.chips');
+    c.onclick = function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      c.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      $('waTxt').value = $('waTxt').value.replace(/Sensazioni:( \d\/5)?/, 'Sensazioni: ' + b.dataset.v + '/5');
+    };
+    $('waSend').onclick = function () { sendWhatsApp($('waTxt').value); };
+  }
+
+  /* ---------- Playlist preferite (Spotify, Apple Music, YouTube Music) ---------- */
+  var MUSIC = [{ id: 'forza', label: 'Forza' }, { id: 'cardio', label: 'Cardio' }, { id: 'yoga', label: 'Yoga' }];
+  function musicBar(day) {
+    var m = store.get('music', {}), set = MUSIC.filter(function (x) { return m[x.id]; });
+    if (!set.length) return '';
+    var first = day.id === 'yoga' ? 'yoga' : '';
+    set.sort(function (a, b) { return (b.id === first) - (a.id === first); });
+    return '<div class="music-bar">🎵 ' + set.map(function (x) {
+      return '<a class="music-btn" href="' + esc(m[x.id]) + '" target="_blank" rel="noopener">' + x.label + '</a>';
+    }).join('') + '</div>';
+  }
+
   /* ---------- Diario: allenamenti, fisioterapia, progressi ---------- */
   var PLACES = ['Palestra', 'Casa', 'Aperto', 'Campo'];
   var TYPES = ['Allenamento', 'Padel', 'Corsa', 'Yoga', 'Fisioterapia', 'Nota', 'Stop'];
@@ -870,7 +944,7 @@
         var d = x.when.split('T');
         return '<div class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : '') + '"><div class="e-top"><b>' + fmtD(d[0]) + '</b> · ' + esc(d[1] || '') + ' · <span class="e-type">' + esc(x.type) + '</span>' +
           (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') +
-          '<button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕</button></div>' +
+          '<button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕</button></div>' +
           '<div>' + esc(x.label || '') + (x.place ? ' · ' + esc(x.place) : '') + (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '') + (x.week ? ' · sett. ' + x.week : '') + '</div>' +
           (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') + '</div>';
       }).join('') : '<p class="muted">Ancora nessun allenamento registrato.</p>') +
@@ -883,6 +957,8 @@
     $('sheetBody').querySelector('.diary').onclick = function (ev) {
       var n = ev.target.closest('[data-new]');
       if (n) { closeSheet(false); setTimeout(function () { openLogForm(n.dataset.new, n.dataset.new === 'Fisioterapia' ? 'Seduta di fisioterapia' : ''); }, 50); return; }
+      var sh = ev.target.closest('[data-share]');
+      if (sh) { var en2 = getLog().filter(function (x) { return String(x.id) === sh.dataset.share; })[0]; if (en2) sendWhatsApp(entryText(en2)); return; }
       var del = ev.target.closest('[data-del]');
       if (del && confirm('Eliminare questa registrazione?')) {
         store.set('log', getLog().filter(function (x) { return String(x.id) !== del.dataset.del; }));
@@ -905,10 +981,27 @@
   var actx = null, wakeLock = null;
   function unlockAudio() {
     try {
+      // i suoni del timer abbassano per un attimo la musica (Spotify) senza fermarla
+      try { if (navigator.audioSession) navigator.audioSession.type = 'transient'; } catch (e) {}
       if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
       if (actx.state === 'suspended') actx.resume();
       var o = actx.createOscillator(), g = actx.createGain();
       g.gain.value = 0.0001; o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.02);
+    } catch (e) {}
+  }
+  // Campanello: due rintocchi con coda lunga
+  function bell() {
+    if (!actx) return;
+    try {
+      [0, 0.45].forEach(function (w) {
+        [1318, 1975, 2637].forEach(function (f, i) {
+          var t = actx.currentTime + w, o = actx.createOscillator(), g = actx.createGain();
+          o.type = 'sine'; o.frequency.value = f;
+          g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35 / (i + 1), t + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+          o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 1.3);
+        });
+      });
     } catch (e) {}
   }
   function beep(freq, dur, when) {
@@ -939,11 +1032,12 @@
   var T = { end: 0, total: 0, raf: 0, lastBeep: -1, done: false };
 
   function startTimer(sec, label, work) {
-    T.total = sec; T.end = Date.now() + sec * 1000; T.done = false; T.lastBeep = -1; T.work = !!work;
-    $('tLabel').textContent = (work ? 'Lavoro · ' : '') + (label || 'Recupero');
+    T.total = sec; T.end = Date.now() + sec * 1000; T.done = false; T.lastBeep = -1; T.work = !!work; T.bell = false;
+    T.label = (work ? 'Lavoro · ' : '') + (label || 'Recupero');
+    $('tLabel').textContent = T.label;
     $('tStop').textContent = 'Chiudi';
     timer.className = 'overlay';
-    timer.hidden = false;
+    setTimerMode(store.get('timerMode', 'full'));
     keepAwake(true);
     tick();
   }
@@ -956,6 +1050,7 @@
       if (!T.done) {
         T.done = true;
         timer.className = 'overlay done';
+        tBar.className = 't-bar done'; $('tBarNum').textContent = '0:00'; $('tBarLbl').textContent = T.work ? 'Fatto!' : 'Via! Prossimo giro';
         $('tLabel').textContent = T.work ? 'Fatto! Prossimo esercizio' : 'Via! Prossimo giro';
         $('tStop').textContent = 'OK';
         beep(880, 0.3); beep(1175, 0.5, 0.35);
@@ -967,14 +1062,26 @@
     $('tNum').textContent = fmtClock(left);
     ringFg.style.strokeDashoffset = C * (1 - left / T.total);
     timer.className = 'overlay' + (left <= 10 ? ' warn' : '');
+    tBar.className = 't-bar' + (left <= 10 ? ' warn' : ''); $('tBarNum').textContent = fmtClock(left); $('tBarLbl').textContent = T.label;
+    if (s === 15 && T.total > 20 && !T.bell) { T.bell = true; bell(); buzz([150, 80, 150]); }   // campanello: mancano 15''
     if (s <= 3 && s !== T.lastBeep) { T.lastBeep = s; beep(660, 0.12); }
     T.raf = setTimeout(tick, 200);
   }
   function stopTimer() {
     clearTimeout(T.raf);
-    timer.hidden = true;
+    timer.hidden = true; tBar.hidden = true; document.body.classList.remove('has-tbar');
     keepAwake(false);
   }
+  // Timer a tutto schermo o ridotto a banner (per consultare gli esercizi mentre scorre)
+  var tBar = $('tBar');
+  function setTimerMode(mode) {
+    var banner = mode === 'banner';
+    timer.hidden = banner; tBar.hidden = !banner;
+    document.body.classList.toggle('has-tbar', banner);
+  }
+  $('tMin').onclick = function () { setTimerMode('banner'); };
+  $('tBarOpen').onclick = function () { setTimerMode('full'); };
+  $('tBarClose').onclick = stopTimer;
   $('tStop').onclick = stopTimer;
   $('tPlus').onclick = function () { if (T.done) return; T.end += 15000; T.total += 15; tick(); };
   $('tMinus').onclick = function () { if (T.done) return; T.end -= 15000; T.total = Math.max(1, T.total - 15); tick(); };
@@ -1037,7 +1144,7 @@
     var sec = daySections(state.days[state.day])[si]; if (!sec) return;
     I.phases = buildPhases(sec); if (!I.phases.length) return;
     I.total = I.phases.reduce(function (a, p) { return a + p.sec; }, 0);
-    I.idx = 0; I.paused = false;
+    I.idx = 0; I.paused = false; I.bellIdx = -1;
     iv.hidden = false;
     keepAwake(true);
     enterPhase(Date.now());
@@ -1082,6 +1189,7 @@
     var done = elapsedBefore(I.idx) + (p.sec - left);
     $('ivFill').style.width = (done / I.total * 100) + '%';
     $('ivTotal').textContent = 'Totale ' + fmtClock(done) + ' / ' + fmtClock(I.total);
+    if (s === 15 && p.sec >= 30 && I.bellIdx !== I.idx) { I.bellIdx = I.idx; bell(); }
     if (p.kind !== 'yoga' && s <= 3 && s !== I.lastBeep) { I.lastBeep = s; beep(660, 0.12); }
     I.raf = setTimeout(ivTick, 200);
   }

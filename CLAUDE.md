@@ -93,9 +93,12 @@ Day 4 — Intervals + Arms
 - Registra: minuti e kcal (Apple Watch) + pulsante "Incolla" che legge un testo tipo «45 min 420 kcal». Una web app non può leggere Apple Salute direttamente.
 - Programma: promemoria ripetibili ogni settimana (RRULE nel .ics). Notifiche push vere = server (Cloudflare Worker + Web Push), non ancora fatto.
 
+- Timer recupero: campanello a 15'' dalla fine; a tutto schermo o ridotto a banner in basso (preferenza nel menu Scheda).
+- 📝 Nota per il coach su ogni esercizio (exnote.<ex>) + «💬 Invia sensazioni al coach» = messaggio WhatsApp precompilato (wa.me senza numero). Playlist preferite (Forza/Cardio/Yoga) nel menu Scheda → pulsanti 🎵 in cima ai giorni.
+
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.
-- Leggibilità iPhone: testo base 17px, nomi esercizi 18px bold, aree toccabili almeno 44px, contrasto alto.
+- Leggibilità iPhone (versione compatta chiesta il 02/10): testo base 16px, nomi esercizi 16px bold, aree toccabili almeno 44px, contrasto alto.
 - Rispetta le safe area di iPhone (notch e barra home).
 
 ## PWA
