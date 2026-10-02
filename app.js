@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.9.0';
+  var APP_VERSION = '1.9.1';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -249,7 +249,19 @@
     for (var i = log.length - 1; i >= 0; i--) if (entryDayId(log[i]) === dayId) return log[i];
     return null;
   }
-  function doneThisWeek(dayId) { var l = lastDone(dayId); return l && l.when.slice(0, 10) >= isoDate(mondayOf(new Date())) ? l : null; }
+  // Giro in corso: gli allenamenti dall'inizio del giro attuale. Un giro si chiude quando hai fatto tutti i giorni
+  // della scheda o quando rifai un giorno già fatto (indipendente dalle date: puoi invertire i giorni o saltare per il padel).
+  function currentRound() {
+    var train = state.days.filter(function (d) { return d.id !== 'yoga' && !d.optional; }).length;
+    var round = {};
+    getLog().forEach(function (x) {
+      var id = entryDayId(x); if (!id) return;
+      if (round[id] || Object.keys(round).length >= train) round = {};
+      round[id] = x;
+    });
+    return round;
+  }
+  function doneThisWeek(dayId) { return currentRound()[dayId] || null; }
   function swapDays(a, b) {
     var list = state.days.filter(function (d) { return d.id !== 'yoga'; }).map(function (d) { return d.id; });
     var i = list.indexOf(a), j = list.indexOf(b); if (i < 0 || j < 0) return;

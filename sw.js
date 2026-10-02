@@ -1,6 +1,6 @@
 /* TRAIN.ALDO — service worker
    A OGNI RILASCIO incrementa VERSION, altrimenti l'iPhone mostra la versione vecchia. */
-var VERSION = 'v13';
+var VERSION = 'v14';
 var CACHE = 'trainaldo-' + VERSION;
 var CORE = [
   './',
