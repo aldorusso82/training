@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.8.0';
+  var APP_VERSION = '1.9.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -126,11 +126,13 @@
   // Prossimo giorno: quello dopo l'ultimo registrato (padel, corsa, stop non fanno avanzare)
   function nextDayIndex() {
     var log = getLog(), last = null;
-    for (var i = log.length - 1; i >= 0; i--) if (log[i].planId === state.plan.id && log[i].dayId) { last = log[i].dayId; break; }
+    for (var i = log.length - 1; i >= 0; i--) { var di = entryDayId(log[i]); if (di) { last = di; break; } }
     var train = state.days.filter(function (d) { return d.id !== 'yoga' && !d.optional; });
     if (!train.length) return 0;
     var k = 0;
     if (last) { var j = train.map(function (d) { return d.id; }).indexOf(last); k = j < 0 ? 0 : (j + 1) % train.length; }
+    // salta i giorni già fatti questa settimana (se sono tutti fatti, resta il successivo)
+    for (var n = 0; n < train.length; n++) { var c = train[(k + n) % train.length]; if (!doneThisWeek(c.id)) return state.days.indexOf(c); }
     return state.days.indexOf(train[k]);
   }
   function selectPlan(plan, manual) {
@@ -215,21 +217,36 @@
     if (!saved) { saved = isoDate(new Date()); store.set('start.' + plan.id, saved); }
     return new Date(saved + 'T12:00');
   }
+  // Schede mensili: blocchi di 4 settimane (lun–dom) dal primo lunedì del mese; i giorni prima contano come settimana 1.
+  // Programmi a durata (plan.weeks, es. Viviana): settimane dal primo allenamento.
   function planWeek(plan) {
-    var m0 = mondayOf(planStart(plan));
-    var w = Math.floor((mondayOf(new Date()) - m0) / (7 * DAY_MS)) + 1;
-    var tot = plan.weeks || 0;
-    if (!tot && plan.months && plan.months.length < 12) {
-      var last = plan.months[plan.months.length - 1];
-      var end = new Date(new Date().getFullYear(), last, 0);
-      tot = Math.floor((mondayOf(end) - m0) / (7 * DAY_MS)) + 1;
+    var today = mondayOf(new Date());
+    if (plan.months && plan.months.length < 12) {
+      var st = planStart(plan), m0 = mondayOf(st);
+      if (m0 < st) m0 = new Date(m0.getFullYear(), m0.getMonth(), m0.getDate() + 7);
+      var w = today < m0 ? 1 : Math.floor((today - m0) / (7 * DAY_MS)) + 1;
+      var tot = plan.weeks || 4;
+      return { n: ((w - 1) % tot) + 1, tot: tot };
     }
-    return { n: Math.max(1, w), tot: tot };
+    var w2 = Math.floor((today - mondayOf(planStart(plan))) / (7 * DAY_MS)) + 1;
+    return { n: Math.max(1, w2), tot: plan.weeks || 0 };
+  }
+  // Giorno della scheda a cui si riferisce una registrazione (anche quelle vecchie senza dayId, dal testo «Ottobre · Day 1»)
+  function entryDayId(x) {
+    if (x.type !== 'Allenamento') return null;
+    if (x.dayId) return x.planId === state.plan.id ? x.dayId : null;
+    var lab = x.label || '';
+    if (lab.indexOf(state.plan.name) < 0) return null;
+    for (var i = 0; i < state.days.length; i++) {
+      var t = state.days[i].tab;
+      if (new RegExp('(^|\\W)' + t.replace(/\s+/g, '\\s*') + '(\\W|$)', 'i').test(lab)) return state.days[i].id;
+    }
+    return null;
   }
   // Ultima volta che un giorno è stato fatto (registrato da «Registra allenamento»)
   function lastDone(dayId) {
     var log = getLog();
-    for (var i = log.length - 1; i >= 0; i--) if (log[i].planId === state.plan.id && log[i].dayId === dayId) return log[i];
+    for (var i = log.length - 1; i >= 0; i--) if (entryDayId(log[i]) === dayId) return log[i];
     return null;
   }
   function doneThisWeek(dayId) { var l = lastDone(dayId); return l && l.when.slice(0, 10) >= isoDate(mondayOf(new Date())) ? l : null; }
@@ -250,7 +267,7 @@
   function renderTabs() {
     var nav = $('tabs'), nxt = nextDayIndex();
     nav.innerHTML = state.days.map(function (d, i) {
-      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + (d.id !== 'yoga' && doneThisWeek(d.id) ? '✓ ' : '') + esc(d.tab) + '</button>';
+      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + esc(d.tab) + '</button>';
     }).join('');
     nav.onclick = function (e) {
       var b = e.target.closest('.tab'); if (!b) return;
@@ -721,6 +738,8 @@
       '<label class="f-l">Tipo</label>' + chips('type', TYPES, type) +
       '<div id="fStop" class="f-group"><label class="f-l">Motivo dello stop</label>' + chips('reason', STOP_REASONS, 'Infortunio') +
       '<label class="f-l" for="fUntil">Fino al (compreso)</label><input class="f-in" id="fUntil" type="date" value="' + isoDate(addDays(new Date(), 2)) + '"></div>' +
+      (ref ? '' : '<div id="fDayBox" class="f-group"><label class="f-l">Giorno della scheda ' + esc(state.plan.name) + '</label>' +
+        chips('dayref', state.days.filter(function (d) { return d.id !== 'yoga'; }).map(function (d) { return d.tab; }).concat(['Altro']), 'Altro') + '</div>') +
       '<div id="fAct" class="f-group"><label class="f-l" for="fLabel">Cosa</label><input class="f-in" id="fLabel" value="' + esc(label || '') + '" placeholder="es. Day 1, seduta fisio…">' +
       '<label class="f-l">Luogo</label>' + chips('place', PLACES, lastPlace) +
       '<div class="f-two"><div><label class="f-l" for="fDur">Minuti</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo"></div>' +
@@ -734,6 +753,7 @@
     var setMode = function (t) {
       $('fStop').hidden = t !== 'Stop';
       $('fAct').hidden = t === 'Stop' || t === 'Nota';
+      if ($('fDayBox')) $('fDayBox').hidden = t !== 'Allenamento';
       $('fNote').placeholder = t === 'Stop' ? 'es. distorsione caviglia, 38° di febbre…' : t === 'Nota' ? 'scrivi la tua nota' : 'come è andata, dolori, sensazioni…';
     };
     setMode(type);
@@ -766,6 +786,10 @@
       if (act && +$('fKcal').value) entry.kcal = +$('fKcal').value;
       if (ref && t === 'Allenamento') entry.week = planWeek(state.plan).n;
       if (t === 'Stop') { entry.reason = val('reason'); entry.until = $('fUntil').value || entry.when.slice(0, 10); entry.label = entry.reason; }
+      if (!ref && t === 'Allenamento') {
+        var dr = val('dayref'), dd = state.days.filter(function (d) { return d.tab === dr; })[0];
+        if (dd) { ref = { planId: state.plan.id, dayId: dd.id }; if (!entry.label) entry.label = state.plan.name + ' · ' + dd.tab; }
+      }
       if (ref && t === 'Allenamento') { entry.planId = ref.planId; entry.dayId = ref.dayId; }
       var log = getLog(); log.push(entry);
       log.sort(function (a, b) { return a.when < b.when ? -1 : 1; });
