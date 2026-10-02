@@ -87,6 +87,7 @@ Day 4 — Intervals + Arms
 - Promemoria (in app, nessun server): se non ci si allena da ≥2 giorni compare un avviso con frase motivazionale (program.json → motivation). "Programma" salva il prossimo allenamento e scarica un evento .ics con avviso 30' prima, così la notifica arriva dal Calendario dell'iPhone. Notifiche push vere richiedono un server (possibile con Cloudflare Workers).
 - Diario: tipi Allenamento, Padel, Corsa, Yoga (contano come allenamento), Fisioterapia, Nota, Stop (motivo + "fino al"). Durante uno stop niente avvisi.
 - Pagina del giorno: "⇄ Inverti con…" scambia due giorni (stesso ordine del menu Scheda); "✓ Fatto …" se registrato questa settimana, ✓ anche sul tab.
+- Inizio della settimana scelto dall'atleta nel menu Scheda (localStorage weekStart, 0=dom … 6=sab, default lunedì): vale per il conteggio settimane e le statistiche settimanali.
 - Settimana della scheda: schede mensili = blocchi di 4 settimane lun–dom dal primo lunedì del mese (i giorni prima contano come sett. 1; poi si ricomincia da 1). Programmi a durata (plan.weeks, es. Viviana 7) = settimane dal primo allenamento.
 - Il ✓ "fatto" (nero) vale per il GIRO in corso (si azzera quando tutti i giorni sono fatti o si ripete un giorno), non per la settimana di calendario. ✓ e "prossimo" riconoscono anche le registrazioni senza dayId dal testo («Ottobre · Day 1»). Il prossimo salta i giorni già fatti in settimana.
 - Registra: minuti e kcal (Apple Watch) + pulsante "Incolla" che legge un testo tipo «45 min 420 kcal». Una web app non può leggere Apple Salute direttamente.

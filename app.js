@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.9.1';
+  var APP_VERSION = '1.10.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -161,6 +161,9 @@
     }).join('') + '<p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p>' +
       '<h3 class="coach-h">Ordine dei giorni · ' + esc(state.plan.name) + '</h3><div id="ordList" class="ord-list"></div>' +
       '<button class="btn-ghost-dark" id="ordReset">Ripristina ordine originale</button>' +
+      '<h3 class="coach-h">La mia settimana inizia di</h3><div class="chips" id="wsChips">' +
+      [1, 2, 3, 4, 5, 6, 0].map(function (g) { return '<button type="button" data-ws="' + g + '" aria-pressed="' + (g === weekStartDay()) + '">' + ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'][g] + '</button>'; }).join('') +
+      '</div><p class="plan-hint">Es. se giochi il venerdì e riparti la domenica, scegli Dom. Cambia il conteggio «Settimana N di 4» e le statistiche settimanali.</p>' +
       (lsGet('trainaldo-coach') ? '<h3 class="coach-h">Atleta (solo per l\'allenatore)</h3><div class="plan-list" id="athList"></div>' : '') + '</div>';
     showSheet();
     var drawOrd = function () {
@@ -172,6 +175,12 @@
       }).join('');
     };
     drawOrd();
+    $('wsChips').onclick = function (ev) {
+      var b = ev.target.closest('[data-ws]'); if (!b) return;
+      store.set('weekStart', +b.dataset.ws);
+      $('wsChips').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      renderTabs(); renderDay();
+    };
     $('ordList').onclick = function (ev) {
       var b = ev.target.closest('[data-mv]'); if (!b) return;
       var list = state.days.filter(function (d) { return d.id !== 'yoga'; }).map(function (d) { return d.id; });
@@ -207,7 +216,9 @@
   $('planBtn').onclick = function () { if (state.program) openPlans(); };
 
   /* ---------- Settimana della scheda e allenamenti fatti ---------- */
-  function mondayOf(d) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+  // Inizio della «mia settimana»: di default lunedì, ma l'atleta può sceglierlo (es. domenica se gioca il venerdì)
+  function weekStartDay() { return +store.get('weekStart', 1); }   // 0 = domenica … 6 = sabato
+  function mondayOf(d) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() - weekStartDay() + 7) % 7)); return x; }
   function planStart(plan) {
     if (plan.start) return new Date(plan.start + 'T12:00');
     if (plan.months && plan.months.length < 12) return new Date(new Date().getFullYear(), plan.months[0] - 1, 1);
@@ -815,7 +826,7 @@
 
   function openDiary(flash) {
     var log = getLog(), now = new Date();
-    var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
+    var monday = mondayOf(now);
     var mStart = isoDate(new Date(now.getFullYear(), now.getMonth(), 1)), wStart = isoDate(monday);
     var isAct = function (x) { return ACTIVE.indexOf(x.type) >= 0; };
     var inMonth = log.filter(function (x) { return x.when.slice(0, 10) >= mStart && x.type !== 'Nota'; });
