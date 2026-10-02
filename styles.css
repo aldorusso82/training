@@ -343,3 +343,15 @@ img { display: block; max-width: 100%; }
 .ord-row span { flex: 1; }
 .ord-row button { width: 44px; height: 44px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); font-size: 16px; }
 .ord-row button:disabled { opacity: .3; }
+
+/* ---------- Fatto, inverti, settimana, kcal ---------- */
+.day-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -6px 0 12px; }
+.done-flag { background: var(--green); color: #fff; font-weight: 800; border-radius: 10px; padding: 6px 10px; font-size: 15px; }
+.done-last { color: var(--ink-2); font-size: 15px; }
+.swap-btn { margin-left: auto; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--red); border-radius: 12px; background: #fff; color: var(--red); font-weight: 800; }
+.swap-row { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; margin-bottom: 14px; display: grid; gap: 8px; }
+.swap-row[hidden] { display: none; }
+.swap-row small { font-weight: 700; color: var(--ink-2); }
+.f-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.f-two > div { display: grid; gap: 6px; }
+.chips.multi button { min-width: 48px; }

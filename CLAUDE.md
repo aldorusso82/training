@@ -86,6 +86,10 @@ Day 4 — Intervals + Arms
 - Giorni: l'app apre il "prossimo" giorno (quello dopo l'ultimo Allenamento registrato con planId/dayId). Padel, Corsa, Stop non fanno avanzare. Ordine dei giorni modificabile nel menu Scheda (localStorage order.<planId>).
 - Promemoria (in app, nessun server): se non ci si allena da ≥2 giorni compare un avviso con frase motivazionale (program.json → motivation). "Programma" salva il prossimo allenamento e scarica un evento .ics con avviso 30' prima, così la notifica arriva dal Calendario dell'iPhone. Notifiche push vere richiedono un server (possibile con Cloudflare Workers).
 - Diario: tipi Allenamento, Padel, Corsa, Yoga (contano come allenamento), Fisioterapia, Nota, Stop (motivo + "fino al"). Durante uno stop niente avvisi.
+- Pagina del giorno: "⇄ Inverti con…" scambia due giorni (stesso ordine del menu Scheda); "✓ Fatto …" se registrato questa settimana, ✓ anche sul tab.
+- Settimana della scheda: "Settimana N di M" (piani a mesi: dal lunedì della settimana del 1° mese; altri piani: plan.start o primo allenamento registrato; M = plan.weeks se presente).
+- Registra: minuti e kcal (Apple Watch) + pulsante "Incolla" che legge un testo tipo «45 min 420 kcal». Una web app non può leggere Apple Salute direttamente.
+- Programma: promemoria ripetibili ogni settimana (RRULE nel .ics). Notifiche push vere = server (Cloudflare Worker + Web Push), non ancora fatto.
 
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.

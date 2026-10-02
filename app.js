@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.7.0';
+  var APP_VERSION = '1.8.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -204,11 +204,53 @@
   }
   $('planBtn').onclick = function () { if (state.program) openPlans(); };
 
+  /* ---------- Settimana della scheda e allenamenti fatti ---------- */
+  function mondayOf(d) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+  function planStart(plan) {
+    if (plan.start) return new Date(plan.start + 'T12:00');
+    if (plan.months && plan.months.length < 12) return new Date(new Date().getFullYear(), plan.months[0] - 1, 1);
+    var log = getLog();
+    for (var i = 0; i < log.length; i++) if (log[i].planId === plan.id) return new Date(log[i].when.slice(0, 10) + 'T12:00');
+    var saved = store.get('start.' + plan.id, '');
+    if (!saved) { saved = isoDate(new Date()); store.set('start.' + plan.id, saved); }
+    return new Date(saved + 'T12:00');
+  }
+  function planWeek(plan) {
+    var m0 = mondayOf(planStart(plan));
+    var w = Math.floor((mondayOf(new Date()) - m0) / (7 * DAY_MS)) + 1;
+    var tot = plan.weeks || 0;
+    if (!tot && plan.months && plan.months.length < 12) {
+      var last = plan.months[plan.months.length - 1];
+      var end = new Date(new Date().getFullYear(), last, 0);
+      tot = Math.floor((mondayOf(end) - m0) / (7 * DAY_MS)) + 1;
+    }
+    return { n: Math.max(1, w), tot: tot };
+  }
+  // Ultima volta che un giorno è stato fatto (registrato da «Registra allenamento»)
+  function lastDone(dayId) {
+    var log = getLog();
+    for (var i = log.length - 1; i >= 0; i--) if (log[i].planId === state.plan.id && log[i].dayId === dayId) return log[i];
+    return null;
+  }
+  function doneThisWeek(dayId) { var l = lastDone(dayId); return l && l.when.slice(0, 10) >= isoDate(mondayOf(new Date())) ? l : null; }
+  function swapDays(a, b) {
+    var list = state.days.filter(function (d) { return d.id !== 'yoga'; }).map(function (d) { return d.id; });
+    var i = list.indexOf(a), j = list.indexOf(b); if (i < 0 || j < 0) return;
+    list[i] = b; list[j] = a;
+    store.set('order.' + state.plan.id, list);
+    var curId = state.days[state.day] && state.days[state.day].id;
+    state.days = orderDays(state.plan, resolveDays(state.plan));
+    if (state.program.yoga) state.days.push(buildYogaDay());
+    state.day = Math.max(0, state.days.map(function (d) { return d.id; }).indexOf(curId));
+    store.set('day', state.day);
+    renderTabs(); renderDay();
+  }
+
   /* ---------- Tab ---------- */
   function renderTabs() {
     var nav = $('tabs'), nxt = nextDayIndex();
     nav.innerHTML = state.days.map(function (d, i) {
-      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + esc(d.tab) + '</button>';
+      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + (d.id !== 'yoga' && doneThisWeek(d.id) ? '✓ ' : '') + esc(d.tab) + '</button>';
     }).join('');
     nav.onclick = function (e) {
       var b = e.target.closest('.tab'); if (!b) return;
@@ -280,9 +322,19 @@
   function renderDay() {
     var day = state.days[state.day];
     var cur = currentSections(day);
-    var h = '<h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
+    var wk = planWeek(state.plan);
+    var h = '<h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name + ' · Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '')) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
       (day.optional ? ' <span class="opt">opzionale</span>' : '') +
       (state.days.indexOf(day) === nextDayIndex() && day.id !== 'yoga' ? ' <span class="opt nxt">prossimo</span>' : '') + '</h1>';
+    if (day.id !== 'yoga') {
+      var dn = lastDone(day.id), dw = doneThisWeek(day.id);
+      var others = state.days.filter(function (d) { return d.id !== 'yoga' && d.id !== day.id; });
+      h += '<div class="day-tools">' +
+        (dw ? '<span class="done-flag">✓ Fatto ' + esc(fmtWhen(dw.when)) + '</span>' : dn ? '<span class="done-last">Ultima volta: ' + esc(fmtWhen(dn.when)) + '</span>' : '') +
+        (others.length ? '<button class="swap-btn" id="swapBtn">⇄ Inverti con…</button>' : '') + '</div>' +
+        '<div class="swap-row" id="swapRow" hidden><small>Scambia il ' + esc(day.tab) + ' con:</small><div class="chips">' +
+        others.map(function (d) { return '<button type="button" data-swap="' + esc(d.id) + '">' + esc(d.tab) + '</button>'; }).join('') + '</div></div>';
+    }
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
     if (day.sameAs) h += '<div class="note-box"><b>Uguale</b> alla scheda ' + esc(day.sameAs) + '.</div>';
@@ -324,6 +376,10 @@
       b.onclick = function () { openLogForm(b.dataset.alt, b.dataset.alt === 'Stop' ? '' : b.dataset.alt); };
     });
     bindReminder();
+    if ($('swapBtn')) {
+      $('swapBtn').onclick = function () { $('swapRow').hidden = !$('swapRow').hidden; };
+      $('swapRow').onclick = function (ev) { var b = ev.target.closest('[data-swap]'); if (b) swapDays(day.id, b.dataset.swap); };
+    }
 
     var sw = main.querySelector('.switch');
     if (sw) sw.onclick = function (e) {
@@ -604,14 +660,19 @@
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
       '<label class="f-l" for="pWhen">Quando</label><input class="f-in" id="pWhen" type="datetime-local" value="' + localDT(tmr) + '">' +
       '<label class="f-l">Cosa</label>' + chips('pday', train.map(function (d) { return d.tab; }).concat(['Padel', 'Corsa']), nx ? nx.tab : '') +
-      '<p class="muted small">Dopo il salvataggio si apre il Calendario dell\'iPhone: tocca «Aggiungi» e riceverai l\'avviso 30 minuti prima.</p>' +
+      '<label class="f-l">Ripeti ogni settimana (facoltativo)</label><div class="chips multi" id="pRep">' +
+        ['LU', 'MA', 'ME', 'GI', 'VE', 'SA', 'DO'].map(function (g) { return '<button type="button" aria-pressed="false" data-v="' + g + '">' + g + '</button>'; }).join('') + '</div>' +
+      '<p class="muted small">Dopo il salvataggio si apre il Calendario dell\'iPhone: tocca «Aggiungi». L\'avviso arriva 30 minuti prima come notifica, anche ad app chiusa. Con i giorni selezionati il promemoria si ripete ogni settimana.</p>' +
       '<button class="btn-big btn-red" id="pSave">Salva e aggiungi al calendario</button></div>';
     showSheet();
     var c = $('sheetBody').querySelector('.chips');
     c.onclick = function (ev) { var b = ev.target.closest('button'); if (!b) return; c.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); };
+    $('pRep').onclick = function (ev) { var b = ev.target.closest('button'); if (b) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); };
     $('pSave').onclick = function () {
       var sel = c.querySelector('[aria-pressed="true"]');
-      var pl = { when: $('pWhen').value, label: sel ? sel.dataset.v : '' };
+      var MAP = { LU: 'MO', MA: 'TU', ME: 'WE', GI: 'TH', VE: 'FR', SA: 'SA', DO: 'SU' };
+      var rep = [].map.call($('pRep').querySelectorAll('[aria-pressed="true"]'), function (b) { return MAP[b.dataset.v]; });
+      var pl = { when: $('pWhen').value, label: sel ? sel.dataset.v : '', repeat: rep };
       if (!pl.when) return;
       store.set('planned', pl); store.set('remindSnooze', '');
       downloadIcs(pl);
@@ -620,14 +681,20 @@
   }
   // Evento calendario con avviso: il Calendario dell'iPhone fa da notifica
   function downloadIcs(pl) {
-    var d = new Date(pl.when), e = new Date(d.getTime() + 60 * 60000);
+    var d = new Date(pl.when);
+    if (pl.repeat && pl.repeat.length) {   // la prima data deve cadere in uno dei giorni scelti
+      var codes = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+      for (var g = 0; g < 7 && pl.repeat.indexOf(codes[d.getDay()]) < 0; g++) d.setDate(d.getDate() + 1);
+    }
+    var e = new Date(d.getTime() + 60 * 60000);
     var f = function (x) { return x.getUTCFullYear() + ('0' + (x.getUTCMonth() + 1)).slice(-2) + ('0' + x.getUTCDate()).slice(-2) + 'T' + ('0' + x.getUTCHours()).slice(-2) + ('0' + x.getUTCMinutes()).slice(-2) + '00Z'; };
     var who = state.program.athleteName ? ' · ' + state.program.athleteName : '';
     var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//TRAIN.ALDO//IT', 'BEGIN:VEVENT',
       'UID:' + Date.now() + '@trainaldo', 'DTSTAMP:' + f(new Date()), 'DTSTART:' + f(d), 'DTEND:' + f(e),
       'SUMMARY:Allenamento ' + (pl.label || '') + who, 'DESCRIPTION:' + motivation().replace(/[,;]/g, ' ') + '\\nApri TRAIN: ' + location.origin + location.pathname,
+    ].concat(pl.repeat && pl.repeat.length ? ['RRULE:FREQ=WEEKLY;BYDAY=' + pl.repeat.join(',')] : []).concat([
       'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Tra 30 minuti: allenamento!', 'END:VALARM',
-      'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+      'END:VEVENT', 'END:VCALENDAR']).join('\r\n');
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
     a.download = 'allenamento.ics';
@@ -656,7 +723,9 @@
       '<label class="f-l" for="fUntil">Fino al (compreso)</label><input class="f-in" id="fUntil" type="date" value="' + isoDate(addDays(new Date(), 2)) + '"></div>' +
       '<div id="fAct" class="f-group"><label class="f-l" for="fLabel">Cosa</label><input class="f-in" id="fLabel" value="' + esc(label || '') + '" placeholder="es. Day 1, seduta fisio…">' +
       '<label class="f-l">Luogo</label>' + chips('place', PLACES, lastPlace) +
-      '<label class="f-l" for="fDur">Durata (minuti)</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo"></div>' +
+      '<div class="f-two"><div><label class="f-l" for="fDur">Minuti</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo"></div>' +
+      '<div><label class="f-l" for="fKcal">Calorie (kcal)</label><input class="f-in" id="fKcal" type="number" inputmode="numeric" min="0" placeholder="da Apple Watch"></div></div>' +
+      '<button type="button" class="btn-ghost-dark" id="fPaste">📋 Incolla minuti e calorie (Apple Watch)</button></div>' +
       '<label class="f-l" for="fWhen">Data e ora</label><input class="f-in" id="fWhen" type="datetime-local" value="' + localDT(new Date()) + '">' +
       '<label class="f-l" for="fNote">Note</label><textarea class="f-in" id="fNote" rows="3" placeholder="come è andata, dolori, sensazioni…"></textarea>' +
       '<button class="btn-big btn-red" id="fSave">Salva</button></div>';
@@ -668,6 +737,17 @@
       $('fNote').placeholder = t === 'Stop' ? 'es. distorsione caviglia, 38° di febbre…' : t === 'Nota' ? 'scrivi la tua nota' : 'come è andata, dolori, sensazioni…';
     };
     setMode(type);
+    // Incolla: legge un testo tipo «45 min 420 kcal» copiato da Fitness o da un Comando rapido
+    $('fPaste').onclick = function () {
+      var apply = function (t) {
+        var m = (t || '').match(/(\d+[.,]?\d*)\s*(?:min|minuti|'|m\b)/i), k = (t || '').match(/(\d+[.,]?\d*)\s*(?:kcal|cal)/i);
+        if (m) $('fDur').value = Math.round(parseFloat(m[1].replace(',', '.')));
+        if (k) $('fKcal').value = Math.round(parseFloat(k[1].replace(',', '.')));
+        if (!m && !k) alert('Non ho trovato minuti o calorie negli appunti. Copia un testo tipo «45 min 420 kcal».');
+      };
+      if (navigator.clipboard && navigator.clipboard.readText) navigator.clipboard.readText().then(apply, function () { apply(prompt('Incolla qui il testo (es. 45 min 420 kcal):') || ''); });
+      else apply(prompt('Incolla qui il testo (es. 45 min 420 kcal):') || '');
+    };
     body.querySelectorAll('.chips').forEach(function (c) {
       c.onclick = function (ev) {
         var b = ev.target.closest('button'); if (!b) return;
@@ -683,6 +763,8 @@
       var t = val('type'), act = t !== 'Stop' && t !== 'Nota';
       var entry = { id: Date.now(), when: $('fWhen').value || localDT(new Date()), type: t,
         place: act ? val('place') : '', label: act ? $('fLabel').value.trim() : '', dur: act ? (+$('fDur').value || 0) : 0, note: $('fNote').value.trim() };
+      if (act && +$('fKcal').value) entry.kcal = +$('fKcal').value;
+      if (ref && t === 'Allenamento') entry.week = planWeek(state.plan).n;
       if (t === 'Stop') { entry.reason = val('reason'); entry.until = $('fUntil').value || entry.when.slice(0, 10); entry.label = entry.reason; }
       if (ref && t === 'Allenamento') { entry.planId = ref.planId; entry.dayId = ref.dayId; }
       var log = getLog(); log.push(entry);
@@ -723,6 +805,8 @@
       '<div class="stats"><div class="stat"><b>' + inWeek.length + '</b><small>allenamenti settimana</small></div>' +
       '<div class="stat"><b>' + inMonth.filter(isAct).length + '</b><small>allenamenti mese</small></div>' +
       '<div class="stat"><b>' + stopDays + '</b><small>giorni di stop (mese)</small></div></div>' +
+      '<div class="d-row"><small>Questo mese</small><span class="pill">Minuti <b>' + inMonth.reduce(function (a, x) { return a + (x.dur || 0); }, 0) + '</b></span>' +
+        '<span class="pill">Calorie <b>' + inMonth.reduce(function (a, x) { return a + (x.kcal || 0); }, 0) + ' kcal</b></span></div>' +
       '<div class="d-row"><small>Luogo (mese)</small>' + pills(byPlace) + '</div>' +
       '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
       '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button>' +
@@ -740,7 +824,7 @@
         return '<div class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : '') + '"><div class="e-top"><b>' + fmtD(d[0]) + '</b> · ' + esc(d[1] || '') + ' · <span class="e-type">' + esc(x.type) + '</span>' +
           (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') +
           '<button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕</button></div>' +
-          '<div>' + esc(x.label || '') + (x.place ? ' · ' + esc(x.place) : '') + (x.dur ? ' · ' + x.dur + "'" : '') + '</div>' +
+          '<div>' + esc(x.label || '') + (x.place ? ' · ' + esc(x.place) : '') + (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '') + (x.week ? ' · sett. ' + x.week : '') + '</div>' +
           (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') + '</div>';
       }).join('') : '<p class="muted">Ancora nessun allenamento registrato.</p>') +
       '<button class="btn-ghost-dark" id="dExport">Esporta backup dei dati</button>' +
