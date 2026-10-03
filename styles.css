@@ -423,3 +423,12 @@ body.has-tbar .main, body.has-tbar .foot { padding-bottom: calc(var(--safe-b) + 
 .music-big.off { background: #eee4da; color: var(--ink-2); font-weight: 600; font-size: 15px; }
 .music-edit { margin-top: 10px; }
 .music-edit summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; color: var(--red); cursor: pointer; }
+
+/* ---------- ⏱ timer libero e lettore musica ---------- */
+.timer-ico { width: 44px; height: 44px; border: 0; border-radius: 12px; background: var(--ink); color: #fff; font-size: 20px; }
+.f-three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.f-three > div { display: grid; gap: 6px; }
+.music-row { display: flex; gap: 8px; }
+.music-row .music-big { flex: 1; }
+.music-here { min-height: 56px; padding: 0 14px; border: 2px solid #1db954; border-radius: 14px; background: #fff; color: #138a3e; font-weight: 800; }
+.music-frame { width: 100%; height: 380px; border: 0; border-radius: 14px; margin-top: 12px; background: #000; }

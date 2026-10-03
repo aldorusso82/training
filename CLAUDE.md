@@ -95,6 +95,7 @@ Day 4 — Intervals + Arms
 
 - Timer recupero: campanello a 15'' dalla fine; a tutto schermo o ridotto a banner in basso (preferenza nel menu Scheda).
 - 📝 Nota per il coach su ogni esercizio (exnote.<ex>) + «💬 Invia sensazioni al coach» = messaggio WhatsApp precompilato (wa.me senza numero). Playlist preferite (Forza/Cardio/Yoga): icona verde 🎵 accanto a «Inverti con…» in ogni giorno (anche Yoga) → scelta playlist e impostazione link; link anche nel menu Scheda.
+- ⏱ Timer libero (icona accanto a 🎵): Tabata 20/10×8, EMOM, intervalli personalizzati (lavoro/recupero/giri) con il timer guidato. Nel foglio 🎵 «Ascolta qui» = lettore Spotify/YouTube incorporato (limiti: si ferma a schermo bloccato, Spotify senza login = anteprime 30'').
 
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.

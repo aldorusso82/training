@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.12.0';
+  var APP_VERSION = '1.13.0';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {} };
 
@@ -385,12 +385,12 @@
       var others = state.days.filter(function (d) { return d.id !== 'yoga' && d.id !== day.id; });
       h += '<div class="day-tools">' +
         (dw ? '<span class="done-flag">✓ Fatto ' + esc(fmtWhen(dw.when)) + '</span>' : dn ? '<span class="done-last">Ultima volta: ' + esc(fmtWhen(dn.when)) + '</span>' : '') +
-        '<span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button>' +
+        '<span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button>' +
         (others.length ? '<button class="swap-btn" id="swapBtn">⇄ Inverti con…</button>' : '') + '</span></div>' +
         '<div class="swap-row" id="swapRow" hidden><small>Scambia il ' + esc(day.tab) + ' con:</small><div class="chips">' +
         others.map(function (d) { return '<button type="button" data-swap="' + esc(d.id) + '">' + esc(d.tab) + '</button>'; }).join('') + '</div></div>';
     } else {
-      h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button></span></div>';
+      h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
     }
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
@@ -425,6 +425,7 @@
     var main = $('main');
     main.innerHTML = h;
     $('musicBtn').onclick = function () { openMusic(day); };
+    $('freeTimerBtn').onclick = function () { openFreeTimer(); };
     if ($('waBtn')) $('waBtn').onclick = function () { openCoachMessage(day, cur); };
     $('logBtn').onclick = function () {
       var v = day.variants ? ' · ' + cur.label : '';
@@ -816,15 +817,24 @@
     $('sheetTitle').textContent = '🎵 Musica';
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
       list.map(function (x) {
-        return m[x.id] ? '<a class="music-big" href="' + esc(m[x.id]) + '" target="_blank" rel="noopener">▶ ' + x.label + '</a>'
+        var emb = embedUrl(m[x.id]);
+        return m[x.id] ? '<div class="music-row"><a class="music-big" href="' + esc(m[x.id]) + '" target="_blank" rel="noopener">▶ ' + x.label + '</a>' +
+          (emb ? '<button class="music-here" data-emb="' + esc(emb) + '">Ascolta qui</button>' : '') + '</div>'
           : '<div class="music-big off">' + x.label + ' · link non impostato</div>';
       }).join('') +
       '<details class="music-edit"' + (MUSIC.some(function (x) { return m[x.id]; }) ? '' : ' open') + '><summary>Imposta i link delle playlist</summary>' +
       MUSIC.map(function (x) {
         return '<label class="f-l" for="mu2_' + x.id + '">' + x.label + '</label><input class="f-in" id="mu2_' + x.id + '" data-music="' + x.id + '" inputmode="url" placeholder="incolla il link (Spotify, Apple Music, YouTube Music)" value="' + esc(m[x.id] || '') + '">';
       }).join('') +
-      '<p class="plan-hint">In Spotify: playlist → ··· → Condividi → Copia link.</p><button class="btn-big btn-red" id="muSave">Salva</button></details></div>';
+      '<p class="plan-hint">In Spotify: playlist → ··· → Condividi → Copia link.</p><button class="btn-big btn-red" id="muSave">Salva</button></details>' +
+      '<div id="muPlayer"></div>' +
+      '<p class="plan-hint">«▶» apre l\'app Spotify: suona anche a schermo spento (consigliato). «Ascolta qui» suona dentro TRAIN, ma si ferma se chiudi questa finestra o blocchi il telefono; con Spotify senza accesso nel browser fa sentire solo 30 secondi per brano.</p></div>';
     showSheet();
+    $('sheetBody').querySelectorAll('[data-emb]').forEach(function (b) {
+      b.onclick = function () {
+        $('muPlayer').innerHTML = '<iframe class="music-frame" src="' + b.dataset.emb + '" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
+      };
+    });
     $('muSave').onclick = function () {
       var mm = store.get('music', {});
       $('sheetBody').querySelectorAll('[data-music]').forEach(function (inp) { mm[inp.dataset.music] = inp.value.trim(); });
@@ -833,6 +843,55 @@
     };
   }
 
+
+  // Link playlist → lettore incorporabile (Spotify o YouTube); altri servizi solo con link esterno
+  function embedUrl(u) {
+    if (!u) return '';
+    var m = u.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(playlist|album|artist|track)\/([A-Za-z0-9]+)/);
+    if (m) return 'https://open.spotify.com/embed/' + m[1] + '/' + m[2];
+    m = u.match(/[?&]list=([A-Za-z0-9_-]+)/);
+    if (m && /youtu/.test(u)) return 'https://www.youtube-nocookie.com/embed/videoseries?list=' + m[1];
+    return '';
+  }
+
+  /* ---------- ⏱ Timer libero: Tabata, EMOM, intervalli personalizzati ---------- */
+  function openFreeTimer() {
+    var t = store.get('freeTimer', { work: 20, rest: 10, rounds: 8 });
+    $('sheetTitle').textContent = '⏱ Timer';
+    $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
+      '<label class="f-l">Modello</label><div class="chips" id="ftPre">' +
+      '<button type="button" data-p="20,10,8">Tabata 20/10 ×8</button><button type="button" data-p="60,0,10">EMOM 10\'</button>' +
+      '<button type="button" data-p="40,20,6">40/20 ×6</button><button type="button" data-p="30,30,10">30/30 ×10</button></div>' +
+      '<div class="f-three"><div><label class="f-l" for="ftW">Lavoro (sec)</label><input class="f-in" id="ftW" type="number" inputmode="numeric" min="5" value="' + t.work + '"></div>' +
+      '<div><label class="f-l" for="ftR">Recupero (sec)</label><input class="f-in" id="ftR" type="number" inputmode="numeric" min="0" value="' + t.rest + '"></div>' +
+      '<div><label class="f-l" for="ftN">Giri</label><input class="f-in" id="ftN" type="number" inputmode="numeric" min="1" value="' + t.rounds + '"></div></div>' +
+      '<p class="muted small" id="ftTot"></p>' +
+      '<button class="btn-big btn-red" id="ftGo">Avvia</button>' +
+      '<p class="plan-hint">Segnale a ogni cambio, 3-2-1 prima della fine, campanello a 15\'\' nelle fasi lunghe. Puoi usarlo per tabata, circuiti metabolici o qualsiasi esercizio a tempo.</p></div>';
+    showSheet();
+    var tot = function () {
+      var w = +$('ftW').value || 0, r = +$('ftR').value || 0, n = +$('ftN').value || 0;
+      var sTot = n * w + Math.max(0, n - 1) * r;
+      $('ftTot').textContent = 'Durata totale: ' + fmtClock(sTot);
+    };
+    ['ftW', 'ftR', 'ftN'].forEach(function (id) { $(id).oninput = tot; }); tot();
+    $('ftPre').onclick = function (ev) {
+      var b = ev.target.closest('[data-p]'); if (!b) return;
+      var v = b.dataset.p.split(','); $('ftW').value = v[0]; $('ftR').value = v[1]; $('ftN').value = v[2]; tot();
+    };
+    $('ftGo').onclick = function () {
+      var w = Math.max(5, +$('ftW').value || 20), r = Math.max(0, +$('ftR').value || 0), n = Math.max(1, +$('ftN').value || 1);
+      store.set('freeTimer', { work: w, rest: r, rounds: n });
+      var ph = [];
+      for (var i = 1; i <= n; i++) {
+        ph.push({ title: 'LAVORO', step: 'Giro ' + i + ' di ' + n, sec: w, kind: 'work' });
+        if (r && i < n) ph.push({ title: 'RECUPERO', step: 'Giro ' + i + ' di ' + n, sec: r, kind: 'rest' });
+      }
+      closeSheet(false);
+      unlockAudio();
+      startGuided(null, ph);
+    };
+  }
 
   /* ---------- Diario: allenamenti, fisioterapia, progressi ---------- */
   var PLACES = ['Palestra', 'Casa', 'Aperto', 'Campo'];
@@ -1159,9 +1218,10 @@
     }
     return ph;
   }
-  function startGuided(si) {
-    var sec = daySections(state.days[state.day])[si]; if (!sec) return;
-    I.phases = buildPhases(sec); if (!I.phases.length) return;
+  function startGuided(si, phases) {
+    if (phases) I.phases = phases;
+    else { var sec = daySections(state.days[state.day])[si]; if (!sec) return; I.phases = buildPhases(sec); }
+    if (!I.phases.length) return;
     I.total = I.phases.reduce(function (a, p) { return a + p.sec; }, 0);
     I.idx = 0; I.paused = false; I.bellIdx = -1;
     iv.hidden = false;
