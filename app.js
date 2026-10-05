@@ -441,6 +441,13 @@
       $('swapRow').onclick = function (ev) { var b = ev.target.closest('[data-swap]'); if (b) swapDays(day.id, b.dataset.swap); };
     }
 
+    main.querySelectorAll('.alt-pick').forEach(function (ap) {
+      ap.onclick = function (ev) {
+        var b = ev.target.closest('[data-alt]'); if (!b) return;
+        store.set('alt.' + state.plan.id + '/' + day.id + '.' + ap.dataset.altk, b.dataset.alt);
+        var y = window.scrollY; renderDay(); window.scrollTo(0, y);
+      };
+    });
     var sw = main.querySelector('.switch');
     if (sw) sw.onclick = function (e) {
       var b = e.target.closest('button'); if (!b) return;
@@ -472,7 +479,17 @@
     }
     if (sec.info) head += '<div class="flow info">' + esc(sec.info) + '</div>';
 
-    var rows = sec.items.map(function (it) {
+    var altKey = state.plan.id + '/' + state.days[state.day].id;
+    var rows = sec.items.map(function (it0) {
+      var it = it0, altsHtml = '';
+      if (it0.alts) {
+        var opts = [it0.ex].concat(it0.alts), sel = store.get('alt.' + altKey + '.' + it0.code, it0.ex);
+        if (opts.indexOf(sel) < 0) sel = it0.ex;
+        it = {}; for (var kk in it0) it[kk] = it0[kk]; it.ex = sel; delete it.name;
+        altsHtml = '<div class="alt-pick" data-altk="' + esc(it0.code) + '"><small>Variante ' + esc(it0.code) + '</small><div class="chips">' + opts.map(function (o) {
+          return '<button type="button" data-alt="' + esc(o) + '" aria-pressed="' + (o === sel) + '">' + esc((ex[o] || {}).short || (ex[o] || {}).name || o) + '</button>';
+        }).join('') + '</div></div>';
+      }
       var e = ex[it.ex] || { name: it.ex };
       var name = it.name || e.name;
       var reps = it.reps || (it.time ? it.time + "''" : sec.type === 'hiit' ? fmtRest(sec.work) : it.sec ? fmtRest(it.sec) + ((it.sides || 1) > 1 ? ' per lato' : '') : e.dur || '');
@@ -492,7 +509,7 @@
         '<div class="thumb">' + thumb + '</div>' +
         '<div class="ex-main">' + (it.code ? '<div class="ex-code">' + esc(it.code) + '</div>' : '') +
         '<div class="ex-name">' + esc(name) + (store.get('exnote.' + it.ex, null) ? ' <span class="has-note" title="nota per il coach">📝</span>' : '') + '</div>' +
-        '<div class="ex-info"><b>' + esc(it.editable && !reps ? 'reps da definire' : reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>';
+        '<div class="ex-info"><b>' + esc(it.editable && !reps ? 'reps da definire' : reps) + '</b>' + (it.note ? ' <b>' + esc(it.note) + '</b>' : '') + ' · ' + esc(e.equip || '') + '</div></div>' + kg + '</div>' + altsHtml;
     }).join('');
 
     var lbl = 'Recupero blocco ' + esc(sec.letter);
@@ -688,6 +705,15 @@
     var list = (state.program.motivation || []);
     return list.length ? list[Math.floor(Date.now() / DAY_MS) % list.length] : '';
   }
+  // Messaggio motivazionale a fine allenamento, in base agli allenamenti fatti nella settimana (su 4)
+  function weekMessage() {
+    var wm = state.program.weekMotivation || {};
+    var wStart = isoDate(mondayOf(new Date()));
+    var n = getLog().filter(function (x) { return x.when.slice(0, 10) >= wStart && ACTIVE.indexOf(x.type) >= 0; }).length;
+    var list = wm[String(Math.min(n, 5))] || [];
+    var msg = list.length ? list[Math.floor(Math.random() * list.length)] : '';
+    return n + ' allenament' + (n === 1 ? 'o' : 'i') + ' questa settimana. ' + msg;
+  }
   function fmtWhen(dt) { var d = new Date(dt); return DOW[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) + ' alle ' + dt.slice(11, 16); }
   function reminderHtml() {
     var today = isoDate(new Date());
@@ -817,9 +843,8 @@
     $('sheetTitle').textContent = '🎵 Musica';
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
       list.map(function (x) {
-        var emb = embedUrl(m[x.id]);
         return m[x.id] ? '<div class="music-row"><a class="music-big" href="' + esc(m[x.id]) + '" target="_blank" rel="noopener">▶ ' + x.label + '</a>' +
-          (emb ? '<button class="music-here" data-emb="' + esc(emb) + '">Ascolta qui</button>' : '') + '</div>'
+          '</div>'
           : '<div class="music-big off">' + x.label + ' · link non impostato</div>';
       }).join('') +
       '<details class="music-edit"' + (MUSIC.some(function (x) { return m[x.id]; }) ? '' : ' open') + '><summary>Imposta i link delle playlist</summary>' +
@@ -827,14 +852,8 @@
         return '<label class="f-l" for="mu2_' + x.id + '">' + x.label + '</label><input class="f-in" id="mu2_' + x.id + '" data-music="' + x.id + '" inputmode="url" placeholder="incolla il link (Spotify, Apple Music, YouTube Music)" value="' + esc(m[x.id] || '') + '">';
       }).join('') +
       '<p class="plan-hint">In Spotify: playlist → ··· → Condividi → Copia link.</p><button class="btn-big btn-red" id="muSave">Salva</button></details>' +
-      '<div id="muPlayer"></div>' +
-      '<p class="plan-hint">«▶» apre l\'app Spotify: suona anche a schermo spento (consigliato). «Ascolta qui» suona dentro TRAIN, ma si ferma se chiudi questa finestra o blocchi il telefono; con Spotify senza accesso nel browser fa sentire solo 30 secondi per brano.</p></div>';
+      '<p class="plan-hint">«▶» apre l\'app Spotify (o la piattaforma del link): la musica continua in sottofondo anche a schermo spento, poi torni in TRAIN.</p></div>';
     showSheet();
-    $('sheetBody').querySelectorAll('[data-emb]').forEach(function (b) {
-      b.onclick = function () {
-        $('muPlayer').innerHTML = '<iframe class="music-frame" src="' + b.dataset.emb + '" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
-      };
-    });
     $('muSave').onclick = function () {
       var mm = store.get('music', {});
       $('sheetBody').querySelectorAll('[data-music]').forEach(function (inp) { mm[inp.dataset.music] = inp.value.trim(); });
@@ -843,16 +862,6 @@
     };
   }
 
-
-  // Link playlist → lettore incorporabile (Spotify o YouTube); altri servizi solo con link esterno
-  function embedUrl(u) {
-    if (!u) return '';
-    var m = u.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(playlist|album|artist|track)\/([A-Za-z0-9]+)/);
-    if (m) return 'https://open.spotify.com/embed/' + m[1] + '/' + m[2];
-    m = u.match(/[?&]list=([A-Za-z0-9_-]+)/);
-    if (m && /youtu/.test(u)) return 'https://www.youtube-nocookie.com/embed/videoseries?list=' + m[1];
-    return '';
-  }
 
   /* ---------- ⏱ Timer libero: Tabata, EMOM, intervalli personalizzati ---------- */
   function openFreeTimer() {
@@ -972,7 +981,9 @@
       if (ACTIVE.indexOf(t) >= 0) store.set('remindSnooze', '');
       closeSheet(false);
       renderTabs(); renderDay();
-      setTimeout(function () { openDiary('Salvato ✓'); }, 50);
+      var flash = 'Salvato ✓';
+      if (ref && t === 'Allenamento') flash += ' — ' + weekMessage();
+      setTimeout(function () { openDiary(flash); }, 50);
     };
   }
 

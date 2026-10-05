@@ -97,6 +97,9 @@ Day 4 — Intervals + Arms
 - 📝 Nota per il coach su ogni esercizio (exnote.<ex>) + «💬 Invia sensazioni al coach» = messaggio WhatsApp precompilato (wa.me senza numero). Playlist preferite (Forza/Cardio/Yoga): icona verde 🎵 accanto a «Inverti con…» in ogni giorno (anche Yoga) → scelta playlist e impostazione link; link anche nel menu Scheda.
 - ⏱ Timer libero (icona accanto a 🎵): Tabata 20/10×8, EMOM, intervalli personalizzati (lavoro/recupero/giri) con il timer guidato. Nel foglio 🎵 «Ascolta qui» = lettore Spotify/YouTube incorporato (limiti: si ferma a schermo bloccato, Spotify senza login = anteprime 30'').
 
+- Musica: solo link esterni (▶ apre Spotify ecc.), niente player incorporato (tolto il 05/10). Item con `alts:[exKey,…]` = selettore variante nella riga (scelta in localStorage alt.<plan>/<day>.<code>); `short` = etichetta del chip. Day 2: tricipiti manubri/TRX/push up gomiti stretti TRX.
+- program.json → weekMotivation {1..5}: messaggio mostrato dopo «Registra allenamento» in base agli allenamenti della settimana.
+
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.
 - Leggibilità iPhone (versione compatta chiesta il 02/10): testo base 16px, nomi esercizi 16px bold, aree toccabili almeno 44px, contrasto alto.

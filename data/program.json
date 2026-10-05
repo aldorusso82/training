@@ -94,7 +94,8 @@
    "name": "Triceps extension",
    "img": "Standing_Dumbbell_Triceps_Extension",
    "equip": "Manubrio",
-   "kg": true
+   "kg": true,
+   "short": "Manubri"
   },
   "hammer_curl": {
    "name": "Hammer curl",
@@ -377,7 +378,8 @@
   "trx_triceps": {
    "name": "TRX triceps",
    "video": "rihH-UI1zDM",
-   "equip": "TRX"
+   "equip": "TRX",
+   "short": "TRX"
   },
   "trx_pike": {
    "name": "Pike (TRX)",
@@ -659,6 +661,13 @@
    "video": "j7GzcNQR2ik",
    "equip": "Cat Meffan",
    "dur": "29'"
+  },
+  "trx_cg_pushup": {
+   "name": "Push up gomiti stretti (TRX)",
+   "img": "Suspended_Push-Up",
+   "equip": "TRX",
+   "short": "Push up gomiti stretti TRX",
+   "q": "TRX close grip push up triceps tutorial"
   }
  },
  "plans": [
@@ -825,7 +834,11 @@
         {
          "code": "C1",
          "ex": "triceps_ext",
-         "reps": "8"
+         "reps": "8",
+         "alts": [
+          "trx_triceps",
+          "trx_cg_pushup"
+         ]
         },
         {
          "code": "C2",
@@ -1958,5 +1971,27 @@
   "Non devi farlo perfetto. Devi farlo.",
   "Chi si allena oggi, gioca meglio domani.",
   "Lo sai che anche 10 minuti di mobilità possono far sentire il corpo più sciolto il giorno dopo?"
- ]
+ ],
+ "weekMotivation": {
+  "1": [
+   "Primo allenamento della settimana: la parte più difficile è fatta. Continua così!",
+   "Bel inizio! Una sessione in tasca, ora costruisci sopra."
+  ],
+  "2": [
+   "Due allenamenti: sei a metà strada. Mantieni il ritmo!",
+   "Due su quattro: la settimana è sulla buona strada."
+  ],
+  "3": [
+   "Tre su quattro: ottimo lavoro! Ne manca uno solo per chiudere in bellezza.",
+   "Quasi al traguardo: ancora una sessione e la settimana è perfetta."
+  ],
+  "4": [
+   "Grande settimana! Quattro su quattro: hai fatto tutto quello che dovevi.",
+   "Settimana completata al 100%. Questa è costanza, complimenti!"
+  ],
+  "5": [
+   "Oltre il programma: ottimo, ma ricorda di recuperare bene.",
+   "Sessione extra! Ora un po' di riposo, anche quello fa crescere."
+  ]
+ }
 }
