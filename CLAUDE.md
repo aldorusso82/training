@@ -89,7 +89,7 @@ Day 4 — Intervals + Arms
 - Pagina del giorno: "⇄ Inverti con…" scambia due giorni (stesso ordine del menu Scheda); "✓ Fatto …" se registrato questa settimana, ✓ anche sul tab.
 - Inizio della settimana scelto dall'atleta nel menu Scheda (localStorage weekStart, 0=dom … 6=sab, default lunedì): vale per il conteggio settimane e le statistiche settimanali.
 - Settimana della scheda: schede mensili = blocchi di 4 settimane lun–dom dal primo lunedì del mese (i giorni prima contano come sett. 1; poi si ricomincia da 1). Programmi a durata (plan.weeks, es. Viviana 7) = settimane dal primo allenamento.
-- Il ✓ "fatto" (nero) vale per il GIRO in corso (si azzera quando tutti i giorni sono fatti o si ripete un giorno), non per la settimana di calendario. ✓ e "prossimo" riconoscono anche le registrazioni senza dayId dal testo («Ottobre · Day 1»). Il prossimo salta i giorni già fatti in settimana.
+- Il ✓ "fatto" (nero) vale per il GIRO in corso (si azzera quando tutti i giorni sono fatti o si ripete un giorno) E solo per la settimana di calendario in corso: a inizio settimana (weekStart) i ✓ si azzerano da soli (dal 06/10). ✓ e "prossimo" riconoscono anche le registrazioni senza dayId dal testo («Ottobre · Day 1»). Il prossimo salta i giorni già fatti in settimana.
 - Registra: minuti e kcal (Apple Watch) + pulsante "Incolla" che legge un testo tipo «45 min 420 kcal». Una web app non può leggere Apple Salute direttamente.
 - Programma: promemoria ripetibili ogni settimana (RRULE nel .ics). Notifiche push vere = server (Cloudflare Worker + Web Push), non ancora fatto.
 
@@ -99,6 +99,8 @@ Day 4 — Intervals + Arms
 
 - Musica: solo link esterni (▶ apre Spotify ecc.), niente player incorporato (tolto il 05/10). Item con `alts:[exKey,…]` = selettore variante nella riga (scelta in localStorage alt.<plan>/<day>.<code>); `short` = etichetta del chip. Day 2: tricipiti manubri/TRX/push up gomiti stretti TRX.
 - program.json → weekMotivation {1..5}: messaggio mostrato dopo «Registra allenamento» in base agli allenamenti della settimana.
+
+- Diario: Progressi carichi = 3 maggiori aumenti + «Tutti i carichi» a tendina; Storico = ultime 6 voci come riga sintetica (data · cosa · min · kcal) che si apre per dettagli/💬/✕, le più vecchie in «Vecchie registrazioni».
 
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.

@@ -279,7 +279,9 @@
   function currentRound() {
     var train = state.days.filter(function (d) { return d.id !== 'yoga' && !d.optional; }).length;
     var round = {};
+    var wk0 = isoDate(mondayOf(new Date()));   // reset automatico: i ✓ valgono solo per la settimana in corso
     getLog().forEach(function (x) {
+      if (x.when.slice(0, 10) < wk0) return;
       var id = entryDayId(x); if (!id) return;
       if (round[id] || Object.keys(round).length >= train) round = {};
       round[id] = x;
@@ -1011,6 +1013,37 @@
     });
     var fmtD = function (d) { var p = d.split('-'); return +p[2] + '/' + +p[1]; };
 
+
+    var progRow = function (p) {
+      var diff = (parseFloat(p.last.v) - parseFloat(p.first.v));
+      return '<div class="prog"><span class="p-n">' + esc(p.name) + '</span><span class="p-v">' + esc(p.first.v) + ' → <b>' + esc(p.last.v) + ' kg</b>' +
+        (p.n > 1 && diff ? ' <em class="' + (diff > 0 ? 'up' : 'down') + '">' + (diff > 0 ? '+' : '') + Math.round(diff * 10) / 10 + '</em>' : '') +
+        '</span><small>dal ' + fmtD(p.first.d) + (p.n > 1 ? ' al ' + fmtD(p.last.d) : '') + '</small></div>';
+    };
+    // Carichi: in vista i 3 con il maggior aumento, il resto si apre
+    var progHtml = function () {
+      if (!prog.length) return '<p class="muted">Scrivi i kg negli esercizi: qui vedrai come crescono nel tempo.</p>';
+      var gain = function (p) { return (parseFloat(p.last.v) - parseFloat(p.first.v)) || 0; };
+      var top = prog.slice().sort(function (a, b) { return gain(b) - gain(a); }).slice(0, 3);
+      var rest = prog.filter(function (p) { return top.indexOf(p) < 0; });
+      return top.map(progRow).join('') + (rest.length ? '<details class="more"><summary>Tutti i carichi (' + prog.length + ')</summary>' + rest.map(progRow).join('') + '</details>' : '');
+    };
+    // Storico: una riga per voce (data, tipo, cosa, durata/kcal), si apre per dettagli, 💬 e ✕
+    var histRow = function (x) {
+      var d = x.when.split('T');
+      var sum = '<b>' + fmtD(d[0]) + '</b> · ' + esc(x.type === 'Allenamento' ? (x.label || x.type) : x.type + (x.label && x.label !== x.type ? ' · ' + x.label : '')) +
+        (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '');
+      return '<details class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : '') + '"><summary>' + sum + '</summary>' +
+        '<div class="e-body"><div>' + esc(d[1] || '') + ' · ' + esc(x.type) + (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') + (x.place ? ' · ' + esc(x.place) : '') + (x.week ? ' · sett. ' + x.week : '') + '</div>' +
+        (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') +
+        '<div class="e-btns"><button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬 Invia</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕ Elimina</button></div></div></details>';
+    };
+    var histHtml = function () {
+      if (!log.length) return '<p class="muted">Ancora nessun allenamento registrato.</p>';
+      var rev = log.slice().reverse();
+      return rev.slice(0, 6).map(histRow).join('') + (rev.length > 6 ? '<details class="more"><summary>Vecchie registrazioni (' + (rev.length - 6) + ')</summary>' + rev.slice(6).map(histRow).join('') + '</details>' : '');
+    };
+
     var h = '<div class="sheet-inner diary">' + (flash ? '<div class="flash">' + esc(flash) + '</div>' : '') +
       '<div class="stats"><div class="stat"><b>' + inWeek.length + '</b><small>allenamenti settimana</small></div>' +
       '<div class="stat"><b>' + inMonth.filter(isAct).length + '</b><small>allenamenti mese</small></div>' +
@@ -1021,22 +1054,8 @@
       '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
       '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button>' +
       '<button class="btn-start gray" data-new="Nota">+ Nota</button><button class="btn-start gray" data-new="Stop">+ Stop</button></div>' +
-      '<h3>Progressi carichi</h3>' +
-      (prog.length ? prog.map(function (p) {
-        var diff = (parseFloat(p.last.v) - parseFloat(p.first.v));
-        return '<div class="prog"><span class="p-n">' + esc(p.name) + '</span><span class="p-v">' + esc(p.first.v) + ' → <b>' + esc(p.last.v) + ' kg</b>' +
-          (p.n > 1 && diff ? ' <em class="' + (diff > 0 ? 'up' : 'down') + '">' + (diff > 0 ? '+' : '') + Math.round(diff * 10) / 10 + '</em>' : '') +
-          '</span><small>dal ' + fmtD(p.first.d) + (p.n > 1 ? ' al ' + fmtD(p.last.d) : '') + '</small></div>';
-      }).join('') : '<p class="muted">Scrivi i kg negli esercizi: qui vedrai come crescono nel tempo.</p>') +
-      '<h3>Storico</h3>' +
-      (log.length ? log.slice().reverse().map(function (x) {
-        var d = x.when.split('T');
-        return '<div class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : '') + '"><div class="e-top"><b>' + fmtD(d[0]) + '</b> · ' + esc(d[1] || '') + ' · <span class="e-type">' + esc(x.type) + '</span>' +
-          (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') +
-          '<button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕</button></div>' +
-          '<div>' + esc(x.label || '') + (x.place ? ' · ' + esc(x.place) : '') + (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '') + (x.week ? ' · sett. ' + x.week : '') + '</div>' +
-          (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') + '</div>';
-      }).join('') : '<p class="muted">Ancora nessun allenamento registrato.</p>') +
+      '<h3>Progressi carichi</h3>' + progHtml() +
+      '<h3>Storico</h3>' + histHtml() +
       '<button class="btn-ghost-dark" id="dExport">Esporta backup dei dati</button>' +
       '<p class="muted small">I dati restano su questo dispositivo.</p></div>';
 
