@@ -443,3 +443,8 @@ body.has-tbar .main, body.has-tbar .foot { padding-bottom: calc(var(--safe-b) + 
 .more { margin: 6px 0; }
 .more > summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; color: var(--red); cursor: pointer; }
 .e-btns .e-share, .e-btns .e-del { width: auto; height: 44px; margin: 0; border: 1.5px solid var(--line); background: #fff; font-size: 15px; color: var(--ink); }
+
+.chk-row { display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 8px 0; font-weight: 700; }
+.chk-row input { width: 22px; height: 22px; }
+.wp-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; margin: 6px 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; font-size: 15px; }
+.wp-g { flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--red); color: var(--red); font-weight: 800; text-decoration: none; }

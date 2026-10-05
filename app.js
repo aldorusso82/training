@@ -145,7 +145,7 @@
     else state.day = Math.min(store.get('day', 0), state.days.length - 1);
     store.set('lastOpen', today);
     store.set('day', state.day);
-    $('planName').textContent = plan.name;
+    $('planName').textContent = plan.name + ' - impostazioni';
     renderTabs();
     renderDay();
     window.scrollTo(0, 0);
@@ -387,12 +387,12 @@
       var others = state.days.filter(function (d) { return d.id !== 'yoga' && d.id !== day.id; });
       h += '<div class="day-tools">' +
         (dw ? '<span class="done-flag">✓ Fatto ' + esc(fmtWhen(dw.when)) + '</span>' : dn ? '<span class="done-last">Ultima volta: ' + esc(fmtWhen(dn.when)) + '</span>' : '') +
-        '<span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button>' +
+        '<span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button>' +
         (others.length ? '<button class="swap-btn" id="swapBtn">⇄ Inverti con…</button>' : '') + '</span></div>' +
         '<div class="swap-row" id="swapRow" hidden><small>Scambia il ' + esc(day.tab) + ' con:</small><div class="chips">' +
         others.map(function (d) { return '<button type="button" data-swap="' + esc(d.id) + '">' + esc(d.tab) + '</button>'; }).join('') + '</div></div>';
     } else {
-      h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
+      h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
     }
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
@@ -427,6 +427,7 @@
     var main = $('main');
     main.innerHTML = h;
     $('musicBtn').onclick = function () { openMusic(day); };
+    $('calBtn').onclick = openWeekPlanner;
     $('freeTimerBtn').onclick = function () { openFreeTimer(); };
     if ($('waBtn')) $('waBtn').onclick = function () { openCoachMessage(day, cur); };
     $('logBtn').onclick = function () {
@@ -773,6 +774,73 @@
       closeSheet(false); renderDay();
     };
   }
+
+  /* ---------- 📅 Pianifica la settimana: scegli i giorni, ogni allenamento va nel Calendario (iPhone o Google) ---------- */
+  function openWeekPlanner() {
+    var train = state.days.filter(function (d) { return d.id !== 'yoga' && !d.optional; });
+    var sv = store.get('weekPlan', { days: ['LU', 'ME', 'VE', 'SA'].slice(0, train.length), time: '18:30', repeat: true });
+    var G = ['LU', 'MA', 'ME', 'GI', 'VE', 'SA', 'DO'];
+    $('sheetTitle').textContent = '📅 Pianifica la settimana';
+    $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
+      '<label class="f-l">In quali giorni ti alleni? (' + train.length + ' allenamenti)</label><div class="chips multi" id="wpDays">' +
+        G.map(function (g) { return '<button type="button" data-v="' + g + '" aria-pressed="' + (sv.days.indexOf(g) >= 0) + '">' + g + '</button>'; }).join('') + '</div>' +
+      '<label class="f-l" for="wpTime">Ora</label><input class="f-in" id="wpTime" type="time" value="' + esc(sv.time) + '">' +
+      '<label class="chk-row"><input type="checkbox" id="wpRep"' + (sv.repeat ? ' checked' : '') + '> Ripeti ogni settimana</label>' +
+      '<div id="wpList"></div>' +
+      '<button class="btn-big btn-red" id="wpIcs">Aggiungi tutti al Calendario (iPhone)</button>' +
+      '<p class="muted small">Un solo file con tutti gli allenamenti e l\'avviso 30 minuti prima. Se il Calendario dell\'iPhone è collegato a Google, compaiono anche lì.</p></div>';
+    showSheet();
+    var days = $('wpDays');
+    var plan = function () {
+      var sel = [].map.call(days.querySelectorAll('[aria-pressed="true"]'), function (b) { return b.dataset.v; });
+      sel.sort(function (a, b) { return G.indexOf(a) - G.indexOf(b); });
+      var t = $('wpTime').value || '18:30', rep = $('wpRep').checked;
+      store.set('weekPlan', { days: sel, time: t, repeat: rep });
+      var now = new Date(), tp = t.split(':');
+      return sel.slice(0, train.length).map(function (g, i) {
+        var want = (G.indexOf(g) + 1) % 7, d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), +tp[0], +tp[1]);
+        while (d.getDay() !== want || d < now) d.setDate(d.getDate() + 1);
+        return { when: d, g: g, day: train[i], rep: rep };
+      });
+    };
+    var show = function () {
+      var ev = plan();
+      $('wpList').innerHTML = ev.length ? ev.map(function (e, i) {
+        return '<div class="wp-row"><div><b>' + e.g + ' ' + e.when.getDate() + '/' + (e.when.getMonth() + 1) + '</b> · ' + esc(e.day.tab) + (e.day.title ? ' — ' + esc(e.day.title) : '') + '</div>' +
+          '<a class="wp-g" target="_blank" rel="noopener" href="' + gcalUrl(e) + '">Google</a></div>';
+      }).join('') + (days.querySelectorAll('[aria-pressed="true"]').length > train.length ? '<p class="muted small">Hai scelto più giorni di quanti allenamenti: uso i primi ' + train.length + '.</p>' : '')
+        : '<p class="muted small">Scegli almeno un giorno.</p>';
+    };
+    days.onclick = function (ev) { var b = ev.target.closest('button'); if (!b) return; b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); show(); };
+    $('wpTime').onchange = show; $('wpRep').onchange = show;
+    $('wpIcs').onclick = function () { var ev = plan(); if (ev.length) downloadWeekIcs(ev); };
+    show();
+  }
+  var RR = { LU: 'MO', MA: 'TU', ME: 'WE', GI: 'TH', VE: 'FR', SA: 'SA', DO: 'SU' };
+  function lDT(d) { var p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + 'T' + p(d.getHours()) + p(d.getMinutes()) + '00'; }
+  function evTitle(e) { return 'Allenamento ' + e.day.tab + (e.day.title ? ' – ' + e.day.title : ''); }
+  function gcalUrl(e) {
+    var end = new Date(e.when.getTime() + 60 * 60000), tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (x) {}
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(evTitle(e)) + '&dates=' + lDT(e.when) + '/' + lDT(end) +
+      '&details=' + encodeURIComponent('Apri TRAIN: ' + location.origin + location.pathname) + (tz ? '&ctz=' + encodeURIComponent(tz) : '') +
+      (e.rep ? '&recur=' + encodeURIComponent('RRULE:FREQ=WEEKLY;BYDAY=' + RR[e.g]) : '');
+  }
+  function downloadWeekIcs(list) {
+    var lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//TRAIN.ALDO//IT'], stamp = lDT(new Date());
+    list.forEach(function (e, i) {
+      lines = lines.concat(['BEGIN:VEVENT', 'UID:' + Date.now() + '-' + i + '@trainaldo', 'DTSTAMP:' + stamp,
+        'DTSTART:' + lDT(e.when), 'DTEND:' + lDT(new Date(e.when.getTime() + 60 * 60000)), 'SUMMARY:' + evTitle(e).replace(/[,;]/g, ' '),
+        'DESCRIPTION:Apri TRAIN: ' + location.origin + location.pathname].concat(e.rep ? ['RRULE:FREQ=WEEKLY;BYDAY=' + RR[e.g]] : []).concat(
+        ['BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Tra 30 minuti: allenamento!', 'END:VALARM', 'END:VEVENT']));
+    });
+    lines.push('END:VCALENDAR');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([lines.join('\r\n')], { type: 'text/calendar' }));
+    a.download = 'allenamenti-settimana.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
   // Evento calendario con avviso: il Calendario dell'iPhone fa da notifica
   function downloadIcs(pl) {
     var d = new Date(pl.when);
