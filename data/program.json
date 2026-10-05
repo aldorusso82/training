@@ -1999,5 +1999,39 @@
    "label": "📲 Ispirazione: Il Saggio dello Sport",
    "url": "https://www.instagram.com/ilsaggiodellosport"
   }
+ ],
+ "bookLines": [
+  {
+   "src": "L'arte della guerra (Sun Tzu)",
+   "text": "La vittoria si prepara prima della battaglia: oggi l'allenamento è la tua preparazione."
+  },
+  {
+   "src": "L'arte della guerra (Sun Tzu)",
+   "text": "Conosci te stesso e i tuoi limiti: allena ciò che oggi ti serve davvero."
+  },
+  {
+   "src": "L'arte della guerra (Sun Tzu)",
+   "text": "Vince chi sa quando impegnarsi a fondo e quando recuperare."
+  },
+  {
+   "src": "L'arte della guerra (Sun Tzu)",
+   "text": "Meglio un piano semplice eseguito ogni settimana che uno perfetto mai iniziato."
+  },
+  {
+   "src": "Antifragile (N. N. Taleb)",
+   "text": "Lo stress dosato non ti rompe: ti rende più forte. Il carico di oggi è questo."
+  },
+  {
+   "src": "Antifragile (N. N. Taleb)",
+   "text": "Dalle giornate difficili si impara più che da quelle facili: presentati lo stesso."
+  },
+  {
+   "src": "Antifragile (N. N. Taleb)",
+   "text": "Il corpo si adatta a ciò che gli chiedi: chiedigli qualcosa oggi."
+  },
+  {
+   "src": "Antifragile (N. N. Taleb)",
+   "text": "Piccoli sforzi regolari proteggono dai grandi stop."
+  }
  ]
 }

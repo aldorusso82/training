@@ -717,6 +717,12 @@
     var msg = list.length ? list[Math.floor(Math.random() * list.length)] : '';
     return n + ' allenament' + (n === 1 ? 'o' : 'i') + ' questa settimana. ' + msg;
   }
+  // Frase ispirata ai libri scelti da Aldo (parole nostre, non estratti dei testi)
+  function bookLine() {
+    var l = state.program.bookLines || []; if (!l.length) return '';
+    var b = l[Math.floor(Math.random() * l.length)];
+    return '📖 ' + b.text + ' — ispirato a ' + b.src;
+  }
   function fmtWhen(dt) { var d = new Date(dt); return DOW[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) + ' alle ' + dt.slice(11, 16); }
   function reminderHtml() {
     var today = isoDate(new Date());
@@ -735,7 +741,7 @@
     if (n < 2 || store.get('remindSnooze', '') === today) return '';
     return '<div class="remind r-late"><b>Non ti alleni da ' + n + ' giorni…</b> quando programmi il tuo prossimo allenamento?' +
       '<p class="r-quote">' + esc(motivation()) + '</p>' +
-      (state.program.motivationLinks || []).map(function (l) { return '<p class="r-quote"><a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a></p>'; }).join('') +
+      (state.program.bookLines ? '<p class="r-quote">' + esc(bookLine()) + '</p>' : '') + (state.program.motivationLinks || []).map(function (l) { return '<p class="r-quote"><a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a></p>'; }).join('') +
       '<div class="r-btns"><button data-r="plan" class="r-main">Programma</button><button data-r="later">Più tardi</button></div></div>';
   }
   function bindReminder() {
@@ -1053,7 +1059,7 @@
       closeSheet(false);
       renderTabs(); renderDay();
       var flash = 'Salvato ✓';
-      if (ref && t === 'Allenamento') flash += ' — ' + weekMessage();
+      if (ref && t === 'Allenamento') flash += ' — ' + weekMessage() + (bookLine() ? ' ' + bookLine() : '');
       setTimeout(function () { openDiary(flash); }, 50);
     };
   }

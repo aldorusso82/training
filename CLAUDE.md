@@ -106,6 +106,8 @@ Day 4 — Intervals + Arms
 
 - program.json → motivationLinks [{label,url}]: link di ispirazione mostrati nell'avviso «Non ti alleni da N giorni» (ora: Instagram ilsaggiodellosport). Aldo vuole poter allegare anche libri (da chiedergli).
 
+- program.json → bookLines [{src,text}]: frasi motivazionali ORIGINALI ispirate ai libri di Aldo (Sun Tzu, Antifragile; «Niente teste di cazzo» da definire). Non copiare estratti dei libri (diritto d'autore).
+
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.
 - Leggibilità iPhone (versione compatta chiesta il 02/10): testo base 16px, nomi esercizi 16px bold, aree toccabili almeno 44px, contrasto alto.
