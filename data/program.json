@@ -1993,5 +1993,11 @@
    "Oltre il programma: ottimo, ma ricorda di recuperare bene.",
    "Sessione extra! Ora un po' di riposo, anche quello fa crescere."
   ]
- }
+ },
+ "motivationLinks": [
+  {
+   "label": "📲 Ispirazione: Il Saggio dello Sport",
+   "url": "https://www.instagram.com/ilsaggiodellosport"
+  }
+ ]
 }

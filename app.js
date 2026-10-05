@@ -735,6 +735,7 @@
     if (n < 2 || store.get('remindSnooze', '') === today) return '';
     return '<div class="remind r-late"><b>Non ti alleni da ' + n + ' giorni…</b> quando programmi il tuo prossimo allenamento?' +
       '<p class="r-quote">' + esc(motivation()) + '</p>' +
+      (state.program.motivationLinks || []).map(function (l) { return '<p class="r-quote"><a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a></p>'; }).join('') +
       '<div class="r-btns"><button data-r="plan" class="r-main">Programma</button><button data-r="later">Più tardi</button></div></div>';
   }
   function bindReminder() {

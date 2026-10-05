@@ -104,6 +104,8 @@ Day 4 — Intervals + Arms
 
 - 📅 (accanto a 🎵 in ogni giorno) = «Pianifica la settimana»: si scelgono i giorni e l'ora, gli allenamenti della scheda (in ordine) vengono assegnati ai giorni; un unico .ics con avviso 30' prima + pulsante «Google» per ogni evento (link calendar.google.com TEMPLATE con RRULE settimanale). Scelte in localStorage weekPlan. Il bottone in alto mostra «<scheda> - impostazioni».
 
+- program.json → motivationLinks [{label,url}]: link di ispirazione mostrati nell'avviso «Non ti alleni da N giorni» (ora: Instagram ilsaggiodellosport). Aldo vuole poter allegare anche libri (da chiedergli).
+
 ## Design
 - Colori: granata #8b1a1a (primario), bianco/avorio come sfondo, testo quasi nero. Niente temi scuri.
 - Leggibilità iPhone (versione compatta chiesta il 02/10): testo base 16px, nomi esercizi 16px bold, aree toccabili almeno 44px, contrasto alto.
