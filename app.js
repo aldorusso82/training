@@ -902,17 +902,30 @@
     $('sheetTitle').textContent = 'Messaggio al coach';
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
       '<label class="f-l">Come è andata? (1 = pessimo, 5 = ottimo)</label>' + chips('feel', ['1', '2', '3', '4', '5'], '') +
+      '<label class="f-l">Dolori?</label>' + chips('g_dolore', ['Nessuno', 'Lieve', 'Forte'], '') +
+      '<label class="f-l">Energia</label>' + chips('g_energia', ['Bassa', 'Media', 'Alta'], '') +
+      '<label class="f-l">Sonno stanotte</label>' + chips('g_sonno', ['< 6 ore', '6–7 ore', '7–8 ore', '> 8 ore'], '') +
       '<label class="f-l" for="waTxt">Messaggio (puoi modificarlo)</label>' +
       '<textarea class="f-in" id="waTxt" rows="10">' + esc(base + (lines.length ? '\n\nEsercizi:\n' + lines.join('\n') : '') + (dnote && dnote.t ? '\n\nNote:\n' + dnote.t : '')) + '</textarea>' +
       '<p class="muted small">Dentro ci sono i kg e le «📝 note per il coach» degli esercizi. Toccando il pulsante si apre WhatsApp e scegli a chi inviarlo.</p>' +
       '<button class="btn-big btn-wa-big" id="waSend">Apri WhatsApp</button></div>';
     showSheet();
-    var c = $('sheetBody').querySelector('.chips');
-    c.onclick = function (ev) {
-      var b = ev.target.closest('button'); if (!b) return;
-      c.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
-      $('waTxt').value = $('waTxt').value.replace(/Sensazioni:( \d\/5)?/, 'Sensazioni: ' + b.dataset.v + '/5');
-    };
+    var GUIDED = ['Dolori', 'Energia', 'Sonno'];
+    $('sheetBody').querySelectorAll('.chips').forEach(function (c, i) {
+      c.onclick = function (ev) {
+        var b = ev.target.closest('button'); if (!b) return;
+        c.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+        var t = $('waTxt').value;
+        if (i === 0) { $('waTxt').value = t.replace(/Sensazioni:( \d\/5)?/, 'Sensazioni: ' + b.dataset.v + '/5'); return; }
+        var k = GUIDED[i - 1], line = k + ': ' + b.dataset.v, re = new RegExp('^' + k + ':.*$', 'm');
+        if (re.test(t)) t = t.replace(re, line);
+        else {
+          var at = t.search(/\n\n(Esercizi:|Note:)/);
+          t = at < 0 ? t + '\n' + line : t.slice(0, at) + '\n' + line + t.slice(at);
+        }
+        $('waTxt').value = t;
+      };
+    });
     $('waSend').onclick = function () { sendWhatsApp($('waTxt').value); };
   }
 
