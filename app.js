@@ -418,6 +418,9 @@
       }
     });
 
+    var dnk = state.plan.id + '.' + day.id, dn = store.get('daynote.' + dnk, null);
+    h += (day.id !== 'yoga' ? '<div class="day-note"><label class="f-l" for="dayNote">📝 Nota per il coach su questo allenamento</label>' +
+      '<textarea class="f-in" id="dayNote" data-daynote="' + esc(dnk) + '" rows="3" placeholder="una nota unica: come è andata, dolori, carichi, dubbi…">' + esc(dn ? dn.t : '') + '</textarea></div>' : '');
     h += '<div class="log-cta"><button class="btn-log" id="logBtn">✓ Registra allenamento</button>' +
       (day.id !== 'yoga' ? '<button class="btn-wa" id="waBtn">💬 Invia sensazioni al coach (WhatsApp)</button>' : '') +
       (day.id !== 'yoga' ? '<div class="alt-row"><small>Oggi ho fatto altro:</small><div class="chips">' +
@@ -577,6 +580,8 @@
     if (e.key === 'Enter' && e.target.classList.contains('ex')) e.target.click();
   });
   document.addEventListener('input', function (e) {
+    var dk = e.target.dataset && e.target.dataset.daynote;
+    if (dk) { var dt = e.target.value; store.set('daynote.' + dk, dt.trim() ? { t: dt, d: isoDate(new Date()) } : null); return; }
     var nk = e.target.dataset && e.target.dataset.exnote;
     if (nk) { var t = e.target.value; store.set('exnote.' + nk, t.trim() ? { t: t, d: isoDate(new Date()) } : null); return; }
     var rk = e.target.dataset && e.target.dataset.repsin;
@@ -891,13 +896,14 @@
         if (kg || (nt && nt.t)) lines.push('• ' + (it.name || e.name) + (it.reps ? ' ' + it.reps : '') + (kg ? ' · ' + kg + ' kg' : '') + (nt && nt.t ? ' — ' + nt.t : ''));
       });
     });
+    var dnote = store.get('daynote.' + state.plan.id + '.' + day.id, null);
     var base = '🏋️ ' + who() + ' · ' + state.plan.name + ' · ' + day.tab + (day.variants ? ' · ' + cur.label : '') +
       '\n📅 ' + new Date().toLocaleDateString('it-IT') + '\n\nSensazioni: ';
     $('sheetTitle').textContent = 'Messaggio al coach';
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
       '<label class="f-l">Come è andata? (1 = pessimo, 5 = ottimo)</label>' + chips('feel', ['1', '2', '3', '4', '5'], '') +
       '<label class="f-l" for="waTxt">Messaggio (puoi modificarlo)</label>' +
-      '<textarea class="f-in" id="waTxt" rows="10">' + esc(base + (lines.length ? '\n\nEsercizi:\n' + lines.join('\n') : '')) + '</textarea>' +
+      '<textarea class="f-in" id="waTxt" rows="10">' + esc(base + (lines.length ? '\n\nEsercizi:\n' + lines.join('\n') : '') + (dnote && dnote.t ? '\n\nNote:\n' + dnote.t : '')) + '</textarea>' +
       '<p class="muted small">Dentro ci sono i kg e le «📝 note per il coach» degli esercizi. Toccando il pulsante si apre WhatsApp e scegli a chi inviarlo.</p>' +
       '<button class="btn-big btn-wa-big" id="waSend">Apri WhatsApp</button></div>';
     showSheet();
