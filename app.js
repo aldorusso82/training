@@ -256,9 +256,10 @@
     var w2 = Math.floor((today - mondayOf(planStart(plan))) / (7 * DAY_MS)) + 1;
     return { n: Math.max(1, w2), tot: plan.weeks || 0 };
   }
+  var ACTIVE_DAY = ['Allenamento', 'Padel', 'Corsa'];   // registrati da un giorno della scheda: il giorno risulta fatto
   // Giorno della scheda a cui si riferisce una registrazione (anche quelle vecchie senza dayId, dal testo «Ottobre · Day 1»)
   function entryDayId(x) {
-    if (x.type !== 'Allenamento') return null;
+    if (ACTIVE_DAY.indexOf(x.type) < 0) return null;
     if (x.dayId) return x.planId === state.plan.id ? x.dayId : null;
     var lab = x.label || '';
     if (lab.indexOf(state.plan.name) < 0) return null;
@@ -439,7 +440,7 @@
         day.id === 'yoga' ? null : { planId: state.plan.id, dayId: day.id });
     };
     main.querySelectorAll('[data-alt]').forEach(function (b) {
-      b.onclick = function () { openLogForm(b.dataset.alt, b.dataset.alt === 'Stop' ? '' : b.dataset.alt); };
+      b.onclick = function () { openLogForm(b.dataset.alt, b.dataset.alt === 'Stop' ? '' : b.dataset.alt, b.dataset.alt === 'Stop' ? null : { planId: state.plan.id, dayId: day.id }); };
     });
     bindReminder();
     if ($('swapBtn')) {
@@ -940,16 +941,19 @@
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
       list.map(function (x) {
         return m[x.id] ? '<div class="music-row"><a class="music-big" href="' + esc(m[x.id]) + '" target="_blank" rel="noopener">▶ ' + x.label + '</a>' +
-          '</div>'
+          '<button type="button" class="music-chg" data-chg="' + x.id + '">✏️ Cambia</button></div>'
           : '<div class="music-big off">' + x.label + ' · link non impostato</div>';
       }).join('') +
-      '<details class="music-edit"' + (MUSIC.some(function (x) { return m[x.id]; }) ? '' : ' open') + '><summary>Imposta i link delle playlist</summary>' +
+      '<details class="music-edit"' + (MUSIC.some(function (x) { return m[x.id]; }) ? '' : ' open') + '><summary>✏️ Cambia i link delle playlist</summary>' +
       MUSIC.map(function (x) {
         return '<label class="f-l" for="mu2_' + x.id + '">' + x.label + '</label><input class="f-in" id="mu2_' + x.id + '" data-music="' + x.id + '" inputmode="url" placeholder="incolla il link (Spotify, Apple Music, YouTube Music)" value="' + esc(m[x.id] || '') + '">';
       }).join('') +
       '<p class="plan-hint">In Spotify: playlist → ··· → Condividi → Copia link.</p><button class="btn-big btn-red" id="muSave">Salva</button></details>' +
       '<p class="plan-hint">«▶» apre l\'app Spotify (o la piattaforma del link): la musica continua in sottofondo anche a schermo spento, poi torni in TRAIN.</p></div>';
     showSheet();
+    $('sheetBody').querySelectorAll('[data-chg]').forEach(function (b) {
+      b.onclick = function () { var d = $('sheetBody').querySelector('.music-edit'); d.open = true; var i = $('mu2_' + b.dataset.chg); i.focus(); i.select(); };
+    });
     $('muSave').onclick = function () {
       var mm = store.get('music', {});
       $('sheetBody').querySelectorAll('[data-music]').forEach(function (inp) { mm[inp.dataset.music] = inp.value.trim(); });
@@ -1033,7 +1037,7 @@
     var setMode = function (t) {
       $('fStop').hidden = t !== 'Stop';
       $('fAct').hidden = t === 'Stop' || t === 'Nota';
-      if ($('fDayBox')) $('fDayBox').hidden = t !== 'Allenamento';
+      if ($('fDayBox')) $('fDayBox').hidden = ACTIVE_DAY.indexOf(t) < 0;
       $('fNote').placeholder = t === 'Stop' ? 'es. distorsione caviglia, 38° di febbre…' : t === 'Nota' ? 'scrivi la tua nota' : 'come è andata, dolori, sensazioni…';
     };
     setMode(type);
@@ -1064,13 +1068,14 @@
       var entry = { id: Date.now(), when: $('fWhen').value || localDT(new Date()), type: t,
         place: act ? val('place') : '', label: act ? $('fLabel').value.trim() : '', dur: act ? (+$('fDur').value || 0) : 0, note: $('fNote').value.trim() };
       if (act && +$('fKcal').value) entry.kcal = +$('fKcal').value;
-      if (ref && t === 'Allenamento') entry.week = planWeek(state.plan).n;
+      if (ref && ACTIVE_DAY.indexOf(t) >= 0) entry.week = planWeek(state.plan).n;
       if (t === 'Stop') { entry.reason = val('reason'); entry.until = $('fUntil').value || entry.when.slice(0, 10); entry.label = entry.reason; }
-      if (!ref && t === 'Allenamento') {
+      if (!ref && ACTIVE_DAY.indexOf(t) >= 0) {
         var dr = val('dayref'), dd = state.days.filter(function (d) { return d.tab === dr; })[0];
-        if (dd) { ref = { planId: state.plan.id, dayId: dd.id }; if (!entry.label) entry.label = state.plan.name + ' · ' + dd.tab; }
+        if (dd) { ref = { planId: state.plan.id, dayId: dd.id }; if (!entry.label || (t !== 'Allenamento' && entry.label === t)) entry.label = t !== 'Allenamento' ? t + ' · ' + state.plan.name + ' · ' + dd.tab : '';
+          if (!entry.label) entry.label = state.plan.name + ' · ' + dd.tab; }
       }
-      if (ref && t === 'Allenamento') { entry.planId = ref.planId; entry.dayId = ref.dayId; }
+      if (ref && ACTIVE_DAY.indexOf(t) >= 0) { entry.planId = ref.planId; entry.dayId = ref.dayId; }
       var log = getLog(); log.push(entry);
       log.sort(function (a, b) { return a.when < b.when ? -1 : 1; });
       store.set('log', log); if (entry.place) store.set('lastPlace', entry.place);
@@ -1078,7 +1083,7 @@
       closeSheet(false);
       renderTabs(); renderDay();
       var flash = 'Salvato ✓';
-      if (ref && t === 'Allenamento') flash += ' — ' + weekMessage() + (bookLine() ? ' ' + bookLine() : '');
+      if (ref && ACTIVE_DAY.indexOf(t) >= 0) flash += ' — ' + weekMessage() + (bookLine() ? ' ' + bookLine() : '');
       setTimeout(function () { openDiary(flash); }, 50);
     };
   }
@@ -1433,3 +1438,4 @@
     });
   }
 })();
+
