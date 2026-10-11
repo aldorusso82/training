@@ -1222,10 +1222,168 @@
     {
      "id": "d2",
      "tab": "Day 2",
-     "same": {
-      "plan": "lug-set",
-      "day": "d2"
-     }
+     "title": "Metabolic + Cardio",
+     "variants": [
+      {
+       "id": "meta",
+       "label": "Metabolic",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Mobilità 5'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "10-20-30-40-50-40-30-20-10"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "A",
+         "sets": 3,
+         "rest": 120,
+         "items": [
+          {
+           "code": "A1",
+           "ex": "step_up",
+           "reps": "6/6"
+          },
+          {
+           "code": "A2",
+           "ex": "run_1000",
+           "reps": "1000 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "B",
+         "sets": 3,
+         "rest": 90,
+         "items": [
+          {
+           "code": "B1",
+           "ex": "box_jump",
+           "reps": "6"
+          },
+          {
+           "code": "B2",
+           "ex": "run_500",
+           "reps": "500 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "C",
+         "sets": 3,
+         "rest": 60,
+         "items": [
+          {
+           "code": "C1",
+           "ex": "triceps_ext",
+           "reps": "8",
+           "alts": [
+            "trx_triceps",
+            "trx_cg_pushup"
+           ]
+          },
+          {
+           "code": "C2",
+           "ex": "hammer_curl",
+           "reps": "8"
+          }
+         ]
+        }
+       ],
+       "desc": "Lavoro metabolico: step up e box jump alternati alla corsa, chiusura braccia. Circa 45'."
+      },
+      {
+       "id": "cardio",
+       "label": "Cardio (senza attrezzi)",
+       "note": "Per quando non hai i macchinari o arrivi dal Day 3 con le gambe pesanti. Passo corsa 4'50\"/km.",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Attivazione 10'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "10'"
+          }
+         ]
+        },
+        {
+         "type": "note",
+         "label": "Stretching dinamico",
+         "text": "Dopo la corda: slanci gamba avanti/laterali, affondi con rotazione, skip e talloni al sedere, circonduzioni delle anche (circa 3')."
+        },
+        {
+         "type": "intervals",
+         "label": "Corsa a intervalli",
+         "pace": "4'50\"/km",
+         "steps": [
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           3,
+           3
+          ],
+          [
+           3,
+           3
+          ]
+         ]
+        },
+        {
+         "type": "note",
+         "label": "Struttura",
+         "text": "5 × 1' corsa / 1' recupero · 4 × 2' corsa / 2' recupero · 2 × 3' corsa / 3' recupero."
+        },
+        {
+         "type": "note",
+         "label": "Stretching",
+         "text": "Defatica e stretching finale: sotto trovi la sequenza yoga di defaticamento."
+        }
+       ],
+       "desc": "Corsa a intervalli a 4'50\"/km: 5×1', 4×2', 2×3' con recupero uguale al lavoro. Circa 60' con attivazione."
+      }
+     ]
     },
     {
      "id": "d3",
@@ -1547,10 +1705,168 @@
     {
      "id": "d2",
      "tab": "Day 2",
-     "same": {
-      "plan": "lug-set",
-      "day": "d2"
-     }
+     "title": "Metabolic + Cardio",
+     "variants": [
+      {
+       "id": "meta",
+       "label": "Metabolic",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Mobilità 5'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "10-20-30-40-50-40-30-20-10"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "A",
+         "sets": 3,
+         "rest": 120,
+         "items": [
+          {
+           "code": "A1",
+           "ex": "step_up",
+           "reps": "6/6"
+          },
+          {
+           "code": "A2",
+           "ex": "run_1000",
+           "reps": "1000 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "B",
+         "sets": 3,
+         "rest": 90,
+         "items": [
+          {
+           "code": "B1",
+           "ex": "box_jump",
+           "reps": "6"
+          },
+          {
+           "code": "B2",
+           "ex": "run_500",
+           "reps": "500 m"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "C",
+         "sets": 3,
+         "rest": 60,
+         "items": [
+          {
+           "code": "C1",
+           "ex": "triceps_ext",
+           "reps": "8",
+           "alts": [
+            "trx_triceps",
+            "trx_cg_pushup"
+           ]
+          },
+          {
+           "code": "C2",
+           "ex": "hammer_curl",
+           "reps": "8"
+          }
+         ]
+        }
+       ],
+       "desc": "Lavoro metabolico: step up e box jump alternati alla corsa, chiusura braccia. Circa 45'."
+      },
+      {
+       "id": "cardio",
+       "label": "Cardio (senza attrezzi)",
+       "note": "Per quando non hai i macchinari o arrivi dal Day 3 con le gambe pesanti. Passo corsa 4'50\"/km.",
+       "sections": [
+        {
+         "type": "mobility",
+         "label": "Attivazione 10'",
+         "items": [
+          {
+           "ex": "jump_rope",
+           "reps": "10'"
+          }
+         ]
+        },
+        {
+         "type": "note",
+         "label": "Stretching dinamico",
+         "text": "Dopo la corda: slanci gamba avanti/laterali, affondi con rotazione, skip e talloni al sedere, circonduzioni delle anche (circa 3')."
+        },
+        {
+         "type": "intervals",
+         "label": "Corsa a intervalli",
+         "pace": "4'50\"/km",
+         "steps": [
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           1,
+           1
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           2,
+           2
+          ],
+          [
+           3,
+           3
+          ],
+          [
+           3,
+           3
+          ]
+         ]
+        },
+        {
+         "type": "note",
+         "label": "Struttura",
+         "text": "5 × 1' corsa / 1' recupero · 4 × 2' corsa / 2' recupero · 2 × 3' corsa / 3' recupero."
+        },
+        {
+         "type": "note",
+         "label": "Stretching",
+         "text": "Defatica e stretching finale: sotto trovi la sequenza yoga di defaticamento."
+        }
+       ],
+       "desc": "Corsa a intervalli a 4'50\"/km: 5×1', 4×2', 2×3' con recupero uguale al lavoro. Circa 60' con attivazione."
+      }
+     ]
     },
     {
      "id": "d3",
@@ -1955,22 +2271,22 @@
   "cooldownWeeks": 2
  },
  "motivation": [
-  "Lo sai che dopo qualche settimana di stop si perde parte della resistenza costruita? Meglio un allenamento corto che nessuno.",
+  "Dopo qualche settimana ferma, la resistenza cala. Meglio 20 minuti oggi che niente.",
   "Non serve la giornata perfetta: 30 minuti oggi valgono più di 2 ore «un giorno».",
   "La costanza batte l'intensità. Sempre.",
-  "Lo sai che già una sola sessione di movimento può migliorare l'umore della giornata?",
+  "Anche una sola sessione può cambiarti l'umore di tutta la giornata.",
   "Il campo ricorda chi si allena quando nessuno guarda.",
-  "Un allenamento saltato è un caso. Due sono un'abitudine che sta nascendo: interrompila oggi.",
-  "Lo sai che la forza si mantiene con poco, ma si perde se ti fermi del tutto?",
-  "Non aspettare la motivazione: inizia, e arriverà durante il riscaldamento.",
-  "Ogni ripetizione conta. Soprattutto quelle dei giorni in cui non ne avevi voglia.",
-  "Lo sai che allenarsi con regolarità aiuta anche a dormire meglio? E dormire bene aiuta ad allenarsi meglio.",
+  "Un allenamento saltato è un caso. Due sono un'abitudine che nasce: fermala oggi.",
+  "La forza si mantiene con poco, ma sparisce se ti fermi del tutto.",
+  "Non aspettare la voglia: inizia il riscaldamento e la voglia arriva da sola.",
+  "Ogni ripetizione conta, soprattutto nei giorni in cui non ne avevi voglia.",
+  "Allenarsi bene ti fa dormire meglio, e dormire bene ti fa allenare meglio.",
   "Il tuo prossimo punto a padel nasce in palestra.",
-  "Scegli un orario e mettilo in calendario: quello che è programmato, si fa.",
-  "Piccoli passi, ogni settimana. È così che si costruisce un atleta.",
-  "Non devi farlo perfetto. Devi farlo.",
-  "Chi si allena oggi, gioca meglio domani.",
-  "Lo sai che anche 10 minuti di mobilità possono far sentire il corpo più sciolto il giorno dopo?"
+  "Scegli l'orario e segnalo in calendario: quello che è in programma, si fa.",
+  "Piccoli passi, ogni settimana: è così che si costruisce un atleta.",
+  "Non deve essere perfetto. Deve essere fatto.",
+  "Chi si allena oggi gioca meglio domani.",
+  "Bastano 10 minuti di mobilità per sentirsi più sciolti domani."
  ],
  "weekMotivation": {
   "1": [
@@ -2003,35 +2319,35 @@
  "bookLines": [
   {
    "src": "L'arte della guerra (Sun Tzu)",
-   "text": "La vittoria si prepara prima della battaglia: oggi l'allenamento è la tua preparazione."
+   "text": "La battaglia si vince prima di combatterla. Il tuo allenamento di oggi è quel «prima»."
   },
   {
    "src": "L'arte della guerra (Sun Tzu)",
-   "text": "Conosci te stesso e i tuoi limiti: allena ciò che oggi ti serve davvero."
+   "text": "Conosci i tuoi punti deboli e lavora lì: è dove si guadagna di più."
   },
   {
    "src": "L'arte della guerra (Sun Tzu)",
-   "text": "Vince chi sa quando impegnarsi a fondo e quando recuperare."
+   "text": "Sapere quando spingere e quando recuperare è già metà della vittoria."
   },
   {
    "src": "L'arte della guerra (Sun Tzu)",
-   "text": "Meglio un piano semplice eseguito ogni settimana che uno perfetto mai iniziato."
+   "text": "Un piano semplice, fatto ogni settimana, batte un piano perfetto mai iniziato."
   },
   {
    "src": "Antifragile (N. N. Taleb)",
-   "text": "Lo stress dosato non ti rompe: ti rende più forte. Il carico di oggi è questo."
+   "text": "Un carico giusto non ti spezza: ti rinforza. Quello di oggi è così."
   },
   {
    "src": "Antifragile (N. N. Taleb)",
-   "text": "Dalle giornate difficili si impara più che da quelle facili: presentati lo stesso."
+   "text": "I giorni difficili insegnano più di quelli facili. Presentati lo stesso."
   },
   {
    "src": "Antifragile (N. N. Taleb)",
-   "text": "Il corpo si adatta a ciò che gli chiedi: chiedigli qualcosa oggi."
+   "text": "Il corpo diventa ciò che gli chiedi. Chiedigli qualcosa, oggi."
   },
   {
    "src": "Antifragile (N. N. Taleb)",
-   "text": "Piccoli sforzi regolari proteggono dai grandi stop."
+   "text": "Tanti piccoli sforzi regolari ti proteggono dai grandi stop."
   }
  ]
 }

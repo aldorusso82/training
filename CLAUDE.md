@@ -128,3 +128,5 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - A fine lavoro scrivi ad Aldo in 2–3 righe cosa è cambiato e ricordagli di chiudere e riaprire l'app sul telefono.
 
 - Nota unica per allenamento (06/10): textarea «📝 Nota per il coach su questo allenamento» in fondo a ogni giorno (localStorage daynote.<plan>.<day>), inclusa nel messaggio WhatsApp sotto «Note:». Beep timer in background impossibile su iPhone (web app sospesa): serve push da server.
+
+- Day 2 di Ottobre/Novembre (11/10): ha `variants` Metabolic (copia di Luglio–Settembre) e Cardio senza attrezzi (corda 10' + stretching dinamico + corsa a intervalli 5×1', 4×2', 2×3' a 4'50"/km, sezione `intervals`). Frasi `motivation` e `bookLines` riscritte (v27).

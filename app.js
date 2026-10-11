@@ -554,7 +554,7 @@
         '</div><div class="iv-lbl">' + s[0] + ':' + s[1] + '</div></div>';
     }).join('');
     return '<section class="block"><div class="block-head"><div class="letter sm">RUN</div><div class="block-meta">' +
-      '<div class="block-kind">' + esc(sec.label) + '</div><div class="block-sub">Passo corsa ' + esc(sec.pace) + ' · ' + totalMin + ' min di lavoro</div></div></div>' +
+      '<div class="block-kind">' + esc(sec.label) + '</div><div class="block-sub">Passo corsa ' + esc(sec.pace) + ' · ' + totalMin + ' min in totale</div></div></div>' +
       '<div class="iv-grid">' + rows + '</div>' +
       '<div class="iv-legend"><span><i style="background:var(--red)"></i>Corsa (min)</span><span><i style="background:#e8dcd0"></i>Recupero (min)</span></div>' +
       '<div class="rest"><div class="rest-txt">Timer guidato<span>corsa / recupero con segnale</span></div>' +
