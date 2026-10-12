@@ -1102,6 +1102,13 @@
     });
     var count = function (arr, f) { var o = {}; arr.forEach(function (x) { o[x[f]] = (o[x[f]] || 0) + 1; }); return o; };
     var byPlace = count(inMonth, 'place'), byType = count(inMonth, 'type');
+    var fmtMin = function (m) { return m >= 60 ? Math.floor(m / 60) + ' h ' + (m % 60 ? (m % 60) + ' min' : '').trim() : m + ' min'; };
+    var sumRow = function (title, arr) {
+      var dur = arr.filter(function (x) { return x.dur; }), kc = arr.filter(function (x) { return x.kcal; });
+      var tm = dur.reduce(function (a, x) { return a + x.dur; }, 0), tk = kc.reduce(function (a, x) { return a + x.kcal; }, 0);
+      return '<div class="d-row"><small>' + title + '</small><span class="pill">Tempo <b>' + fmtMin(tm) + '</b>' + (dur.length ? ' · media ' + fmtMin(Math.round(tm / dur.length)) : '') + '</span>' +
+        '<span class="pill">Calorie <b>' + tk + ' kcal</b>' + (kc.length ? ' · media ' + Math.round(tk / kc.length) : '') + '</span></div>';
+    };
     var pills = function (o) { var k = Object.keys(o); return k.length ? k.map(function (x) { return '<span class="pill">' + esc(x) + ' <b>' + o[x] + '</b></span>'; }).join('') : '<span class="muted">nessuno</span>'; };
 
     // Progressi kg: primo e ultimo valore registrato per esercizio
@@ -1147,10 +1154,10 @@
       '<div class="stats"><div class="stat"><b>' + inWeek.length + '</b><small>allenamenti settimana</small></div>' +
       '<div class="stat"><b>' + inMonth.filter(isAct).length + '</b><small>allenamenti mese</small></div>' +
       '<div class="stat"><b>' + stopDays + '</b><small>giorni di stop (mese)</small></div></div>' +
-      '<div class="d-row"><small>Questo mese</small><span class="pill">Minuti <b>' + inMonth.reduce(function (a, x) { return a + (x.dur || 0); }, 0) + '</b></span>' +
-        '<span class="pill">Calorie <b>' + inMonth.reduce(function (a, x) { return a + (x.kcal || 0); }, 0) + ' kcal</b></span></div>' +
+      sumRow('Questa settimana', inWeek) + sumRow('Questo mese', inMonth) +
       '<div class="d-row"><small>Luogo (mese)</small>' + pills(byPlace) + '</div>' +
       '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
+      '<div class="d-row"><small>Tipo (settimana)</small>' + pills(count(inWeek, 'type')) + '</div>' +
       '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button>' +
       '<button class="btn-start gray" data-new="Nota">+ Nota</button><button class="btn-start gray" data-new="Stop">+ Stop</button></div>' +
       '<h3>Progressi carichi</h3>' + progHtml() +
