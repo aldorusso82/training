@@ -376,6 +376,40 @@
     return secs;
   }
 
+  // Inizio allenamento: salva l'orario di partenza; a «Fine» il Registra si compila con ora e minuti
+  function getSession() { return store.get('session', null); }
+  function sessMin(s) { return Math.max(1, Math.round((Date.now() - s.start) / 60000)); }
+  function sessionHtml(day) {
+    var ss = getSession();
+    if (ss && ss.start && Date.now() - ss.start > 12 * 3600000) { store.set('session', null); ss = null; }
+    if (!ss) {
+      return '<div class="sess"><button class="btn-sess" id="sessStart">▶ Inizia allenamento</button><small>salva l\'ora di inizio e conta i minuti</small></div>';
+    }
+    var t = new Date(ss.start);
+    return '<div class="sess on"><div><b>● In corso</b> · ' + esc(ss.label || '') + '<br><small>iniziato alle ' + ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2) +
+      ' · <span id="sessEl">' + sessMin(ss) + "'</span></small></div>" +
+      '<button class="btn-sess end" id="sessEnd">■ Fine</button><button class="btn-sess x" id="sessCancel" aria-label="Annulla allenamento in corso">✕</button></div>';
+  }
+  var sessTick = 0;
+  function bindSession(day, cur) {
+    clearInterval(sessTick);
+    if ($('sessStart')) $('sessStart').onclick = function () {
+      store.set('session', { start: Date.now(), planId: state.plan.id, dayId: day.id, yoga: day.id === 'yoga',
+        label: (day.id === 'yoga' ? 'Yoga' : state.plan.name + ' · ' + day.tab + (day.variants ? ' · ' + cur.label : '')) });
+      renderDay();
+    };
+    if ($('sessCancel')) $('sessCancel').onclick = function () {
+      if (confirm('Annullare l\'allenamento in corso?')) { store.set('session', null); renderDay(); }
+    };
+    if ($('sessEnd')) {
+      $('sessEnd').onclick = function () {
+        var ss = getSession(); if (!ss) return;
+        openLogForm(ss.yoga ? 'Yoga' : 'Allenamento', ss.label, ss.yoga ? null : { planId: ss.planId, dayId: ss.dayId }, { dur: sessMin(ss), when: localDT(new Date(ss.start)), sess: true });
+      };
+      sessTick = setInterval(function () { var ss = getSession(), el = $('sessEl'); if (ss && el) el.textContent = sessMin(ss) + "'"; }, 20000);
+    }
+  }
+
   function renderDay() {
     var day = state.days[state.day];
     var cur = currentSections(day);
@@ -395,6 +429,7 @@
     } else {
       h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
     }
+    h += sessionHtml(day);
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
 
@@ -430,6 +465,15 @@
 
     var main = $('main');
     main.innerHTML = h;
+    main.querySelectorAll('.sets').forEach(function (row) {
+      row.onclick = function (ev) {
+        var b = ev.target.closest('.set-sq'); if (!b) return;
+        var n = +b.dataset.n, cur0 = setsDone(row.dataset.sk), nv = n === cur0 ? n - 1 : n;
+        store.set(row.dataset.sk, { d: isoDate(new Date()), n: nv });
+        row.querySelectorAll('.set-sq').forEach(function (x) { var on = +x.dataset.n <= nv; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+        buzz(15);
+      };
+    });
     $('musicBtn').onclick = function () { openMusic(day); };
     $('calBtn').onclick = openWeekPlanner;
     $('freeTimerBtn').onclick = function () { openFreeTimer(); };
@@ -443,6 +487,7 @@
       b.onclick = function () { openLogForm(b.dataset.alt, b.dataset.alt === 'Stop' ? '' : b.dataset.alt, b.dataset.alt === 'Stop' ? null : { planId: state.plan.id, dayId: day.id }); };
     });
     bindReminder();
+    bindSession(day, cur);
     if ($('swapBtn')) {
       $('swapBtn').onclick = function () { $('swapRow').hidden = !$('swapRow').hidden; };
       $('swapRow').onclick = function (ev) { var b = ev.target.closest('[data-swap]'); if (b) swapDays(day.id, b.dataset.swap); };
@@ -461,6 +506,20 @@
       state.variant[state.plan.id + '/' + day.id] = b.dataset.v; store.set('variant', state.variant);
       renderDay();
     };
+  }
+
+  // Serie fatte: quadrati numerati, valgono per la giornata e si azzerano al Registra
+  function setsKey(si) {
+    var d = state.days[state.day];
+    return 'sets.' + state.plan.id + '.' + d.id + '.' + (state.variant[state.plan.id + '/' + d.id] || '') + '.' + si;
+  }
+  function setsDone(k) { var v = store.get(k, null); return v && v.d === isoDate(new Date()) ? v.n : 0; }
+  function clearSets(planId, dayId) {
+    try {
+      var pre = NS + 'sets.' + planId + '.' + dayId + '.', del = [];
+      for (var i = 0; i < localStorage.length; i++) { var kk = localStorage.key(i); if (kk.indexOf(pre) === 0) del.push(kk); }
+      del.forEach(function (kk) { localStorage.removeItem(kk); });
+    } catch (e) {}
   }
 
   function renderBlock(sec, si) {
@@ -529,7 +588,13 @@
       : '<div class="rest rest-free"><div class="rest-txt">Recupero<span>scegli e parte il timer</span></div><div class="rest-chips">' +
         [60, 75, 90, 120].map(function (r) { return '<button class="btn-start chip" data-rest="' + r + '" data-label="' + lbl + '">' + fmtRest(r) + '</button>'; }).join('') + '</div></div>';
 
-    return '<section class="block' + (mob ? ' mob' : '') + (sec.type === 'cooldown' ? ' yoga' : '') + '"><div class="block-head">' + head + '</div>' + rows + rest + '</section>';
+    var setsHtml = '';
+    if (!mob && !guided && sec.sets > 0) {
+      var sk = setsKey(si), dn = setsDone(sk), sq = '';
+      for (var q = 1; q <= sec.sets; q++) sq += '<button type="button" class="set-sq' + (q <= dn ? ' on' : '') + '" data-n="' + q + '" aria-pressed="' + (q <= dn) + '" aria-label="Serie ' + q + '">' + q + '</button>';
+      setsHtml = '<div class="sets" data-sk="' + esc(sk) + '"><span class="sets-l">Serie fatte</span>' + sq + '</div>';
+    }
+    return '<section class="block' + (mob ? ' mob' : '') + (sec.type === 'cooldown' ? ' yoga' : '') + '"><div class="block-head">' + head + '</div>' + rows + setsHtml + rest + '</section>';
   }
 
   // Card singola con timer: corsa (durata fissa) o timer libero (durata impostabile)
@@ -575,7 +640,7 @@
       return;
     }
     var row = e.target.closest('.ex');
-    if (row && !row.classList.contains('static')) openSheet(row.dataset.ex, row.dataset.reps, row.dataset.name);
+    if (row && !row.classList.contains('static')) openSheet(row.dataset.ex, row.dataset.reps, row.dataset.name, row);
   });
   main.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && e.target.classList.contains('ex')) e.target.click();
@@ -608,8 +673,13 @@
   /* ---------- Scheda esercizio ---------- */
   var sheet = $('sheet');
   var sheetAnim = 0, ignorePop = false;
-  function openSheet(key, reps, name) {
+  var sheetNav = null;
+  function openSheet(key, reps, name, el) {
     var e = state.program.exercises[key]; if (!e) return;
+    if (el) {
+      var list = Array.prototype.slice.call(document.querySelectorAll('#main .ex:not(.static)'));
+      sheetNav = { list: list, i: list.indexOf(el) };
+    }
     name = name || e.name;
     $('sheetTitle').textContent = name;
     var h = '<div class="sheet-inner">';
@@ -680,20 +750,43 @@
     }
   }
   function showSheet() {
+    var was = !sheet.hidden;
     $('sheetBody').scrollTop = 0;
     sheet.hidden = false;
     document.body.style.overflow = 'hidden';
-    history.pushState({ sheet: 1 }, '');
+    if (!was) history.pushState({ sheet: 1 }, '');
   }
   function closeSheet(fromPop) {
     if (sheet.hidden) return;
     sheet.hidden = true;
-    clearInterval(sheetAnim); sheetAnim = 0;
+    clearInterval(sheetAnim); sheetAnim = 0; sheetNav = null;
     $('sheetBody').innerHTML = '';
     document.body.style.overflow = '';
     if (!fromPop && history.state && history.state.sheet) { ignorePop = true; history.back(); }
   }
   $('sheetClose').onclick = function () { closeSheet(false); };
+
+  // Swipe sinistra/destra: esercizio successivo/precedente (scheda), fase successiva/precedente (timer)
+  function onSwipe(el, fn) {
+    var sx = 0, sy = 0, t0 = 0, ok = false;
+    el.addEventListener('touchstart', function (ev) {
+      var t = ev.touches[0]; sx = t.clientX; sy = t.clientY; t0 = Date.now();
+      ok = ev.touches.length === 1 && !ev.target.closest('input,textarea,select,iframe');
+    }, { passive: true });
+    el.addEventListener('touchend', function (ev) {
+      if (!ok) return; ok = false;
+      var t = ev.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6 && Date.now() - t0 < 700) fn(dx < 0 ? 1 : -1);
+    }, { passive: true });
+  }
+  onSwipe($('sheetBody'), function (dir) {
+    if (!sheetNav) return;
+    var j = sheetNav.i + dir; if (j < 0 || j >= sheetNav.list.length) return;
+    var row = sheetNav.list[j], nav = sheetNav;
+    openSheet(row.dataset.ex, row.dataset.reps, row.dataset.name);
+    sheetNav = nav; sheetNav.i = j;
+    buzz(10);
+  });
   window.addEventListener('popstate', function () { if (ignorePop) { ignorePop = false; return; } closeSheet(true); });
 
 
@@ -1015,7 +1108,8 @@
       return '<button type="button" aria-pressed="' + (x === sel) + '" data-v="' + esc(x) + '">' + esc(x) + '</button>';
     }).join('') + '</div>';
   }
-  function openLogForm(type, label, ref) {
+  function openLogForm(type, label, ref, pre) {
+    pre = pre || {};
     $('sheetTitle').textContent = 'Registra';
     var lastPlace = store.get('lastPlace', 'Palestra');
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
@@ -1026,10 +1120,10 @@
         chips('dayref', state.days.filter(function (d) { return d.id !== 'yoga'; }).map(function (d) { return d.tab; }).concat(['Altro']), 'Altro') + '</div>') +
       '<div id="fAct" class="f-group"><label class="f-l" for="fLabel">Cosa</label><input class="f-in" id="fLabel" value="' + esc(label || '') + '" placeholder="es. Day 1, seduta fisio…">' +
       '<label class="f-l">Luogo</label>' + chips('place', PLACES, lastPlace) +
-      '<div class="f-two"><div><label class="f-l" for="fDur">Minuti</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo"></div>' +
+      '<div class="f-two"><div><label class="f-l" for="fDur">Minuti</label><input class="f-in" id="fDur" type="number" inputmode="numeric" min="0" placeholder="facoltativo" value="' + (pre.dur || '') + '"></div>' +
       '<div><label class="f-l" for="fKcal">Calorie (kcal)</label><input class="f-in" id="fKcal" type="number" inputmode="numeric" min="0" placeholder="da Apple Watch"></div></div>' +
       '<button type="button" class="btn-ghost-dark" id="fPaste">📋 Incolla minuti e calorie (Apple Watch)</button></div>' +
-      '<label class="f-l" for="fWhen">Data e ora</label><input class="f-in" id="fWhen" type="datetime-local" value="' + localDT(new Date()) + '">' +
+      '<label class="f-l" for="fWhen">Data e ora</label><input class="f-in" id="fWhen" type="datetime-local" value="' + (pre.when || localDT(new Date())) + '">' +
       '<label class="f-l" for="fNote">Note</label><textarea class="f-in" id="fNote" rows="3" placeholder="come è andata, dolori, sensazioni…"></textarea>' +
       '<button class="btn-big btn-red" id="fSave">Salva</button></div>';
     showSheet();
@@ -1078,7 +1172,9 @@
       if (ref && ACTIVE_DAY.indexOf(t) >= 0) { entry.planId = ref.planId; entry.dayId = ref.dayId; }
       var log = getLog(); log.push(entry);
       log.sort(function (a, b) { return a.when < b.when ? -1 : 1; });
-      store.set('log', log); if (entry.place) store.set('lastPlace', entry.place);
+      store.set('log', log); if (pre.sess) store.set('session', null);
+      if (ref && ACTIVE_DAY.indexOf(t) >= 0) clearSets(ref.planId, ref.dayId);
+      if (entry.place) store.set('lastPlace', entry.place);
       if (ACTIVE.indexOf(t) >= 0) store.set('remindSnooze', '');
       closeSheet(false);
       renderTabs(); renderDay();
@@ -1424,6 +1520,12 @@
     if (iv.classList.contains('done')) return;
     if (I.idx < I.phases.length - 1) { I.idx++; enterPhase(Date.now()); } else { I.end = Date.now(); I.paused = false; ivTick(); }
   };
+  onSwipe(iv, function (dir) {
+    if (iv.hidden || iv.classList.contains('done')) return;
+    if (dir > 0) $('ivSkip').onclick();
+    else if (I.idx > 0) { I.idx--; enterPhase(Date.now()); }
+  });
+  onSwipe(timer, function (dir) { if (!timer.hidden && dir > 0) stopTimer(); });
   $('ivStop').onclick = function () {
     clearTimeout(I.raf);
     iv.hidden = true;

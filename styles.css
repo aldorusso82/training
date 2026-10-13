@@ -454,3 +454,16 @@ body.has-tbar .main, body.has-tbar .foot { padding-bottom: calc(var(--safe-b) + 
 /* v26: niente zoom con doppio tocco (timer, pulsanti) e pulsante «Cambia» playlist */
 html, body, button, .overlay, .t-bar, .sheet { touch-action: manipulation; }
 .music-chg { flex: 0 0 auto; min-height: 56px; padding: 0 14px; border-radius: 14px; border: 1px solid #d9cbbd; background: #fff; color: var(--ink); font-weight: 700; font-size: 15px; }
+
+/* Inizia allenamento + serie fatte (v29) */
+.sess { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
+.sess small { color: var(--muted, #666); font-size: 12px; }
+.sess.on { background: #111; color: #fff; border-radius: 12px; padding: 8px 10px; justify-content: space-between; }
+.sess.on small { color: #ddd; }
+.btn-sess { min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #111; color: #fff; font-weight: 800; font-size: 15px; }
+.btn-sess.end { background: #fff; color: #111; }
+.btn-sess.x { background: transparent; color: #fff; padding: 0 10px; border: 1px solid #888; }
+.sets { display: flex; align-items: center; gap: 8px; padding: 6px 12px 8px; flex-wrap: wrap; }
+.sets-l { font-size: 12px; font-weight: 700; color: #555; margin-right: 2px; }
+.set-sq { width: 44px; height: 44px; border: 2px solid var(--red); border-radius: 10px; background: #fff; color: var(--red); font-weight: 800; font-size: 17px; }
+.set-sq.on { background: var(--red); color: #fff; }

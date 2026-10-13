@@ -18,7 +18,8 @@
    "name": "Goblet squat",
    "img": "Goblet_Squat",
    "equip": "Manubrio / KB",
-   "kg": true
+   "kg": true,
+   "cue": "Manubrio al petto, gomiti in basso. Scendi tra le gambe col busto alto e i talloni a terra; spingi e risali."
   },
   "chin_up": {
    "name": "Chin up",
@@ -32,7 +33,8 @@
    "img": "Dumbbell_Rear_Lunge",
    "equip": "Manubri",
    "kg": true,
-   "q": "dumbbell reverse lunge tutorial"
+   "q": "dumbbell reverse lunge tutorial",
+   "cue": "Passo indietro e ginocchio posteriore verso terra; busto dritto, peso sul tallone davanti. Risali spingendo col piede avanti."
   },
   "australian_pu": {
    "name": "Australian pull up",
@@ -45,63 +47,74 @@
    "name": "Cossack squat",
    "video": "JaCbmoDqUc4",
    "equip": "Corpo libero / KB",
-   "kg": true
+   "kg": true,
+   "cue": "Gambe larghe: porta il peso su un lato scendendo col bacino, l'altra gamba resta tesa con la punta in alto. Talloni a terra, busto alto."
   },
   "db_row": {
    "name": "DB row",
    "img": "One-Arm_Dumbbell_Row",
    "equip": "Manubrio + panca",
-   "kg": true
+   "kg": true,
+   "cue": "Mano e ginocchio sulla panca, schiena piatta. Tira il manubrio verso l'anca con il gomito vicino al corpo; fermati un attimo in alto."
   },
   "sa_lat": {
    "name": "Single arm lat machine",
    "img": "One_Arm_Lat_Pulldown",
    "equip": "Lat machine",
-   "kg": true
+   "kg": true,
+   "cue": "Un braccio alla volta: spalla bassa, tira la maniglia verso la spalla portando il gomito in basso e indietro. Non dondolare col busto."
   },
   "reverse_fly": {
    "name": "Reverse fly",
    "img": "Reverse_Flyes",
    "equip": "Manubri",
-   "kg": true
+   "kg": true,
+   "cue": "Busto inclinato, schiena piatta, gomiti leggermente piegati. Apri le braccia come ali fino all'altezza delle spalle, stringendo le scapole."
   },
   "jump_rope": {
    "name": "Jump rope",
    "img": "Rope_Jumping",
    "equip": "Corda",
-   "q": "jump rope technique beginner"
+   "q": "jump rope technique beginner",
+   "cue": "Salti piccoli sulle punte, gomiti vicini ai fianchi; la corda la fanno girare i polsi, non le spalle. Respira con calma."
   },
   "step_up": {
    "name": "Step up",
    "img": "Dumbbell_Step_Ups",
    "equip": "Manubri + box",
-   "kg": true
+   "kg": true,
+   "cue": "Appoggia tutto il piede sul box e spingi col tallone di quella gamba, senza darti la spinta con l'altra. Scendi controllando."
   },
   "run_1000": {
    "name": "Run 1000 m",
-   "equip": "Corsa"
+   "equip": "Corsa",
+   "cue": "Parti a un ritmo che puoi tenere fino in fondo. Busto alto, passo breve e veloce, respiro regolare."
   },
   "run_500": {
    "name": "Run 500 m",
-   "equip": "Corsa"
+   "equip": "Corsa",
+   "cue": "Ritmo un po' più sostenuto dei 1000 m, ma controllato. Spalle rilassate, braccia che accompagnano il passo."
   },
   "box_jump": {
    "name": "Box jump",
    "img": "Front_Box_Jump",
-   "equip": "Box"
+   "equip": "Box",
+   "cue": "Piedi alla larghezza delle spalle, slancia le braccia e salta. Atterra morbido sul box con le ginocchia piegate, poi scendi a piedi, non saltando."
   },
   "triceps_ext": {
    "name": "Triceps extension",
    "img": "Standing_Dumbbell_Triceps_Extension",
    "equip": "Manubrio",
    "kg": true,
-   "short": "Manubri"
+   "short": "Manubri",
+   "cue": "Manubrio dietro la testa con le due mani, gomiti vicini alle orecchie e fermi. Estendi in alto e scendi lento."
   },
   "hammer_curl": {
    "name": "Hammer curl",
    "img": "Alternate_Hammer_Curl",
    "equip": "Manubri",
-   "kg": true
+   "kg": true,
+   "cue": "Manubri con i palmi che si guardano (presa a martello). Gomiti fermi ai fianchi, sali senza oscillare e scendi in 2-3 secondi."
   },
   "bridge_iso": {
    "name": "Bridge iso monolaterale",
@@ -113,19 +126,22 @@
   "pushup_toetap": {
    "name": "Push up to toe tap",
    "video": "M-JiOxy5l1Q",
-   "equip": "Corpo libero"
+   "equip": "Corpo libero",
+   "cue": "Posizione di push up: scendi, risali e tocca con una mano la punta del piede opposto. Anche in alto il bacino resta stabile."
   },
   "deadlift": {
    "name": "Deadlift",
    "img": "Barbell_Deadlift",
    "equip": "Bilanciere",
-   "kg": true
+   "kg": true,
+   "cue": "Bilanciere vicino alle tibie, schiena neutra, petto aperto. Spingi il pavimento con le gambe e porta il bacino avanti in alto; scendi con la barra aderente al corpo."
   },
   "db_bench": {
    "name": "DB bench press",
    "img": "Dumbbell_Bench_Press",
    "equip": "Manubri + panca",
-   "kg": true
+   "kg": true,
+   "cue": "Scapole strette e piedi ben appoggiati. Scendi con i gomiti a circa 45° dal busto fino al petto, spingi in alto senza sbattere i manubri."
   },
   "sl_rdl": {
    "name": "SL RDL",
@@ -140,7 +156,8 @@
    "img": "Incline_Dumbbell_Press",
    "equip": "Manubri + panca inclinata",
    "kg": true,
-   "q": "incline dumbbell press tutorial"
+   "q": "incline dumbbell press tutorial",
+   "cue": "Panca inclinata, scapole strette. Scendi controllando fino ai lati del petto alto e spingi in linea con le spalle."
   },
   "sl_hip_thrust": {
    "name": "SL hip thrust (panca)",
@@ -155,27 +172,31 @@
    "img": "Dumbbell_Flyes",
    "equip": "Manubri + panca",
    "kg": true,
-   "q": "dumbbell chest fly tutorial"
+   "q": "dumbbell chest fly tutorial",
+   "cue": "Gomiti leggermente piegati e fissi. Apri le braccia ad arco fino a sentire il petto allungarsi, poi richiudi come un abbraccio."
   },
   "db_military": {
    "name": "DB military press",
    "img": "Dumbbell_One-Arm_Shoulder_Press",
    "equip": "Manubrio",
    "kg": true,
-   "q": "dumbbell shoulder press tutorial"
+   "q": "dumbbell shoulder press tutorial",
+   "cue": "In piedi, addome contratto. Spingi il manubrio sopra la testa senza inarcare la schiena e riporta all'altezza delle spalle."
   },
   "lateral_raise": {
    "name": "Alzate laterali",
    "img": "Side_Lateral_Raise",
    "equip": "Manubri",
    "kg": true,
-   "q": "dumbbell lateral raise tutorial"
+   "q": "dumbbell lateral raise tutorial",
+   "cue": "Gomiti leggermente piegati, solleva i manubri di lato fino alle spalle (non oltre). Pesi leggeri, niente slancio."
   },
   "trx_fallout": {
    "name": "TRX fallout",
    "img": "Suspended_Fallout",
    "equip": "TRX",
-   "q": "TRX fallout tutorial"
+   "q": "TRX fallout tutorial",
+   "cue": "Braccia tese sulle maniglie, corpo in linea. Allunga le braccia in avanti abbassando il busto e torna indietro con l'addome, senza cedere nella schiena."
   },
   "trx_squat_row": {
    "name": "TRX squat to row",
@@ -187,93 +208,109 @@
   "trx_pushup_feet": {
    "name": "TRX push up (piedi nel TRX)",
    "video": "nWyiY6ym0qo",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Piedi nelle maniglie, mani a terra: corpo rigido dalla testa ai piedi. Scendi col petto e risali spingendo; il bacino non cede."
   },
   "trx_sl_squat": {
    "name": "TRX single leg squat",
    "video": "taKk_7PTMdk",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Tieni le maniglie per equilibrio e fai lo squat su una gamba, l'altra avanti. Ginocchio in linea col piede; le braccia aiutano solo se serve."
   },
   "trx_incline_pu": {
    "name": "TRX incline push up (mani nel TRX)",
    "img": "Suspended_Push-Up",
    "equip": "TRX",
-   "q": "TRX push up tutorial"
+   "q": "TRX push up tutorial",
+   "cue": "Mani nelle maniglie, corpo inclinato in avanti e in linea. Scendi col petto tra le mani e risali; più i piedi sono indietro, più è difficile."
   },
   "trx_hip_press": {
    "name": "TRX hip press monolaterale",
    "video": "w0ZK6TGE_XU",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Piede nella maniglia, schiena a terra. Spingi il bacino in alto con il gluteo della gamba di appoggio e scendi senza toccare terra."
   },
   "trx_chest_fly": {
    "name": "TRX chest fly",
    "video": "VeiB4nfSpeQ",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Corpo inclinato in avanti, gomiti leggermente piegati. Apri le braccia ad arco e richiudi con il petto; corpo in linea."
   },
   "trx_y_raise": {
    "name": "TRX Y raise",
    "video": "znRC93cGltY",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Corpo inclinato indietro, braccia tese verso il basso. Solleva le braccia formando una Y sopra la testa, stringendo le scapole."
   },
   "trx_t_fly": {
    "name": "TRX T fly",
    "video": "eCu-wLNpdkk",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Corpo inclinato indietro, braccia tese davanti. Apri le braccia a T aprendo il petto e stringendo le scapole; torna lento."
   },
   "front_raise": {
    "name": "Front raises",
    "img": "Front_Dumbbell_Raise",
    "equip": "Manubri",
    "kg": true,
-   "q": "dumbbell front raise tutorial"
+   "q": "dumbbell front raise tutorial",
+   "cue": "Manubri davanti alle cosce, solleva le braccia in avanti fino all'altezza delle spalle. Busto fermo, senza slancio."
   },
   "barbell_curl": {
    "name": "Barbell curl",
    "img": "Barbell_Curl",
    "equip": "Bilanciere",
-   "kg": true
+   "kg": true,
+   "cue": "Gomiti fermi ai fianchi, sali col bilanciere fino alle spalle e scendi in 2-3 secondi. Niente oscillazione della schiena."
   },
   "french_press": {
    "name": "French press",
    "img": "Lying_Triceps_Press",
    "equip": "Bilanciere EZ + panca",
-   "kg": true
+   "kg": true,
+   "cue": "Sdraiato, bilanciere sopra il petto: piega solo i gomiti portando la barra verso la fronte; gomiti fermi e stretti. Estendi senza bloccare del tutto."
   },
   "spanish_squat": {
    "name": "Spanish squat",
    "video": "hgFxm5KIF7M",
-   "equip": "Elastico"
+   "equip": "Elastico",
+   "cue": "Elastico dietro le ginocchia, schiena inclinata indietro quasi seduto. Scendi con tibie verticali e quadricipiti in tensione; in isometria tieni la posizione."
   },
   "push_up": {
    "name": "Push up",
    "img": "Pushups",
-   "equip": "Corpo libero"
+   "equip": "Corpo libero",
+   "cue": "Mani sotto le spalle, corpo rigido in linea. Scendi finché il petto è vicino a terra, gomiti a 45°, e risali."
   },
   "squat": {
    "name": "Squat",
    "img": "Barbell_Squat",
    "equip": "Bilanciere",
-   "kg": true
+   "kg": true,
+   "cue": "Bilanciere sulla schiena alta, piedi alla larghezza delle spalle. Scendi con petto aperto e ginocchia in linea coi piedi, poi spingi forte con i talloni."
   },
   "bench_1arm": {
    "name": "Bench press",
    "img": "One_Arm_Dumbbell_Bench_Press",
    "equip": "Manubrio + panca",
    "kg": true,
-   "q": "single arm dumbbell bench press"
+   "q": "single arm dumbbell bench press",
+   "cue": "Un manubrio per volta, addome contratto per non ruotare. Scendi controllando e spingi in alto sopra il petto."
   },
   "walking_lunge": {
    "name": "Walking lunge",
    "img": "Bodyweight_Walking_Lunge",
    "equip": "Manubri",
    "kg": true,
-   "q": "dumbbell walking lunge tutorial"
+   "q": "dumbbell walking lunge tutorial",
+   "cue": "Passo lungo in avanti e ginocchio posteriore verso terra; busto dritto. Spingi con la gamba davanti per portare avanti l'altra."
   },
   "military_press": {
    "name": "Military press",
    "img": "Standing_Military_Press",
    "equip": "Bilanciere",
-   "kg": true
+   "kg": true,
+   "cue": "Bilanciere sulle spalle, gluteo e addome contratti. Spingi sopra la testa facendo spazio col viso e blocca con la barra sopra le spalle."
   },
   "biceps_21": {
    "name": "Biceps set 21",
@@ -287,46 +324,53 @@
    "name": "Leg raises",
    "img": "Flat_Bench_Lying_Leg_Raise",
    "equip": "Panca / tappetino",
-   "q": "lying leg raise tutorial"
+   "q": "lying leg raise tutorial",
+   "cue": "Schiena aderente alla panca o a terra. Solleva le gambe quasi tese e scendi lento senza far inarcare la zona lombare."
   },
   "pallof": {
    "name": "Pallof press",
    "img": "Pallof_Press",
    "equip": "Cavo / elastico",
-   "kg": true
+   "kg": true,
+   "cue": "Elastico al petto, di lato. Spingi avanti le braccia e resisti alla rotazione del busto per 1-2 secondi; poi riporta al petto."
   },
   "plank_pull_through": {
    "name": "Plank pull through",
    "video": "rWS8IGcIEy8",
    "equip": "Kettlebell",
-   "kg": true
+   "kg": true,
+   "cue": "In plank, con la mano passa la kettlebell sotto il corpo da un lato all'altro. Bacino fermo: non ruotare."
   },
   "plank_row": {
    "name": "Plank row",
    "img": "Alternating_Renegade_Row",
    "equip": "Manubri / KB",
    "kg": true,
-   "q": "plank row renegade row tutorial"
+   "q": "plank row renegade row tutorial",
+   "cue": "In plank con le gambe larghe, tira il manubrio verso l'anca senza ruotare il busto; alterna i lati."
   },
   "pull_up": {
    "name": "Trazioni",
    "img": "Pullups",
    "equip": "Sbarra",
    "kg": true,
-   "q": "pull up exercise tutorial"
+   "q": "pull up exercise tutorial",
+   "cue": "Presa poco più larga delle spalle, scapole giù e addome contratto. Sali col mento sopra la sbarra e scendi lento fino a braccia quasi tese."
   },
   "russian_twist": {
    "name": "Russian twist",
    "img": "Russian_Twist",
    "equip": "Palla / disco",
    "kg": true,
-   "q": "russian twist tutorial"
+   "q": "russian twist tutorial",
+   "cue": "Seduto, busto indietro e schiena dritta, piedi sollevati o a terra. Ruota il busto da un lato all'altro portando il peso accanto al fianco."
   },
   "bulgarian": {
    "name": "Bulgarian squat",
    "img": "Split_Squat_with_Dumbbells",
    "equip": "Manubri + panca",
-   "kg": true
+   "kg": true,
+   "cue": "Piede posteriore sulla panca, tutto il peso sulla gamba davanti. Scendi dritto col busto e risali spingendo col tallone."
   },
   "tk_core": {
    "name": "TK x core",
@@ -337,31 +381,36 @@
    "name": "Clean",
    "img": "Clean",
    "equip": "Bilanciere",
-   "kg": true
+   "kg": true,
+   "cue": "Parti dal basso con la schiena piatta, tira il bilanciere vicino al corpo e, con una spinta di bacino, accoglilo sulle spalle con i gomiti in avanti."
   },
   "atomic_pushup": {
    "name": "Atomic push up",
    "video": "aExo8qkK6pw",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Piedi nel TRX, esegui un push up e al ritorno porta le ginocchia al petto. Bacino basso e movimenti controllati."
   },
   "incline_bench": {
    "name": "Incline bench press",
    "img": "Barbell_Incline_Bench_Press_-_Medium_Grip",
    "equip": "Bilanciere + panca inclinata",
-   "kg": true
+   "kg": true,
+   "cue": "Panca inclinata, scapole strette. Porta la barra sul petto alto e spingi in linea con le spalle."
   },
   "trx_rollout": {
    "name": "Rollout TRX",
    "img": "Suspended_Fallout",
    "equip": "TRX",
-   "q": "TRX rollout fallout"
+   "q": "TRX rollout fallout",
+   "cue": "Avambracci o mani nelle maniglie, corpo in linea. Allunga le braccia in avanti scivolando e torna indietro con l'addome, senza far cedere la schiena."
   },
   "lateral_lunge": {
    "name": "Affondi laterali",
    "img": "Barbell_Side_Split_Squat",
    "equip": "Bilanciere / manubri",
    "kg": true,
-   "q": "lateral lunge exercise tutorial"
+   "q": "lateral lunge exercise tutorial",
+   "cue": "Fai un passo laterale ampio e spingi il bacino indietro, la gamba opposta resta tesa. Piedi paralleli e talloni a terra; torna col piede che spinge."
   },
   "hk_chop": {
    "name": "HK chop",
@@ -373,63 +422,74 @@
   "trx_w": {
    "name": "W TRX",
    "video": "CDdIAI6uASM",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Corpo inclinato indietro, gomiti piegati a W. Tira indietro i gomiti stringendo le scapole e apri; torna lento."
   },
   "trx_triceps": {
    "name": "TRX triceps",
    "video": "rihH-UI1zDM",
    "equip": "TRX",
-   "short": "TRX"
+   "short": "TRX",
+   "cue": "Mani nelle maniglie, corpo inclinato in avanti. Piega i gomiti portando la testa tra le mani e estendi con i tricipiti; gomiti fermi."
   },
   "trx_pike": {
    "name": "Pike (TRX)",
    "video": "xk4FBzaUFE4",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Piedi nel TRX, braccia tese a terra. Solleva il bacino in alto a V con le gambe tese e torna in plank senza cedere nella schiena."
   },
   "snatch": {
    "name": "Snatch",
    "img": "One-Arm_Kettlebell_Snatch",
    "equip": "Kettlebell / manubrio",
    "kg": true,
-   "q": "kettlebell single arm snatch tutorial"
+   "q": "kettlebell single arm snatch tutorial",
+   "cue": "Kettlebell tra le gambe: spingi forte il bacino e lancia il peso sopra la testa in un unico movimento, braccio disteso. Controlla la discesa."
   },
   "run_200": {
    "name": "Run 200 m",
-   "equip": "Corsa"
+   "equip": "Corsa",
+   "cue": "Corsa veloce su breve distanza: passo lungo e rapido, spalle rilassate. Recupera bene prima della prossima ripetuta."
   },
   "skater_jump": {
    "name": "Skater jump",
    "video": "GUiZb0uROnE",
-   "equip": "Corpo libero"
+   "equip": "Corpo libero",
+   "cue": "Salta lateralmente da un piede all'altro atterrando morbido su una gamba. Busto leggermente avanti, braccia che bilanciano."
   },
   "bike_500": {
    "name": "Bike 500 m",
    "img": "Bicycling_Stationary",
    "equip": "Bike",
-   "q": "stationary bike workout technique"
+   "q": "stationary bike workout technique",
+   "cue": "Pedalata veloce e continua; sella alta quanto basta. Spingi e tira il pedale, ritmo costante."
   },
   "wall_ball": {
    "name": "Wall ball",
    "video": "U_wNNwNXKr8",
    "equip": "Palla medica",
-   "kg": true
+   "kg": true,
+   "cue": "Palla medica al petto, squat profondo e risalendo lancia la palla in alto sul muro. Riprendila in squat e ripeti con fluidità."
   },
   "row_1km": {
    "name": "Vogatore 1 km",
    "img": "Rowing_Stationary",
    "equip": "Vogatore",
-   "q": "rowing machine technique"
+   "q": "rowing machine technique",
+   "cue": "Prima spingi con le gambe, poi inclina il busto e infine tira con le braccia; ritorna al contrario. Ritmo costante e respiro regolare."
   },
   "trx_squat_jump": {
    "name": "TRX squat jump",
    "video": "R9FgSeoy2ME",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Maniglie per l'equilibrio: scendi in squat e salta in alto. Atterra morbido sulle punte e subito in squat."
   },
   "trx_row": {
    "name": "TRX row",
    "img": "Suspended_Row",
    "equip": "TRX",
-   "q": "TRX row tutorial"
+   "q": "TRX row tutorial",
+   "cue": "Corpo inclinato indietro, corpo in linea. Tira il petto verso le maniglie stringendo le scapole e torna lento. Più sei orizzontale, più è difficile."
   },
   "trx_lunge": {
    "name": "TRX lunge",
@@ -441,7 +501,8 @@
   "trx_mountain": {
    "name": "TRX mountain climber",
    "video": "InIKovtYzCQ",
-   "equip": "TRX"
+   "equip": "TRX",
+   "cue": "Piedi nelle maniglie in plank: porta alternato le ginocchia verso il petto, bacino basso e addome contratto."
   },
   "yoga_childs": {
    "name": "Balasana (posizione del bambino)",
@@ -667,7 +728,8 @@
    "img": "Suspended_Push-Up",
    "equip": "TRX",
    "short": "Push up gomiti stretti TRX",
-   "q": "TRX close grip push up triceps tutorial"
+   "q": "TRX close grip push up triceps tutorial",
+   "cue": "Maniglie vicine, mani sotto il petto. Scendi con i gomiti stretti lungo il corpo e risali spingendo con i tricipiti."
   }
  },
  "plans": [
