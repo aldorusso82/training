@@ -437,9 +437,9 @@
     var w = getLog().filter(function (x) { return x.when.slice(0, 10) >= wStart && ACTIVE.indexOf(x.type) >= 0; });
     var min = w.reduce(function (a, x) { return a + (x.dur || 0); }, 0), kc = w.reduce(function (a, x) { return a + (x.kcal || 0); }, 0);
     var train = state.days.filter(function (d) { return d.id !== 'yoga' && !d.optional; }).length;
-    return '<div class="wk-stats"><div><b>' + w.length + '</b><small>fatti' + (train ? ' su ' + train : '') + '</small></div>' +
+    return '<button type="button" class="wk-stats" id="wkStats" aria-label="Apri lo storico degli allenamenti"><div><b>' + w.length + '</b><small>fatti' + (train ? ' su ' + train : '') + '</small></div>' +
       '<div><b>' + (min >= 60 ? Math.floor(min / 60) + 'h ' + ('0' + (min % 60)).slice(-2) : min + "'") + '</b><small>tempo</small></div>' +
-      '<div><b>' + kc + '</b><small>kcal</small></div></div>';
+      '<div><b>' + kc + '</b><small>kcal</small></div><span class="wk-hint">Storico ›</span></button>';
   }
   function renderDay() {
     var day = state.days[state.day];
@@ -505,6 +505,7 @@
       };
     });
     $('musicBtn').onclick = function () { openMusic(day); };
+    if ($('wkStats')) $('wkStats').onclick = function () { openDiary(); };
     $('calBtn').onclick = openWeekPlanner;
     $('freeTimerBtn').onclick = function () { openFreeTimer(); };
     if ($('waBtn')) $('waBtn').onclick = function () { openCoachMessage(day, cur); };
@@ -1308,11 +1309,12 @@
     var histRow = function (x) {
       var d = x.when.split('T');
       var sum = '<b>' + fmtD(d[0]) + '</b> · ' + esc(x.type === 'Allenamento' ? (x.label || x.type) : x.type + (x.label && x.label !== x.type ? ' · ' + x.label : '')) +
-        (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '');
+        (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '') +
+        (ACTIVE.indexOf(x.type) >= 0 ? '<button type="button" class="e-card" data-card="' + x.id + '" aria-label="Crea la card per i social">📤</button>' : '');
       return '<details class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : x.type === 'Padel' ? ' e-padel' : '') + '"><summary>' + sum + '</summary>' +
         '<div class="e-body"><div>' + esc(d[1] || '') + ' · ' + esc(x.type) + (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') + (x.place ? ' · ' + esc(x.place) : '') + (x.week ? ' · sett. ' + x.week : '') + '</div>' +
         (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') +
-        '<div class="e-btns"><button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬 Invia</button><button class="e-share" data-card="' + x.id + '" aria-label="Immagine per i social">📤 Immagine social</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕ Elimina</button></div></div></details>';
+        '<div class="e-btns"><button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬 Invia</button><button class="e-share" data-card="' + x.id + '" aria-label="Immagine per i social">📤 Card social</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕ Elimina</button></div></div></details>';
     };
     var histHtml = function () {
       if (!log.length) return '<p class="muted">Ancora nessun allenamento registrato.</p>';
@@ -1320,10 +1322,11 @@
       return rev.slice(0, 6).map(histRow).join('') + (rev.length > 6 ? '<details class="more"><summary>Vecchie registrazioni (' + (rev.length - 6) + ')</summary>' + rev.slice(6).map(histRow).join('') + '</details>' : '');
     };
 
-    var h = '<div class="sheet-inner diary">' + (flash ? '<div class="flash">' + esc(flash) + '</div>' : '') +
-      '<div class="stats"><div class="stat"><b>' + inWeek.length + '</b><small>allenamenti settimana</small></div>' +
-      '<div class="stat"><b>' + inMonth.filter(isAct).length + '</b><small>allenamenti mese</small></div>' +
-      '<div class="stat"><b>' + stopDays + '</b><small>giorni di stop (mese)</small></div></div>' +
+    var h = '<div class="sheet-inner diary">' + (flash ? '<div class="flash">' + esc(flash) + '</div>' + (log.length ? '<button class="btn-big btn-red card-cta" data-card="' + log[log.length - 1].id + '">📤 Crea la card per i social</button>' : '') : '') +
+      '<div class="stats"><button type="button" class="stat" data-hist="week"><b>' + inWeek.length + '</b><small>allenamenti settimana ›</small></button>' +
+      '<button type="button" class="stat" data-hist="month"><b>' + inMonth.filter(isAct).length + '</b><small>allenamenti mese ›</small></button>' +
+      '<button type="button" class="stat" data-hist="stop"><b>' + stopDays + '</b><small>giorni di stop (mese) ›</small></button></div>' +
+      '<p class="muted small hist-tip">Tocca un numero per vedere lo storico.</p>' +
       sumRow('Questa settimana', inWeek) + sumRow('Questo mese', inMonth) +
       '<div class="d-row"><small>Luogo (mese)</small>' + pills(byPlace) + '</div>' +
       '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
@@ -1331,7 +1334,7 @@
       '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button>' +
       '<button class="btn-start gray" data-new="Nota">+ Nota</button><button class="btn-start gray" data-new="Stop">+ Stop</button></div>' +
       '<h3>Progressi carichi</h3>' + progHtml() +
-      '<h3>Storico</h3>' + histHtml() +
+      '<h3 id="histH">Storico</h3><div id="histBox">' + histHtml() + '</div>' +
       '<button class="btn-ghost-dark" id="dExport">Esporta backup dei dati</button>' +
       '<p class="muted small">I dati restano su questo dispositivo.</p></div>';
 
@@ -1341,8 +1344,17 @@
     $('sheetBody').querySelector('.diary').onclick = function (ev) {
       var n = ev.target.closest('[data-new]');
       if (n) { closeSheet(false); setTimeout(function () { openLogForm(n.dataset.new, n.dataset.new === 'Fisioterapia' ? 'Seduta di fisioterapia' : ''); }, 50); return; }
+      var hs = ev.target.closest('[data-hist]');
+      if (hs) {
+        var k = hs.dataset.hist, arr = k === 'week' ? inWeek : k === 'month' ? inMonth.filter(isAct) : log.filter(function (x) { return x.type === 'Stop'; });
+        $('histH').textContent = 'Storico · ' + (k === 'week' ? 'questa settimana' : k === 'month' ? 'questo mese' : 'stop') + ' (' + arr.length + ')';
+        $('histBox').innerHTML = (arr.length ? arr.slice().reverse().map(histRow).join('') : '<p class="muted">Nessuna registrazione.</p>') + '<button type="button" class="btn-ghost-dark" id="histAll">Mostra tutto lo storico</button>';
+        $('histH').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      if (ev.target.id === 'histAll') { $('histH').textContent = 'Storico'; $('histBox').innerHTML = histHtml(); return; }
       var cd = ev.target.closest('[data-card]');
-      if (cd) { var en3 = getLog().filter(function (x) { return String(x.id) === cd.dataset.card; })[0]; if (en3) shareCard(en3); return; }
+      if (cd) { ev.preventDefault(); var en3 = getLog().filter(function (x) { return String(x.id) === cd.dataset.card; })[0]; if (en3) shareCard(en3); return; }
       var sh = ev.target.closest('[data-share]');
       if (sh) { var en2 = getLog().filter(function (x) { return String(x.id) === sh.dataset.share; })[0]; if (en2) sendWhatsApp(entryText(en2)); return; }
       var del = ev.target.closest('[data-del]');
@@ -1352,6 +1364,25 @@
       }
       if (ev.target.id === 'dExport') exportData();
     };
+  }
+  /* ---------- Alimentazione · Rehab · Drills (sezioni del footer) ---------- */
+  var INFO = {
+    food: { title: 'Alimentazione', text: 'Qui troverai il piano alimentare e le indicazioni del nutrizionista. Non è ancora attivo: sono dati sanitari e li carichiamo solo con un accesso privato.',
+      wa: 'Ciao, ti scrivo per l\'alimentazione: ', waLbl: '💬 Scrivi al nutrizionista' },
+    rehab: { title: 'Rehab', text: 'Qui troverai le indicazioni del fisioterapista e gli esercizi di riabilitazione assegnati. Non è ancora attivo. Intanto puoi registrare le sedute.',
+      log: true, wa: 'Ciao, ti scrivo per la riabilitazione: ', waLbl: '💬 Scrivi al fisioterapista' },
+    drills: { title: 'Drills', text: 'Qui troverai i drills (tecnica e fondamentali) assegnati dal tuo trainer, con foto e video. Non è ancora attivo.',
+      wa: 'Ciao coach, ti scrivo per i drills: ', waLbl: '💬 Scrivi al coach' }
+  };
+  function openInfo(k) {
+    var x = INFO[k];
+    $('sheetTitle').textContent = x.title;
+    $('sheetBody').innerHTML = '<div class="sheet-inner form"><p class="info-t">' + esc(x.text) + '</p>' +
+      (x.log ? '<button class="btn-big btn-red" id="infLog">+ Registra seduta di fisioterapia</button>' : '') +
+      '<button class="btn-big btn-red" id="infWa">' + x.waLbl + '</button></div>';
+    showSheet();
+    if ($('infLog')) $('infLog').onclick = function () { closeSheet(false); setTimeout(function () { openLogForm('Fisioterapia', 'Seduta di fisioterapia'); }, 50); };
+    $('infWa').onclick = function () { sendWhatsApp(x.wa); };
   }
   function exportData() {
     var data = {};
@@ -1369,7 +1400,9 @@
   };
   $('navPlan').onclick = function () { if (state.program) openPlans(); };
   $('navDiary').onclick = function () { if (state.program) openDiary(); };
-  $('navMusic').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
+  $('navFood').onclick = function () { if (state.program) openInfo('food'); };
+  $('navRehab').onclick = function () { if (state.program) openInfo('rehab'); };
+  $('navDrills').onclick = function () { if (state.program) openInfo('drills'); };
 
   /* ---------- Audio, vibrazione, schermo acceso ---------- */
   var actx = null, wakeLock = null;
