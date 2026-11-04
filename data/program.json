@@ -797,7 +797,8 @@
    "equip": "Kettlebell",
    "kg": true,
    "q": "kettlebell bottoms up march",
-   "cue": "Kettlebell capovolta (bottom up) in mano, braccio verticale e polso fermo; marcia sul posto alzando le ginocchia senza far oscillare il peso."
+   "cue": "Kettlebell capovolta (bottom up) in mano, braccio verticale e polso fermo; marcia sul posto alzando le ginocchia senza far oscillare il peso.",
+   "video": "bWUcPtPDJYM"
   },
   "lm_twist_press": {
    "name": "LM trunk twist + press",
@@ -849,14 +850,16 @@
    "name": "TRX skater squat",
    "equip": "TRX",
    "q": "TRX skater squat",
-   "cue": "Mano/i nel TRX per equilibrio, piegati su una gamba con l'altra dietro; scendi e risali spingendo col tallone."
+   "cue": "Mano/i nel TRX per equilibrio, piegati su una gamba con l'altra dietro; scendi e risali spingendo col tallone.",
+   "video": "THme8KPV6_k"
   },
   "kb_towel_curl": {
    "name": "Curl KB towels",
    "equip": "Kettlebell + asciugamano",
    "kg": true,
    "q": "kettlebell towel curl",
-   "cue": "Kettlebell appesa a un asciugamano: afferra l'asciugamano e fai curl a gomiti fermi; presa difficile, controlla la discesa."
+   "cue": "Kettlebell appesa a un asciugamano: afferra l'asciugamano e fai curl a gomiti fermi; presa difficile, controlla la discesa.",
+   "video": "DGg11xey6t4"
   }
  },
  "plans": [
