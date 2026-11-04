@@ -590,3 +590,4 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .proto summary { min-height: 48px; display: flex; align-items: center; font-weight: 800; cursor: pointer; }
 .proto-b p { margin: 0 0 8px; font-size: 16px; line-height: 1.45; }
 .block .proto { border: 0; margin: 0; }
+.doc { display: flex; align-items: center; min-height: 52px; padding: 0 14px; margin: 0 0 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); font-weight: 700; text-decoration: none; }

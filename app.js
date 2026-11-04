@@ -58,6 +58,9 @@
         .then(function (a) {
           p.plans = a.plans;
           p.athleteName = a.name;
+          if (a.theme) p.theme = a.theme;
+          if (a.rehab) p.rehab = a.rehab;
+          if (a.docs) p.docs = a.docs;
           if (a.exercises) for (var k in a.exercises) p.exercises[k] = a.exercises[k];
           if (a.yoga === false) delete p.yoga;
           if (a.cooldown === false) delete p.cooldowns;
@@ -69,8 +72,14 @@
       if (p.athleteName) {
         $('athlete').textContent = 'Atleta: ' + p.athleteName; $('athlete').hidden = false;
         document.title = 'TRAIN.' + p.athleteName.toUpperCase();
-        document.querySelector('.brand').innerHTML = 'TRAIN<span>.</span>' + esc(p.athleteName.toUpperCase());
+        document.querySelector('.brand .bn').innerHTML = 'TRAIN<span>.</span>' + esc(p.athleteName.toUpperCase());
         var mt = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (mt) mt.content = document.title;
+      }
+      if (p.theme) {   // tema colori del profilo (es. Fisio Hub): {primary, dark, soft}
+        var rs = document.documentElement.style;
+        if (p.theme.primary) { rs.setProperty('--red', p.theme.primary); var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.content = p.theme.primary; }
+        if (p.theme.dark) rs.setProperty('--red-dark', p.theme.dark);
+        if (p.theme.soft) rs.setProperty('--red-soft', p.theme.soft);
       }
       state.variant = store.get('variant', {});
       $('version').textContent = 'v' + APP_VERSION + ' · schede aggiornate al ' + (p.updated || '—');
@@ -1341,7 +1350,7 @@
       '<button class="btn-ghost-dark" id="dExport">Esporta backup dei dati</button>' +
       '<p class="muted small">I dati restano su questo dispositivo.</p></div>';
 
-    $('sheetTitle').textContent = 'Diario e progressi';
+    $('sheetTitle').textContent = 'Diary';
     $('sheetBody').innerHTML = h;
     if (sheet.hidden) showSheet(); else $('sheetBody').scrollTop = 0;
     $('sheetBody').querySelector('.diary').onclick = function (ev) {
@@ -1370,9 +1379,9 @@
   }
   /* ---------- Alimentazione · Rehab · Drills (sezioni del footer) ---------- */
   var INFO = {
-    food: { title: 'Alimentazione', text: 'Qui troverai il piano alimentare e le indicazioni del nutrizionista. Non è ancora attivo: sono dati sanitari e li carichiamo solo con un accesso privato.',
+    food: { group: 'food', title: 'Nutrition', text: 'Qui troverai il piano alimentare e i dati corporei (body weight). Non è ancora attivo: sono dati sanitari e li carichiamo solo con un accesso protetto.',
       wa: 'Ciao, ti scrivo per l\'alimentazione: ', waLbl: '💬 Scrivi al nutrizionista' },
-    rehab: { title: 'Rehab', text: 'Protocolli scritti dal fisioterapista: vengono inseriti nei giorni e nelle schede, e qui li trovi tutti.',
+    rehab: { group: 'rehab', title: 'Rehab', text: 'Protocolli scritti dal fisioterapista: vengono inseriti nei giorni e nelle schede, e qui li trovi tutti.',
       log: true, protocols: true, wa: 'Ciao, ti scrivo per la riabilitazione: ', waLbl: '💬 Scrivi al fisioterapista' },
     drills: { title: 'Drills', text: 'Drills di basket e tecnica: arriveranno quando l\'app si aprirà a tutti.',
       wa: 'Ciao coach, ti scrivo per i drills: ', waLbl: '💬 Scrivi al coach' }
@@ -1386,7 +1395,9 @@
     var x = INFO[k];
     $('sheetTitle').textContent = x.title;
     var pr = x.protocols ? (state.program.rehab || []) : [];
+    var docs = (state.program.docs || []).filter(function (d) { return d.group === x.group; });
     $('sheetBody').innerHTML = '<div class="sheet-inner form"><p class="info-t">' + esc(x.text) + '</p>' +
+      docs.map(function (d) { return '<a class="doc" href="' + esc(d.file) + '" target="_blank" rel="noopener">📄 ' + esc(d.title) + '</a>'; }).join('') +
       (x.protocols ? (pr.length ? pr.map(protocolHtml).join('') : '<p class="muted">Nessun protocollo assegnato per ora.</p>') : '') +
       (x.log ? '<button class="btn-big btn-red" id="infLog">+ Registra seduta di fisioterapia</button>' : '') +
       '<button class="btn-big btn-red" id="infWa">' + x.waLbl + '</button></div>';
@@ -1403,11 +1414,6 @@
     document.body.appendChild(a); a.click(); a.remove();
   }
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
-  $('navToday').onclick = function () {
-    if (!state.program) return;
-    var i = nextDayIndex(); if (i >= 0 && i < state.days.length) state.day = i;
-    store.set('day', state.day); renderTabs(); renderDay(); window.scrollTo(0, 0);
-  };
   $('navPlan').onclick = function () { if (state.program) openPlans(); };
   $('navDiary').onclick = function () { if (state.program) openDiary(); };
   $('navFood').onclick = function () { if (state.program) openInfo('food'); };
