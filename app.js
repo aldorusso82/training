@@ -477,6 +477,9 @@
         h += '<div class="note-box"><b>' + esc(sec.label) + '</b>' + (sec.text ? ' · ' + esc(sec.text) : '') + '</div>';
       } else if (sec.type === 'intervals') {
         h += renderIntervals(sec, si);
+      } else if (sec.type === 'protocol') {
+        var pp = (state.program.rehab || []).filter(function (x) { return x.id === sec.ref; })[0];
+        if (pp) h += '<section class="block">' + protocolHtml(pp, true) + '</section>';
       } else if (sec.type === 'run' || sec.type === 'timer') {
         h += renderSolo(sec, si);
       } else {
@@ -1369,15 +1372,22 @@
   var INFO = {
     food: { title: 'Alimentazione', text: 'Qui troverai il piano alimentare e le indicazioni del nutrizionista. Non è ancora attivo: sono dati sanitari e li carichiamo solo con un accesso privato.',
       wa: 'Ciao, ti scrivo per l\'alimentazione: ', waLbl: '💬 Scrivi al nutrizionista' },
-    rehab: { title: 'Rehab', text: 'Qui troverai le indicazioni del fisioterapista e gli esercizi di riabilitazione assegnati. Non è ancora attivo. Intanto puoi registrare le sedute.',
-      log: true, wa: 'Ciao, ti scrivo per la riabilitazione: ', waLbl: '💬 Scrivi al fisioterapista' },
-    drills: { title: 'Drills', text: 'Qui troverai i drills (tecnica e fondamentali) assegnati dal tuo trainer, con foto e video. Non è ancora attivo.',
+    rehab: { title: 'Rehab', text: 'Protocolli scritti dal fisioterapista: vengono inseriti nei giorni e nelle schede, e qui li trovi tutti.',
+      log: true, protocols: true, wa: 'Ciao, ti scrivo per la riabilitazione: ', waLbl: '💬 Scrivi al fisioterapista' },
+    drills: { title: 'Drills', text: 'Drills di basket e tecnica: arriveranno quando l\'app si aprirà a tutti.',
       wa: 'Ciao coach, ti scrivo per i drills: ', waLbl: '💬 Scrivi al coach' }
   };
+  // Protocollo di rehab scritto (program.json → rehab: [{id, title, text}]); si apre dalla voce Rehab o dentro un giorno con {type:'protocol', ref:id}
+  function protocolHtml(p, open) {
+    var lines = String(p.text || '').split('\n').filter(function (l) { return l.trim(); });
+    return '<details class="proto"' + (open ? ' open' : '') + '><summary>🩺 ' + esc(p.title) + '</summary><div class="proto-b">' + lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') + '</div></details>';
+  }
   function openInfo(k) {
     var x = INFO[k];
     $('sheetTitle').textContent = x.title;
+    var pr = x.protocols ? (state.program.rehab || []) : [];
     $('sheetBody').innerHTML = '<div class="sheet-inner form"><p class="info-t">' + esc(x.text) + '</p>' +
+      (x.protocols ? (pr.length ? pr.map(protocolHtml).join('') : '<p class="muted">Nessun protocollo assegnato per ora.</p>') : '') +
       (x.log ? '<button class="btn-big btn-red" id="infLog">+ Registra seduta di fisioterapia</button>' : '') +
       '<button class="btn-big btn-red" id="infWa">' + x.waLbl + '</button></div>';
     showSheet();

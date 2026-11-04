@@ -586,3 +586,7 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .info-t + .btn-big, .sheet-inner .btn-big + .btn-big { margin-top: 10px; }
 
 .bnav button { font-size: 9.5px; letter-spacing: -.03em; }
+.proto { background: #fff; border: 1px solid var(--line); border-radius: 12px; margin: 0 0 10px; padding: 0 12px; }
+.proto summary { min-height: 48px; display: flex; align-items: center; font-weight: 800; cursor: pointer; }
+.proto-b p { margin: 0 0 8px; font-size: 16px; line-height: 1.45; }
+.block .proto { border: 0; margin: 0; }
