@@ -467,3 +467,55 @@ html, body, button, .overlay, .t-bar, .sheet { touch-action: manipulation; }
 .sets-l { font-size: 12px; font-weight: 700; color: #555; margin-right: 2px; }
 .set-sq { width: 44px; height: 44px; border: 2px solid var(--red); border-radius: 10px; background: #fff; color: var(--red); font-weight: 800; font-size: 17px; }
 .set-sq.on { background: var(--red); color: #fff; }
+
+/* ---------- v36: grafica minimal (Oggi, Day, footer, Diario) ---------- */
+.top { background: var(--bg); color: var(--red); box-shadow: none; border-bottom: 1px solid var(--line); padding: calc(var(--safe-t) + 6px) 12px 8px; }
+.brand { font-size: 13px; letter-spacing: .16em; text-align: left; margin: 0 0 6px; color: var(--red); }
+.brand span { color: var(--red); }
+.athlete { text-align: left; color: var(--ink-2); margin: -2px 0 6px; font-size: 13px; }
+.top-row { display: none; }
+.tabs { gap: 6px; }
+.tab { min-height: 44px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 15px; }
+.tab[aria-selected="true"] { background: var(--red); border-color: var(--red); color: #fff; }
+.tab.next:not([aria-selected="true"]) { border-color: var(--red); color: var(--red); }
+.tab.next::after { background: var(--red); }
+.tab.next[aria-selected="true"]::after { background: #fff; }
+.tab .chk { background: var(--ink); }
+.tab.opt-tab { font-style: normal; border-style: dashed; color: var(--ink-2); }
+.tab.opt-tab[aria-selected="true"] { color: #fff; }
+.tab:has(.chk):not([aria-selected="true"]) { background: var(--ink); border-color: var(--ink); color: #fff; }
+.tab:has(.chk):not([aria-selected="true"]) .chk { background: #fff; color: var(--ink); }
+
+.main { padding-bottom: calc(var(--safe-b) + 84px); }
+.hero { background: var(--red); color: #fff; border-radius: 18px; padding: 16px; margin: 0 0 12px; }
+.hero .day-title { margin: 0 0 12px; font-size: 24px; line-height: 1.2; color: #fff; }
+.hero .day-title small { color: rgba(255,255,255,.8); margin-bottom: 4px; font-size: 12px; letter-spacing: .12em; }
+.hero .opt { background: rgba(255,255,255,.2); }
+.hero .opt.nxt { background: #fff; color: var(--red); }
+.hero .sess { margin: 0; flex-wrap: wrap; }
+.hero .sess small { color: rgba(255,255,255,.85); }
+.hero .btn-sess { width: 100%; min-height: 48px; border-radius: 999px; background: #fff; color: var(--red); font-size: 16px; }
+.hero .sess.on { background: rgba(0,0,0,.28); border-radius: 14px; padding: 10px 12px; }
+.hero .sess.on .btn-sess { width: auto; border-radius: 12px; }
+.hero .sess.on .btn-sess.x { background: transparent; color: #fff; }
+.wk-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 14px; }
+.wk-stats div { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+.wk-stats b { display: block; font-size: 26px; font-weight: 800; line-height: 1.05; letter-spacing: -.02em; }
+.wk-stats small { font-size: 13px; color: var(--ink-2); }
+.day-tools { margin: 0 0 12px; }
+.music-ico { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+.timer-ico { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+.block { border-radius: 16px; }
+
+.bnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; background: #fff; border-top: 1px solid var(--line); padding-bottom: var(--safe-b); }
+.bnav button { flex: 1; min-height: 56px; border: 0; background: transparent; color: var(--ink-2); font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.bnav button.on { color: var(--red); }
+.bnav svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.t-bar { bottom: calc(56px + var(--safe-b)); }
+
+.stat b { color: var(--ink); font-size: 32px; letter-spacing: -.02em; }
+.entry { border-left: 5px solid var(--red); border-radius: 12px; }
+.entry.e-padel { border-left-color: var(--ink); }
+.pill b { font-weight: 800; }
+.sheet-bar { background: var(--bg); color: var(--ink); border-bottom: 1px solid var(--line); }
+.btn-close { background: #fff; border: 1px solid var(--line); color: var(--ink); }

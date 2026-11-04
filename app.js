@@ -416,13 +416,23 @@
     }
   }
 
+  // Riepilogo «Questa settimana» sotto la card del giorno
+  function weekStatsHtml() {
+    var wStart = isoDate(mondayOf(new Date()));
+    var w = getLog().filter(function (x) { return x.when.slice(0, 10) >= wStart && ACTIVE.indexOf(x.type) >= 0; });
+    var min = w.reduce(function (a, x) { return a + (x.dur || 0); }, 0), kc = w.reduce(function (a, x) { return a + (x.kcal || 0); }, 0);
+    var train = state.days.filter(function (d) { return d.id !== 'yoga' && !d.optional; }).length;
+    return '<div class="wk-stats"><div><b>' + w.length + '</b><small>fatti' + (train ? ' su ' + train : '') + '</small></div>' +
+      '<div><b>' + (min >= 60 ? Math.floor(min / 60) + 'h ' + ('0' + (min % 60)).slice(-2) : min + "'") + '</b><small>tempo</small></div>' +
+      '<div><b>' + kc + '</b><small>kcal</small></div></div>';
+  }
   function renderDay() {
     var day = state.days[state.day];
     var cur = currentSections(day);
     var wk = planWeek(state.plan);
-    var h = '<h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name + ' · Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '')) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
+    var h = '<div class="hero"><h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name + ' · Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '')) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
       (day.optional ? ' <span class="opt">opzionale</span>' : '') +
-      (state.days.indexOf(day) === nextDayIndex() && day.id !== 'yoga' ? ' <span class="opt nxt">prossimo</span>' : '') + '</h1>';
+      (state.days.indexOf(day) === nextDayIndex() && day.id !== 'yoga' ? ' <span class="opt nxt">prossimo</span>' : '') + '</h1>' + sessionHtml(day) + '</div>' + (day.id !== 'yoga' ? weekStatsHtml() : '');
     if (day.id !== 'yoga') {
       var dn = lastDone(day.id), dw = doneThisWeek(day.id);
       var others = state.days.filter(function (d) { return d.id !== 'yoga' && d.id !== day.id; });
@@ -435,7 +445,6 @@
     } else {
       h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
     }
-    h += sessionHtml(day);
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
 
@@ -1241,7 +1250,7 @@
       var d = x.when.split('T');
       var sum = '<b>' + fmtD(d[0]) + '</b> · ' + esc(x.type === 'Allenamento' ? (x.label || x.type) : x.type + (x.label && x.label !== x.type ? ' · ' + x.label : '')) +
         (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '');
-      return '<details class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : '') + '"><summary>' + sum + '</summary>' +
+      return '<details class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : x.type === 'Padel' ? ' e-padel' : '') + '"><summary>' + sum + '</summary>' +
         '<div class="e-body"><div>' + esc(d[1] || '') + ' · ' + esc(x.type) + (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') + (x.place ? ' · ' + esc(x.place) : '') + (x.week ? ' · sett. ' + x.week : '') + '</div>' +
         (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') +
         '<div class="e-btns"><button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬 Invia</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕ Elimina</button></div></div></details>';
@@ -1292,6 +1301,14 @@
     document.body.appendChild(a); a.click(); a.remove();
   }
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
+  $('navToday').onclick = function () {
+    if (!state.program) return;
+    var i = nextDayIndex(); if (i >= 0 && i < state.days.length) state.day = i;
+    store.set('day', state.day); renderTabs(); renderDay(); window.scrollTo(0, 0);
+  };
+  $('navPlan').onclick = function () { if (state.program) openPlans(); };
+  $('navDiary').onclick = function () { if (state.program) openDiary(); };
+  $('navMusic').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
 
   /* ---------- Audio, vibrazione, schermo acceso ---------- */
   var actx = null, wakeLock = null;
