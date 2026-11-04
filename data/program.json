@@ -1812,7 +1812,7 @@
     {
      "id": "d1",
      "tab": "Day 1",
-     "title": "",
+     "title": "Forza · gambe + core",
      "sections": [
       {
        "type": "mobility",
@@ -1902,9 +1902,112 @@
      "desc": "Gambe e core: back lunge, cossack, ponte monolaterale, spalle e bicipiti (set 21). Circa 55'."
     },
     {
+     "id": "d3",
+     "tab": "Day 3",
+     "title": "Circuito · potenza (o Padel)",
+     "variants": [
+      {
+       "id": "circ",
+       "label": "Circuito",
+       "sections": [
+        {
+         "type": "note",
+         "label": "Warm up",
+         "text": ""
+        },
+        {
+         "type": "block",
+         "letter": "A",
+         "sets": 3,
+         "items": [
+          {
+           "code": "A1",
+           "ex": "trx_skater_squat",
+           "reps": "8/8"
+          },
+          {
+           "code": "A2",
+           "ex": "trx_rollout",
+           "reps": "8"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "B",
+         "sets": 4,
+         "items": [
+          {
+           "code": "B1",
+           "ex": "power_clean",
+           "reps": "4/4",
+           "note": "24–28–32 kg"
+          },
+          {
+           "code": "B2",
+           "ex": "db_bench",
+           "reps": "6/6"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "C",
+         "sets": 3,
+         "items": [
+          {
+           "code": "C1",
+           "ex": "trx_w",
+           "reps": "10"
+          },
+          {
+           "code": "C2",
+           "ex": "front_raise",
+           "reps": "8",
+           "name": "Alzate frontali"
+          }
+         ]
+        },
+        {
+         "type": "block",
+         "letter": "D",
+         "sets": 3,
+         "items": [
+          {
+           "code": "D1",
+           "ex": "kb_towel_curl",
+           "reps": "8",
+           "note": "28–32 kg (6 rep) · 35 kg (6 rep)"
+          },
+          {
+           "code": "D2",
+           "ex": "trx_pike",
+           "reps": "8"
+          }
+         ]
+        }
+       ],
+       "desc": "Potenza: skater squat TRX, power clean, panca manubri, W TRX, curl e pike. Circa 55'."
+      },
+      {
+       "id": "padel",
+       "label": "Padel",
+       "note": "Al posto del circuito, quando giochi.",
+       "sections": [
+        {
+         "type": "note",
+         "label": "Attività",
+         "text": "Padel, circa 60'. Registralo da «Oggi ho fatto altro»: conta come giorno fatto."
+        }
+       ],
+       "desc": "Giornata di padel al posto del circuito: 60' a sensazione."
+      }
+     ]
+    },
+    {
      "id": "d2",
      "tab": "Day 2",
-     "title": "",
+     "title": "Forza · stacco + trazioni",
      "sections": [
       {
        "type": "mobility",
@@ -1994,147 +2097,82 @@
      "desc": "Stacco e trazioni: stacco monolaterale con row, leg curl, pull up, landmine e braccia. Circa 55'."
     },
     {
-     "id": "d3",
-     "tab": "Day 3",
-     "title": "",
-     "sections": [
-      {
-       "type": "note",
-       "label": "Warm up",
-       "text": ""
-      },
-      {
-       "type": "block",
-       "letter": "A",
-       "sets": 3,
-       "items": [
-        {
-         "code": "A1",
-         "ex": "trx_skater_squat",
-         "reps": "8/8"
-        },
-        {
-         "code": "A2",
-         "ex": "trx_rollout",
-         "reps": "8"
-        }
-       ]
-      },
-      {
-       "type": "block",
-       "letter": "B",
-       "sets": 4,
-       "items": [
-        {
-         "code": "B1",
-         "ex": "power_clean",
-         "reps": "4/4",
-         "note": "24–28–32 kg"
-        },
-        {
-         "code": "B2",
-         "ex": "db_bench",
-         "reps": "6/6"
-        }
-       ]
-      },
-      {
-       "type": "block",
-       "letter": "C",
-       "sets": 3,
-       "items": [
-        {
-         "code": "C1",
-         "ex": "trx_w",
-         "reps": "10"
-        },
-        {
-         "code": "C2",
-         "ex": "front_raise",
-         "reps": "8",
-         "name": "Alzate frontali"
-        }
-       ]
-      },
-      {
-       "type": "block",
-       "letter": "D",
-       "sets": 3,
-       "items": [
-        {
-         "code": "D1",
-         "ex": "kb_towel_curl",
-         "reps": "8",
-         "note": "28–32 kg (6 rep) · 35 kg (6 rep)"
-        },
-        {
-         "code": "D2",
-         "ex": "trx_pike",
-         "reps": "8"
-        }
-       ]
-      }
-     ],
-     "desc": "Potenza: skater squat TRX, power clean, panca manubri, W TRX, curl e pike. Circa 55'."
-    },
-    {
      "id": "d4",
      "tab": "Day 4",
-     "title": "",
-     "sections": [
+     "title": "Circuito · conditioning (o Padel)",
+     "variants": [
       {
-       "type": "note",
-       "label": "Warm up",
-       "text": "10–15' articolare + muscolare."
-      },
-      {
-       "type": "emom",
-       "label": "EMOM 8' · A",
-       "minutes": 8,
-       "items": [
+       "id": "circ",
+       "label": "Conditioning",
+       "sections": [
         {
-         "ex": "kb_swing",
-         "reps": "10",
-         "note": "32 kg"
+         "type": "note",
+         "label": "Warm up",
+         "text": "10–15' articolare + muscolare."
         },
         {
-         "ex": "air_bike",
-         "reps": "500 m"
-        }
-       ]
-      },
-      {
-       "type": "emom",
-       "label": "EMOM 8' · B",
-       "minutes": 8,
-       "items": [
-        {
-         "ex": "sled_push",
-         "reps": "20 m"
+         "type": "emom",
+         "label": "EMOM 8' · A",
+         "minutes": 8,
+         "items": [
+          {
+           "ex": "kb_swing",
+           "reps": "10",
+           "note": "32 kg"
+          },
+          {
+           "ex": "air_bike",
+           "reps": "500 m"
+          }
+         ]
         },
         {
-         "ex": "row_250",
-         "reps": "250 m"
-        }
-       ]
-      },
-      {
-       "type": "emom",
-       "label": "EMOM 8' · C",
-       "minutes": 8,
-       "items": [
-        {
-         "ex": "snatch",
-         "reps": "6/6"
+         "type": "emom",
+         "label": "EMOM 8' · B",
+         "minutes": 8,
+         "items": [
+          {
+           "ex": "sled_push",
+           "reps": "20 m"
+          },
+          {
+           "ex": "row_250",
+           "reps": "250 m"
+          }
+         ]
         },
         {
-         "ex": "sled_pull",
-         "reps": "20 m"
+         "type": "emom",
+         "label": "EMOM 8' · C",
+         "minutes": 8,
+         "items": [
+          {
+           "ex": "snatch",
+           "reps": "6/6"
+          },
+          {
+           "ex": "sled_pull",
+           "reps": "20 m"
+          }
+         ]
         }
-       ]
+       ],
+       "desc": "Conditioning: 3 EMOM da 8' (swing + air bike · slitta + vogatore · snatch + slitta). Circa 35' con warm up."
+      },
+      {
+       "id": "padel",
+       "label": "Padel",
+       "note": "Al posto del circuito, quando giochi.",
+       "sections": [
+        {
+         "type": "note",
+         "label": "Attività",
+         "text": "Padel, circa 60'. Registralo da «Oggi ho fatto altro»: conta come giorno fatto."
+        }
+       ],
+       "desc": "Giornata di padel al posto del circuito: 60' a sensazione."
       }
-     ],
-     "desc": "Conditioning: 3 EMOM da 8' (swing + air bike · slitta + vogatore · snatch + slitta). Circa 35' con warm up."
+     ]
     },
     {
      "id": "d5",
@@ -2160,7 +2198,8 @@
      "desc": "Boxing 60' e corsa 30'.",
      "optional": true
     }
-   ]
+   ],
+   "note": "Settimana tipo: Lun Day 1 · Mar Day 3 (o Padel) · Mer riposo · Gio Day 2 · Ven Day 4 (o Padel). Se non giochi a padel fai tutti e 4 gli allenamenti; il Day 5 è facoltativo."
   }
  ],
  "yoga": {
