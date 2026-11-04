@@ -2157,7 +2157,8 @@
        "sub": "Dopo il boxing"
       }
      ],
-     "desc": "Boxing 60' e corsa 30'."
+     "desc": "Boxing 60' e corsa 30'.",
+     "optional": true
     }
    ]
   }
