@@ -730,6 +730,133 @@
    "short": "Push up gomiti stretti TRX",
    "q": "TRX close grip push up triceps tutorial",
    "cue": "Maniglie vicine, mani sotto il petto. Scendi con i gomiti stretti lungo il corpo e risali spingendo con i tricipiti."
+  },
+  "kb_swing": {
+   "name": "Swing",
+   "img": "One-Arm_Kettlebell_Swings",
+   "equip": "Kettlebell",
+   "kg": true,
+   "q": "kettlebell swing tutorial",
+   "cue": "Kettlebell tra le gambe, bacino indietro e poi spinta forte in avanti: il peso sale per inerzia fino al petto. Braccia rilassate, schiena piatta."
+  },
+  "air_bike": {
+   "name": "Air bike 500 m",
+   "img": "Air_Bike",
+   "equip": "Air bike",
+   "q": "air bike technique",
+   "cue": "Spingi e tira con braccia e gambe insieme, ritmo alto e costante. Respira regolare."
+  },
+  "sled_push": {
+   "name": "Sled push 20 m",
+   "img": "Sled_Push",
+   "equip": "Slitta",
+   "kg": true,
+   "q": "sled push technique",
+   "cue": "Busto inclinato, braccia tese, passi corti e potenti spingendo con le gambe. Schiena neutra."
+  },
+  "sled_pull": {
+   "name": "Sled pull 20 m",
+   "img": "Sled_Drag_-_Harness",
+   "equip": "Slitta",
+   "kg": true,
+   "q": "sled pull rope technique",
+   "cue": "Tira la slitta camminando all'indietro o con la corda, gambe che spingono, busto stabile. Foto: sled drag."
+  },
+  "row_250": {
+   "name": "Vogatore 250 m",
+   "img": "Rowing_Stationary",
+   "equip": "Vogatore",
+   "q": "rowing machine technique",
+   "cue": "Prima spingi con le gambe, poi inclina il busto e infine tira con le braccia; ritorna al contrario. Ritmo costante."
+  },
+  "power_clean": {
+   "name": "Power clean",
+   "img": "Power_Clean",
+   "equip": "Bilanciere / manubri",
+   "kg": true,
+   "q": "power clean tutorial",
+   "cue": "Spinta esplosiva di gambe e bacino, tira vicino al corpo e accogli il peso sulle spalle con gomiti avanti."
+  },
+  "sl_leg_curl": {
+   "name": "SL leg curl",
+   "img": "Lying_Leg_Curls",
+   "equip": "Macchina leg curl",
+   "kg": true,
+   "q": "single leg hamstring curl",
+   "cue": "Una gamba alla volta: porta il tallone verso il gluteo senza staccare il bacino, ritorno lento in 3 secondi."
+  },
+  "toes_to_bar": {
+   "name": "Toes to bar",
+   "img": "Hanging_Pike",
+   "equip": "Sbarra",
+   "q": "toes to bar tutorial",
+   "cue": "Appeso alla sbarra, porta le punte dei piedi alla sbarra con il controllo del core. Foto: hanging pike, il movimento è simile."
+  },
+  "kb_bottomup_march": {
+   "name": "KB bottom up march",
+   "equip": "Kettlebell",
+   "kg": true,
+   "q": "kettlebell bottoms up march",
+   "cue": "Kettlebell capovolta (bottom up) in mano, braccio verticale e polso fermo; marcia sul posto alzando le ginocchia senza far oscillare il peso."
+  },
+  "lm_twist_press": {
+   "name": "LM trunk twist + press",
+   "img": "Landmine_180s",
+   "equip": "Landmine",
+   "kg": true,
+   "q": "landmine trunk twist press",
+   "cue": "Landmine al petto: ruota il busto da un lato all'altro (perno sui piedi) poi spingi in alto. Core stretto."
+  },
+  "sl_bridge_press": {
+   "name": "SL bridge floor press",
+   "img": "Single_Leg_Glute_Bridge",
+   "equip": "Manubrio + tappetino",
+   "kg": true,
+   "q": "single leg glute bridge floor press",
+   "cue": "In ponte su una gamba, spingi il manubrio in alto da terra con il bacino alto e stabile. Foto: ponte monolaterale."
+  },
+  "trx_chest_press": {
+   "name": "Chest press TRX",
+   "img": "Suspended_Push-Up",
+   "equip": "TRX",
+   "q": "TRX chest press",
+   "cue": "Maniglie al petto, corpo inclinato in avanti: spingi le braccia avanti ed estendi, ritorno controllato. Foto: push up TRX."
+  },
+  "pallof_trx": {
+   "name": "Pallof TRX",
+   "img": "Pallof_Press",
+   "equip": "TRX",
+   "q": "TRX pallof press",
+   "cue": "TRX in mano, di lato rispetto all'ancoraggio: spingi le braccia avanti e resisti alla rotazione del busto."
+  },
+  "sl_dl_row": {
+   "name": "SS Deadlift & Row",
+   "img": "Kettlebell_One-Legged_Deadlift",
+   "equip": "Kettlebell / manubrio",
+   "kg": true,
+   "q": "single leg deadlift row",
+   "cue": "Stacco su una gamba e, con la schiena piatta, porta il peso al fianco in rematore. Torna in piedi controllando."
+  },
+  "lm_press": {
+   "name": "LM press",
+   "img": "Landmine_Linear_Jammer",
+   "equip": "Landmine",
+   "kg": true,
+   "q": "landmine press technique",
+   "cue": "Landmine alla spalla, spingi in diagonale in alto con tutto il corpo; discesa controllata."
+  },
+  "trx_skater_squat": {
+   "name": "TRX skater squat",
+   "equip": "TRX",
+   "q": "TRX skater squat",
+   "cue": "Mano/i nel TRX per equilibrio, piegati su una gamba con l'altra dietro; scendi e risali spingendo col tallone."
+  },
+  "kb_towel_curl": {
+   "name": "Curl KB towels",
+   "equip": "Kettlebell + asciugamano",
+   "kg": true,
+   "q": "kettlebell towel curl",
+   "cue": "Kettlebell appesa a un asciugamano: afferra l'asciugamano e fai curl a gomiti fermi; presa difficile, controlla la discesa."
   }
  },
  "plans": [
@@ -1676,9 +1803,10 @@
   },
   {
    "id": "nov",
-   "name": "Novembre",
+   "name": "Novembre – Dicembre",
    "months": [
-    11
+    11,
+    12
    ],
    "days": [
     {
@@ -1687,41 +1815,52 @@
      "title": "",
      "sections": [
       {
-       "type": "note",
-       "label": "Warm up",
-       "text": ""
+       "type": "mobility",
+       "label": "Warm up 5'",
+       "items": [
+        {
+         "ex": "spanish_squat",
+         "reps": "30''"
+        },
+        {
+         "ex": "trx_chest_press",
+         "reps": "8"
+        }
+       ]
       },
       {
        "type": "block",
        "letter": "A",
-       "sets": 3,
+       "sets": 4,
        "items": [
         {
          "code": "A1",
-         "ex": "bulgarian",
-         "reps": "6/6"
+         "ex": "db_back_lunge",
+         "reps": "6/6",
+         "name": "Back lunge"
         },
         {
          "code": "A2",
-         "ex": "tk_core",
-         "reps": "8/8"
+         "ex": "kb_bottomup_march",
+         "reps": "20/20"
         }
        ]
       },
       {
        "type": "block",
        "letter": "B",
-       "sets": 4,
+       "sets": 3,
        "items": [
         {
          "code": "B1",
-         "ex": "clean",
-         "reps": "5"
+         "ex": "cossack",
+         "reps": "6/6",
+         "name": "Cossack squat"
         },
         {
          "code": "B2",
-         "ex": "atomic_pushup",
-         "reps": "8"
+         "ex": "lm_twist_press",
+         "reps": "10"
         }
        ]
       },
@@ -1732,14 +1871,14 @@
        "items": [
         {
          "code": "C1",
-         "ex": "incline_bench",
-         "reps": "6"
+         "ex": "sl_bridge_press",
+         "reps": "8/8"
         },
         {
          "code": "C2",
-         "ex": "front_raise",
-         "reps": "8",
-         "name": "Alzate frontali"
+         "ex": "lateral_raise",
+         "name": "Alzate laterali 45º",
+         "editable": true
         }
        ]
       },
@@ -1750,185 +1889,109 @@
        "items": [
         {
          "code": "D1",
-         "ex": "hammer_curl",
-         "reps": "8",
-         "name": "Curl martello"
+         "ex": "biceps_21"
         },
         {
          "code": "D2",
-         "ex": "trx_rollout",
+         "ex": "toes_to_bar",
          "reps": "8"
         }
        ]
       }
      ],
-     "desc": "Potenza e unilaterale: bulgarian squat, clean, atomic push up, panca inclinata, core al TRX. Circa 55'."
+     "desc": "Gambe e core: back lunge, cossack, ponte monolaterale, spalle e bicipiti (set 21). Circa 55'."
     },
     {
      "id": "d2",
      "tab": "Day 2",
-     "title": "Metabolic + Cardio",
-     "variants": [
+     "title": "",
+     "sections": [
       {
-       "id": "meta",
-       "label": "Metabolic",
-       "sections": [
+       "type": "mobility",
+       "label": "Mobilità 5'",
+       "items": [
         {
-         "type": "mobility",
-         "label": "Mobilità 5'",
-         "items": [
-          {
-           "ex": "jump_rope",
-           "reps": "10-20-30-40-50-40-30-20-10"
-          }
-         ]
+         "ex": "bridge_iso",
+         "reps": "20'' ×3"
         },
         {
-         "type": "block",
-         "letter": "A",
-         "sets": 3,
-         "rest": 120,
-         "items": [
-          {
-           "code": "A1",
-           "ex": "step_up",
-           "reps": "6/6"
-          },
-          {
-           "code": "A2",
-           "ex": "run_1000",
-           "reps": "1000 m"
-          }
-         ]
-        },
-        {
-         "type": "block",
-         "letter": "B",
-         "sets": 3,
-         "rest": 90,
-         "items": [
-          {
-           "code": "B1",
-           "ex": "box_jump",
-           "reps": "6"
-          },
-          {
-           "code": "B2",
-           "ex": "run_500",
-           "reps": "500 m"
-          }
-         ]
-        },
-        {
-         "type": "block",
-         "letter": "C",
-         "sets": 3,
-         "rest": 60,
-         "items": [
-          {
-           "code": "C1",
-           "ex": "triceps_ext",
-           "reps": "8",
-           "alts": [
-            "trx_triceps",
-            "trx_cg_pushup"
-           ]
-          },
-          {
-           "code": "C2",
-           "ex": "hammer_curl",
-           "reps": "8"
-          }
-         ]
+         "ex": "pallof",
+         "reps": "8"
         }
-       ],
-       "desc": "Lavoro metabolico: step up e box jump alternati alla corsa, chiusura braccia. Circa 45'."
+       ]
       },
       {
-       "id": "cardio",
-       "label": "Cardio (senza attrezzi)",
-       "note": "Per quando non hai i macchinari o arrivi dal Day 3 con le gambe pesanti. Passo corsa 4'50\"/km.",
-       "sections": [
+       "type": "block",
+       "letter": "A",
+       "sets": 4,
+       "items": [
         {
-         "type": "mobility",
-         "label": "Attivazione 10'",
-         "items": [
-          {
-           "ex": "jump_rope",
-           "reps": "10'"
-          }
-         ]
+         "code": "A1",
+         "ex": "sl_dl_row",
+         "reps": "6/6"
         },
         {
-         "type": "note",
-         "label": "Stretching dinamico",
-         "text": "Dopo la corda: slanci gamba avanti/laterali, affondi con rotazione, skip e talloni al sedere, circonduzioni delle anche (circa 3')."
-        },
-        {
-         "type": "intervals",
-         "label": "Corsa a intervalli",
-         "pace": "4'50\"/km",
-         "steps": [
-          [
-           1,
-           1
-          ],
-          [
-           1,
-           1
-          ],
-          [
-           1,
-           1
-          ],
-          [
-           1,
-           1
-          ],
-          [
-           1,
-           1
-          ],
-          [
-           2,
-           2
-          ],
-          [
-           2,
-           2
-          ],
-          [
-           2,
-           2
-          ],
-          [
-           2,
-           2
-          ],
-          [
-           3,
-           3
-          ],
-          [
-           3,
-           3
-          ]
-         ]
-        },
-        {
-         "type": "note",
-         "label": "Struttura",
-         "text": "5 × 1' corsa / 1' recupero · 4 × 2' corsa / 2' recupero · 2 × 3' corsa / 3' recupero."
-        },
-        {
-         "type": "note",
-         "label": "Stretching",
-         "text": "Defatica e stretching finale: sotto trovi la sequenza yoga di defaticamento."
+         "code": "A2",
+         "ex": "pallof_trx",
+         "reps": "8/8"
         }
-       ],
-       "desc": "Corsa a intervalli a 4'50\"/km: 5×1', 4×2', 2×3' con recupero uguale al lavoro. Circa 60' con attivazione."
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 3,
+       "items": [
+        {
+         "code": "B1",
+         "ex": "sl_leg_curl",
+         "reps": "8/8"
+        },
+        {
+         "code": "B2",
+         "ex": "pull_up",
+         "reps": "6"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "items": [
+        {
+         "code": "C1",
+         "ex": "lm_press",
+         "reps": "8/8"
+        },
+        {
+         "code": "C2",
+         "ex": "australian_pu",
+         "reps": "8"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 3,
+       "items": [
+        {
+         "code": "D1",
+         "ex": "french_press",
+         "reps": "8",
+         "note": "12,5–15 kg"
+        },
+        {
+         "code": "D2",
+         "ex": "russian_twist",
+         "reps": "10/10",
+         "note": "10–15 kg"
+        }
+       ]
       }
-     ]
+     ],
+     "desc": "Stacco e trazioni: stacco monolaterale con row, leg curl, pull up, landmine e braccia. Circa 55'."
     },
     {
      "id": "d3",
@@ -1947,13 +2010,13 @@
        "items": [
         {
          "code": "A1",
-         "ex": "lateral_lunge",
-         "reps": "6/6"
+         "ex": "trx_skater_squat",
+         "reps": "8/8"
         },
         {
          "code": "A2",
-         "ex": "hk_chop",
-         "reps": "8/8"
+         "ex": "trx_rollout",
+         "reps": "8"
         }
        ]
       },
@@ -1964,14 +2027,14 @@
        "items": [
         {
          "code": "B1",
-         "ex": "sl_rdl",
-         "reps": "6/6",
-         "name": "SL Deadlift"
+         "ex": "power_clean",
+         "reps": "4/4",
+         "note": "24–28–32 kg"
         },
         {
          "code": "B2",
-         "ex": "australian_pu",
-         "reps": "8"
+         "ex": "db_bench",
+         "reps": "6/6"
         }
        ]
       },
@@ -1982,13 +2045,14 @@
        "items": [
         {
          "code": "C1",
-         "ex": "chin_up",
-         "reps": "5"
+         "ex": "trx_w",
+         "reps": "10"
         },
         {
          "code": "C2",
-         "ex": "trx_w",
-         "reps": "8"
+         "ex": "front_raise",
+         "reps": "8",
+         "name": "Alzate frontali"
         }
        ]
       },
@@ -1999,8 +2063,9 @@
        "items": [
         {
          "code": "D1",
-         "ex": "trx_triceps",
-         "reps": "8"
+         "ex": "kb_towel_curl",
+         "reps": "8",
+         "note": "28–32 kg (6 rep) · 35 kg (6 rep)"
         },
         {
          "code": "D2",
@@ -2010,141 +2075,89 @@
        ]
       }
      ],
-     "desc": "Lavoro laterale e rotazionale (affondi laterali, chop), stacco monopodalico e tirate. Circa 55'."
+     "desc": "Potenza: skater squat TRX, power clean, panca manubri, W TRX, curl e pike. Circa 55'."
     },
     {
      "id": "d4",
      "tab": "Day 4",
      "title": "",
-     "variants": [
+     "sections": [
       {
-       "id": "padel",
-       "label": "Padel / Running",
-       "sections": [
-        {
-         "type": "note",
-         "label": "Attività",
-         "text": "Padel o running."
-        }
-       ],
-       "desc": "Giornata di sport: padel o corsa, 60' a sensazione."
+       "type": "note",
+       "label": "Warm up",
+       "text": "10–15' articolare + muscolare."
       },
       {
-       "id": "hiit",
-       "label": "HIIT TRX",
-       "note": "A casa. Proposta: 6 esercizi a tempo, 3 giri.",
-       "sections": [
+       "type": "emom",
+       "label": "EMOM 8' · A",
+       "minutes": 8,
+       "items": [
         {
-         "type": "mobility",
-         "label": "Mobilità 5'",
-         "items": [
-          {
-           "ex": "jump_rope",
-           "reps": "5'"
-          }
-         ]
+         "ex": "kb_swing",
+         "reps": "10",
+         "note": "32 kg"
         },
         {
-         "type": "hiit",
-         "label": "HIIT TRX",
-         "work": 40,
-         "rest": 20,
-         "rounds": 3,
-         "roundRest": 60,
-         "items": [
-          {
-           "ex": "trx_squat_jump"
-          },
-          {
-           "ex": "trx_row"
-          },
-          {
-           "ex": "atomic_pushup"
-          },
-          {
-           "ex": "trx_lunge"
-          },
-          {
-           "ex": "trx_mountain"
-          },
-          {
-           "ex": "trx_pike"
-          }
-         ]
+         "ex": "air_bike",
+         "reps": "500 m"
         }
-       ],
-       "desc": "Circuito a tempo al TRX, tutto il corpo: 40'' lavoro / 20'' recupero, 3 giri. Circa 25' con mobilità."
+       ]
       },
       {
-       "id": "cond",
-       "label": "Conditioning",
-       "note": "In palestra.",
-       "sections": [
+       "type": "emom",
+       "label": "EMOM 8' · B",
+       "minutes": 8,
+       "items": [
         {
-         "type": "mobility",
-         "label": "Mobilità 5'",
-         "items": [
-          {
-           "ex": "jump_rope",
-           "reps": "5'"
-          }
-         ]
+         "ex": "sled_push",
+         "reps": "20 m"
         },
         {
-         "type": "block",
-         "letter": "A",
-         "sets": 4,
-         "items": [
-          {
-           "code": "A1",
-           "ex": "snatch",
-           "reps": "6/6"
-          },
-          {
-           "code": "A2",
-           "ex": "run_200",
-           "reps": "200 m"
-          }
-         ]
-        },
-        {
-         "type": "block",
-         "letter": "B",
-         "sets": 3,
-         "items": [
-          {
-           "code": "B1",
-           "ex": "skater_jump",
-           "reps": "6/6"
-          },
-          {
-           "code": "B2",
-           "ex": "bike_500",
-           "reps": "500 m"
-          }
-         ]
-        },
-        {
-         "type": "block",
-         "letter": "C",
-         "sets": 2,
-         "items": [
-          {
-           "code": "C1",
-           "ex": "wall_ball",
-           "reps": "10"
-          },
-          {
-           "code": "C2",
-           "ex": "row_1km",
-           "reps": "1 km"
-          }
-         ]
+         "ex": "row_250",
+         "reps": "250 m"
         }
-       ],
-       "desc": "Conditioning in palestra: esercizi esplosivi alternati a corsa, bike e vogatore. Circa 35'."
+       ]
+      },
+      {
+       "type": "emom",
+       "label": "EMOM 8' · C",
+       "minutes": 8,
+       "items": [
+        {
+         "ex": "snatch",
+         "reps": "6/6"
+        },
+        {
+         "ex": "sled_pull",
+         "reps": "20 m"
+        }
+       ]
       }
-     ]
+     ],
+     "desc": "Conditioning: 3 EMOM da 8' (swing + air bike · slitta + vogatore · snatch + slitta). Circa 35' con warm up."
+    },
+    {
+     "id": "d5",
+     "tab": "Day 5",
+     "title": "",
+     "sections": [
+      {
+       "type": "timer",
+       "id": "boxing",
+       "sub": "Sessione di boxing",
+       "label": "Boxing",
+       "minutes": 60,
+       "badge": "BOX"
+      },
+      {
+       "type": "run",
+       "label": "Corsa",
+       "minutes": 30,
+       "pace": "a sensazione",
+       "sub": "Dopo il boxing"
+      }
+     ],
+     "desc": "Boxing 60' e corsa 30'."
     }
    ]
   }
