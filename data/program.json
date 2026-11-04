@@ -1799,7 +1799,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": "2026-11-08"
   },
   {
    "id": "nov",
@@ -2199,7 +2200,9 @@
      "optional": true
     }
    ],
-   "note": "Settimana tipo: Lun Day 1 · Mar Day 2 (o Padel) · Mer riposo · Gio Day 3 · Ven Day 4 (o Padel). Se non giochi a padel fai tutti e 4 gli allenamenti; il Day 5 è facoltativo."
+   "note": "Settimana tipo: Lun Day 1 · Mar Day 2 (o Padel) · Mer riposo · Gio Day 3 · Ven Day 4 (o Padel). Se non giochi a padel fai tutti e 4 gli allenamenti; il Day 5 è facoltativo.",
+   "from": "2026-11-09",
+   "until": "2026-12-31"
   }
  ],
  "yoga": {

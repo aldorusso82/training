@@ -138,3 +138,5 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v32 (04/11): piano `nov` con ordine giorni D1, D3, D2, D4, D5 (settimana tipo Lun D1 · Mar D3 · Mer riposo · Gio D2 · Ven D4). Day 3 e Day 4 hanno `variants`: circuito oppure «Padel» (nessun padel = tutti e 4 gli allenamenti). `plan.note` = settimana tipo.
 
 - v33 (04/11): tab rinumerati in ordine: Day 1 forza gambe (id d1) · Day 2 circuito potenza/Padel (id d3) · Day 3 forza stacco+trazioni (id d2) · Day 4 conditioning/Padel (id d4). Gli id interni restano invariati per non perdere il diario.
+
+- v34 (05/11): le schede possono avere `from`/`until` (date ISO): hanno priorità sui `months` per la scelta automatica. Ottobre `until` 2026-11-08 (finisce la settimana), Novembre–Dicembre `from` 2026-11-09 `until` 2026-12-31. La scelta manuale nel menu Scheda vale finché la scheda automatica non cambia (salvata come `auto`).

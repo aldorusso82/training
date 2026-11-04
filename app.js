@@ -87,16 +87,22 @@
 
   /* ---------- Schede (piani) ---------- */
   function thisMonth() { return new Date().getMonth() + 1; }
+  // Scheda automatica di oggi: prima le schede con from/until (date ISO, es. Ottobre esteso fino a fine settimana), poi quelle per mese
   function planForMonth(m) {
-    var plans = state.program.plans;
-    for (var i = 0; i < plans.length; i++) if ((plans[i].months || []).indexOf(m) >= 0) return plans[i];
+    var plans = state.program.plans, today = isoDate(new Date());
+    for (var j = 0; j < plans.length; j++) {
+      var p = plans[j];
+      if ((p.from || p.until) && (!p.from || today >= p.from) && (!p.until || today <= p.until)) return p;
+    }
+    for (var i = 0; i < plans.length; i++) if (!plans[i].from && !plans[i].until && (plans[i].months || []).indexOf(m) >= 0) return plans[i];
     return null;
   }
   // Scelta manuale valida solo nel mese in cui è stata fatta; poi torna alla scheda del mese
   function pickPlan() {
     var plans = state.program.plans;
     var saved = store.get('plan', null);
-    if (saved && saved.month === thisMonth()) {
+    var auto = planForMonth(thisMonth());
+    if (saved && auto && saved.auto === auto.id) {
       var hit = plans.filter(function (x) { return x.id === saved.id; })[0];
       if (hit) return hit;
     }
@@ -140,7 +146,7 @@
     state.days = orderDays(plan, resolveDays(plan));
     if (state.program.yoga) state.days.push(buildYogaDay());
     var today = isoDate(new Date());
-    if (manual) { store.set('plan', { id: plan.id, month: thisMonth() }); state.day = nextDayIndex(); }
+    if (manual) { store.set('plan', { id: plan.id, auto: (planForMonth(thisMonth()) || {}).id }); state.day = nextDayIndex(); }
     else if (store.get('lastOpen', '') !== today) state.day = nextDayIndex();
     else state.day = Math.min(store.get('day', 0), state.days.length - 1);
     store.set('lastOpen', today);
