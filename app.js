@@ -158,7 +158,7 @@
   }
   function openPlans() {
     var cur = planForMonth(thisMonth());
-    $('sheetTitle').textContent = 'Schede';
+    $('sheetTitle').textContent = 'Plan';
     $('sheetBody').innerHTML = '<div class="sheet-inner plan-list">' + state.program.plans.map(function (pl) {
       return '<button class="plan-item' + (pl.id === state.plan.id ? ' on' : '') + '" data-plan="' + esc(pl.id) + '">' +
         '<span class="plan-n">' + esc(pl.name) + '</span>' +
@@ -170,9 +170,6 @@
       '<h3 class="coach-h">La mia settimana inizia di</h3><div class="chips" id="wsChips">' +
       [1, 2, 3, 4, 5, 6, 0].map(function (g) { return '<button type="button" data-ws="' + g + '" aria-pressed="' + (g === weekStartDay()) + '">' + ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'][g] + '</button>'; }).join('') +
       '</div><p class="plan-hint">Es. se giochi il venerdì e riparti la domenica, scegli Dom. Cambia il conteggio «Settimana N di 4» e le statistiche settimanali.</p>' +
-      '<h3 class="coach-h">🎵 Le mie playlist</h3>' + MUSIC.map(function (x) {
-        return '<label class="f-l" for="mu_' + x.id + '">' + x.label + '</label><input class="f-in" id="mu_' + x.id + '" data-music="' + x.id + '" inputmode="url" placeholder="incolla il link (Spotify, Apple Music, YouTube Music)" value="' + esc((store.get('music', {}))[x.id] || '') + '">';
-      }).join('') + '<p class="plan-hint">In Spotify: playlist → ··· → Condividi → Copia link, poi incollalo qui. I pulsanti compaiono in cima ai giorni.</p>' +
       '<h3 class="coach-h">Timer</h3>' + chips('tmode', ['A tutto schermo', 'Banner in basso'], store.get('timerMode', 'full') === 'banner' ? 'Banner in basso' : 'A tutto schermo') +
       '<p class="plan-hint">Con il banner puoi consultare gli esercizi mentre il recupero scorre. Puoi anche ridurre il timer mentre è aperto.</p>' +
       (lsGet('trainaldo-coach') ? '<h3 class="coach-h">Atleta (solo per l\'allenatore)</h3><div class="plan-list" id="athList"></div>' : '') + '</div>';
@@ -186,9 +183,6 @@
       }).join('');
     };
     drawOrd();
-    $('sheetBody').querySelectorAll('[data-music]').forEach(function (inp) {
-      inp.onchange = function () { var m = store.get('music', {}); m[inp.dataset.music] = inp.value.trim(); store.set('music', m); renderDay(); };
-    });
     var tm = $('sheetBody').querySelector('.chips[data-name="tmode"]');
     tm.onclick = function (ev) {
       var b = ev.target.closest('button'); if (!b) return;
@@ -310,15 +304,36 @@
   }
 
   /* ---------- Tab ---------- */
+  // Con plan.weekSlots {train:[…], optional:[…], yoga:[…]} l'header è la settimana a 7 caselle, a partire dal giorno scelto dall'atleta:
+  // i Day vanno nelle caselle indicate (es. se la settimana parte di martedì, il Day 1 cade di martedì)
+  var WD = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+  function weekCells() {
+    var ws = state.plan.weekSlots; if (!ws) return null;
+    var cells = [], tr = 0, op = 0;
+    for (var k = 0; k < 7; k++) cells.push({ wd: (weekStartDay() + k) % 7, i: -1 });
+    state.days.forEach(function (d, i) {
+      var slot;
+      if (d.id === 'yoga') slot = (ws.yoga || [])[0];
+      else if (d.optional) slot = (ws.optional || [])[op++];
+      else slot = (ws.train || [])[tr++];
+      if (slot != null && cells[slot] && cells[slot].i < 0) cells[slot].i = i;
+    });
+    return cells;
+  }
+  function tabHtml(d, i, nxt, lbl) {
+    return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' +
+      (lbl ? '<small>' + lbl + '</small>' : '') + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + esc(d.tab) + '</button>';
+  }
   function renderTabs() {
-    var nav = $('tabs'), nxt = nextDayIndex();
-    nav.innerHTML = state.days.map(function (d, i) {
-      return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + esc(d.tab) + '</button>';
-    }).join('');
+    var nav = $('tabs'), nxt = nextDayIndex(), cells = weekCells();
+    nav.className = 'tabs' + (cells ? ' wk' : '');
+    nav.innerHTML = cells ? cells.map(function (c) {
+      return c.i < 0 ? '<div class="tab rest" aria-hidden="true"><small>' + WD[c.wd] + '</small>–</div>' : tabHtml(state.days[c.i], c.i, nxt, WD[c.wd]);
+    }).join('') : state.days.map(function (d, i) { return tabHtml(d, i, nxt, ''); }).join('');
     nav.onclick = function (e) {
-      var b = e.target.closest('.tab'); if (!b) return;
+      var b = e.target.closest('.tab'); if (!b || b.dataset.i == null) return;
       state.day = +b.dataset.i; store.set('day', state.day);
-      Array.prototype.forEach.call(nav.children, function (t, i) { t.setAttribute('aria-selected', i === state.day); });
+      Array.prototype.forEach.call(nav.children, function (t) { t.setAttribute('aria-selected', t.dataset.i != null && +t.dataset.i === state.day); });
       renderDay();
       window.scrollTo(0, 0);
     };
@@ -1199,6 +1214,50 @@
     };
   }
 
+  /* ---------- Card social: immagine verticale (storia) da condividere ---------- */
+  function shareCard(x) {
+    var cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920;
+    var c = cv.getContext('2d'), F = '-apple-system, "SF Pro Display", Helvetica, Arial, sans-serif';
+    c.fillStyle = '#8b1a1a'; c.fillRect(0, 0, 1080, 1920);
+    c.fillStyle = '#1a1414'; c.fillRect(0, 1380, 1080, 540);
+    var day = x.when.slice(0, 10), mon = mondayOf(new Date(day + 'T12:00'));
+    var wk = getLog().filter(function (y) { return y.when.slice(0, 10) >= isoDate(mon) && y.when.slice(0, 10) <= day && ACTIVE.indexOf(y.type) >= 0; }).length;
+    var d = new Date(day + 'T12:00'), when = d.getDate() + ' ' + ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'][d.getMonth()] + ' ' + d.getFullYear();
+    var t = function (txt, px, y, wgt, col, al) { c.font = wgt + ' ' + px + 'px ' + F; c.fillStyle = col; c.textAlign = al || 'left'; c.fillText(txt, al === 'center' ? 540 : 90, y); };
+    t('TRAIN.ALDO', 44, 150, 800, '#f0d9b5');
+    t('FATTO.', 190, 520, 800, '#ffffff');
+    var lbl = (x.type === 'Allenamento' ? (x.label || x.type) : x.type), words = lbl.split(' · '), yy = 640;
+    words.forEach(function (w) { t(w, 56, yy, 700, '#ffffff'); yy += 70; });
+    t(when, 40, yy + 20, 500, 'rgba(255,255,255,.75)');
+    var stats = [];
+    if (x.dur) stats.push([x.dur >= 60 ? Math.floor(x.dur / 60) + 'h ' + ('0' + (x.dur % 60)).slice(-2) : String(x.dur), x.dur >= 60 ? 'tempo' : 'minuti']);
+    if (x.kcal) stats.push([String(x.kcal), 'kcal']);
+    stats.push([String(wk), 'in settimana']);
+    var n = stats.length, w = 900 / n;
+    stats.forEach(function (st, i) {
+      c.font = '800 ' + (n > 2 ? 100 : 130) + 'px ' + F; c.fillStyle = '#fff'; c.textAlign = 'left'; c.fillText(st[0], 90 + i * w, 1130);
+      c.font = '500 34px ' + F; c.fillStyle = 'rgba(255,255,255,.8)'; c.fillText(st[1], 90 + i * w, 1190);
+    });
+    var wmL = (state.program.weekMotivation || {})[String(Math.min(wk, 5))] || [], line = wmL.length ? wmL[(+day.slice(8) || 0) % wmL.length] : 'Un allenamento alla volta.';
+    c.font = '500 40px ' + F; c.fillStyle = '#ffffff'; c.textAlign = 'left';
+    var ws = String(line).split(' '), ln = '', ly = 1500;
+    ws.forEach(function (w2) { if (c.measureText(ln + w2).width > 900) { c.fillText(ln, 90, ly); ln = ''; ly += 56; } ln += w2 + ' '; });
+    c.fillText(ln, 90, ly);
+    var done = function () {
+      cv.toBlob(function (b) {
+        var f = new File([b], 'trainaldo.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: 'TRAIN.ALDO' }).catch(function () {}); return; }
+        var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'trainaldo.png'; document.body.appendChild(a); a.click(); a.remove();
+      }, 'image/png');
+    };
+    var im = new Image();
+    im.onload = function () {
+      c.fillStyle = '#fff'; c.beginPath(); c.roundRect ? c.roundRect(780, 1620, 210, 230, 24) : c.rect(780, 1620, 210, 230); c.fill();
+      c.drawImage(im, 790, 1630, 190, 210); done();
+    };
+    im.onerror = done; im.src = 'img/bow-logo.png';
+  }
+
   function openDiary(flash) {
     var log = getLog(), now = new Date();
     var monday = mondayOf(now);
@@ -1253,7 +1312,7 @@
       return '<details class="entry' + (x.type === 'Stop' ? ' e-stop' : x.type === 'Nota' ? ' e-note' : x.type === 'Padel' ? ' e-padel' : '') + '"><summary>' + sum + '</summary>' +
         '<div class="e-body"><div>' + esc(d[1] || '') + ' · ' + esc(x.type) + (x.type === 'Stop' ? ' · fino al ' + fmtD(x.until) : '') + (x.place ? ' · ' + esc(x.place) : '') + (x.week ? ' · sett. ' + x.week : '') + '</div>' +
         (x.note ? '<div class="muted">' + esc(x.note) + '</div>' : '') +
-        '<div class="e-btns"><button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬 Invia</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕ Elimina</button></div></div></details>';
+        '<div class="e-btns"><button class="e-share" data-share="' + x.id + '" aria-label="Invia su WhatsApp">💬 Invia</button><button class="e-share" data-card="' + x.id + '" aria-label="Immagine per i social">📤 Immagine social</button><button class="e-del" data-del="' + x.id + '" aria-label="Elimina">✕ Elimina</button></div></div></details>';
     };
     var histHtml = function () {
       if (!log.length) return '<p class="muted">Ancora nessun allenamento registrato.</p>';
@@ -1282,6 +1341,8 @@
     $('sheetBody').querySelector('.diary').onclick = function (ev) {
       var n = ev.target.closest('[data-new]');
       if (n) { closeSheet(false); setTimeout(function () { openLogForm(n.dataset.new, n.dataset.new === 'Fisioterapia' ? 'Seduta di fisioterapia' : ''); }, 50); return; }
+      var cd = ev.target.closest('[data-card]');
+      if (cd) { var en3 = getLog().filter(function (x) { return String(x.id) === cd.dataset.card; })[0]; if (en3) shareCard(en3); return; }
       var sh = ev.target.closest('[data-share]');
       if (sh) { var en2 = getLog().filter(function (x) { return String(x.id) === sh.dataset.share; })[0]; if (en2) sendWhatsApp(entryText(en2)); return; }
       var del = ev.target.closest('[data-del]');

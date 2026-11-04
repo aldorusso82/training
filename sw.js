@@ -1,6 +1,6 @@
 /* TRAIN.ALDO — service worker
    A OGNI RILASCIO incrementa VERSION, altrimenti l'iPhone mostra la versione vecchia. */
-var VERSION = 'v36';
+var VERSION = 'v37';
 var CACHE = 'trainaldo-' + VERSION;
 var CORE = [
   './',
@@ -11,7 +11,8 @@ var CORE = [
   'data/program.json',
   'icons/apple-touch-icon.png',
   'icons/icon-192.png',
-  'icons/icon-512.png'
+  'icons/icon-512.png',
+  'img/bow-logo.png'
 ];
 
 self.addEventListener('install', function (e) {

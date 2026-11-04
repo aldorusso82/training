@@ -519,3 +519,48 @@ html, body, button, .overlay, .t-bar, .sheet { touch-action: manipulation; }
 .pill b { font-weight: 800; }
 .sheet-bar { background: var(--bg); color: var(--ink); border-bottom: 1px solid var(--line); }
 .btn-close { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+
+/* ---------- v37: più impatto, più minimal, header = settimana ---------- */
+:root { --bg: #f3ece3; --line: #d2c5b9; }
+.top { background: var(--red); color: #fff; border-bottom: 0; padding: calc(var(--safe-t) + 8px) 12px 10px; }
+.brand { display: flex; align-items: center; justify-content: space-between; margin: 0 0 8px; color: #fff; font-size: 15px; letter-spacing: .16em; text-align: left; }
+.brand span { color: #fff; }
+.brand .bn span { color: #f0d9b5; }
+.bowlogo { height: 30px; width: auto; background: #fff; border-radius: 8px; padding: 3px 6px; }
+.athlete { color: #f0d9b5; }
+.tab { border: 0; background: rgba(255,255,255,.16); color: #fff; min-height: 46px; font-size: 14px; padding: 2px 0; line-height: 1.15; }
+.tab small { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
+.tab[aria-selected="true"] { background: #fff; color: var(--red); }
+.tab.next:not([aria-selected="true"]) { border: 0; color: #fff; box-shadow: inset 0 0 0 2px #fff; }
+.tab.next::after { background: #f0d9b5; }
+.tab.next[aria-selected="true"]::after { background: var(--red); }
+.tab:has(.chk):not([aria-selected="true"]) { background: var(--ink); color: #fff; }
+.tab.opt-tab { border: 0; background: transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); color: #fff; }
+.tab.opt-tab[aria-selected="true"] { background: #fff; color: var(--red); box-shadow: none; }
+.tabs.wk { gap: 4px; grid-template-columns: repeat(7, 1fr); }
+.tabs.wk .tab { padding: 3px 0; font-size: 13px; }
+.tab.rest { display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; color: rgba(255,255,255,.55); box-shadow: inset 0 0 0 1px rgba(255,255,255,.22); }
+.hero { background: var(--ink); border-radius: 14px; padding: 14px; }
+.hero .day-title small { color: #f0d9b5; }
+.hero .btn-sess { background: var(--red); color: #fff; min-height: 46px; }
+.hero .sess small { color: rgba(255,255,255,.7); }
+.hero .opt.nxt { background: var(--red); color: #fff; }
+.wk-stats { gap: 6px; margin-bottom: 10px; }
+.wk-stats div { background: transparent; border: 0; border-top: 3px solid var(--red); border-radius: 0; padding: 6px 2px 0; }
+.wk-stats b { font-size: 24px; color: var(--ink); }
+.block { border-radius: 12px; margin-bottom: 10px; border-color: var(--line); }
+.block-head { padding: 8px 12px; }
+.letter { width: 36px; height: 36px; border-radius: 9px; font-size: 18px; }
+.block-kind { font-size: 16px; }
+.block-sub { font-size: 14px; }
+.ex { min-height: 66px; padding: 8px 12px; gap: 10px; }
+.thumb { width: 60px; height: 52px; border-radius: 8px; }
+.note-box { border-radius: 10px; padding: 8px 12px; font-size: 15px; margin-bottom: 10px; }
+.day-desc { font-size: 15px; margin: 0 0 10px; }
+.main { padding-top: 12px; }
+.bnav { background: var(--ink); border-top: 0; }
+.bnav button { color: rgba(255,255,255,.6); }
+.bnav button.on { color: #fff; }
+.stat b { color: var(--red); }
+.sheet-bar { background: var(--red); color: #fff; border-bottom: 0; }
+.btn-close { background: rgba(255,255,255,.18); border: 0; color: #fff; }
