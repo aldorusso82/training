@@ -1812,7 +1812,7 @@
     {
      "id": "d1",
      "tab": "Day 1",
-     "title": "Forza · gambe + core",
+     "title": "Forza · gambe",
      "sections": [
       {
        "type": "mobility",
@@ -1903,7 +1903,7 @@
     },
     {
      "id": "d3",
-     "tab": "Day 3",
+     "tab": "Day 2",
      "title": "Circuito · potenza (o Padel)",
      "variants": [
       {
@@ -2006,7 +2006,7 @@
     },
     {
      "id": "d2",
-     "tab": "Day 2",
+     "tab": "Day 3",
      "title": "Forza · stacco + trazioni",
      "sections": [
       {
@@ -2199,7 +2199,7 @@
      "optional": true
     }
    ],
-   "note": "Settimana tipo: Lun Day 1 · Mar Day 3 (o Padel) · Mer riposo · Gio Day 2 · Ven Day 4 (o Padel). Se non giochi a padel fai tutti e 4 gli allenamenti; il Day 5 è facoltativo."
+   "note": "Settimana tipo: Lun Day 1 · Mar Day 2 (o Padel) · Mer riposo · Gio Day 3 · Ven Day 4 (o Padel). Se non giochi a padel fai tutti e 4 gli allenamenti; il Day 5 è facoltativo."
   }
  ],
  "yoga": {

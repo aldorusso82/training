@@ -136,3 +136,5 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v30 (04/11): piano `nov` rinominato «Novembre – Dicembre» (months [11,12]), nuovi Day 1–5 di Aldo (Day 4 = 3 sezioni `emom` da 8', Day 5 = `timer` Boxing 60' badge BOX + `run` 30'). 17 esercizi nuovi in program.json; foto scaricate in img/ (Air_Bike, Sled_*, Power_Clean, Lying_Leg_Curls, Hanging_Pike, Landmine_*, One-Arm_Kettlebell_Swings). Senza foto: kb_bottomup_march, trx_skater_squat, kb_towel_curl (solo ricerca YouTube). Day 5 è `optional` (v31).
 
 - v32 (04/11): piano `nov` con ordine giorni D1, D3, D2, D4, D5 (settimana tipo Lun D1 · Mar D3 · Mer riposo · Gio D2 · Ven D4). Day 3 e Day 4 hanno `variants`: circuito oppure «Padel» (nessun padel = tutti e 4 gli allenamenti). `plan.note` = settimana tipo.
+
+- v33 (04/11): tab rinumerati in ordine: Day 1 forza gambe (id d1) · Day 2 circuito potenza/Padel (id d3) · Day 3 forza stacco+trazioni (id d2) · Day 4 conditioning/Padel (id d4). Gli id interni restano invariati per non perdere il diario.
