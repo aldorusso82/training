@@ -160,3 +160,4 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v49: scala font unica nelle sezioni (.sheet-inner 14px, titoli 12px maiuscoli); header Train.Beyond sempre visibile sopra le sezioni (senza tab Day), un tocco sul titolo torna alla home.
 - v50: titoli di sezione 18px (Plan, Diary, Nutrition, Rehab, Drills), titolo sheet 22px.
 - v51: header position:fixed (altezza in --hdr con ResizeObserver); fix settimana Diary (classe .rest in conflitto → .s-rest); numeri riquadri più piccoli (20px).
+- v52: nei piani kind:'rehab' tolte le alternative Padel e Corsa (resta Stop/riposo), sia sotto il giorno sia nel form di registrazione.

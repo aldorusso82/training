@@ -571,7 +571,7 @@
     h += '<div class="log-cta"><button class="btn-log" id="logBtn">✓ Registra allenamento</button>' +
       (day.id !== 'yoga' ? '<button class="btn-wa" id="waBtn">💬 Invia sensazioni al coach (WhatsApp)</button>' : '') +
       (day.id !== 'yoga' ? '<div class="alt-row"><small>Oggi ho fatto altro:</small><div class="chips">' +
-        ['Padel', 'Corsa', 'Stop'].map(function (t) { return '<button type="button" data-alt="' + t + '">' + (t === 'Stop' ? 'Stop / riposo' : t) + '</button>'; }).join('') +
+        (state.plan.kind === 'rehab' ? ['Stop'] : ['Padel', 'Corsa', 'Stop']).map(function (t) { return '<button type="button" data-alt="' + t + '">' + (t === 'Stop' ? 'Stop / riposo' : t) + '</button>'; }).join('') +
         '</div><small class="muted">Il ' + esc(day.tab) + ' resta il prossimo da fare.</small></div>' : '') + '</div>';
 
     var main = $('main');
@@ -1231,7 +1231,7 @@
     $('sheetTitle').textContent = 'Registra';
     var lastPlace = store.get('lastPlace', 'Palestra');
     $('sheetBody').innerHTML = '<div class="sheet-inner form">' +
-      '<label class="f-l">Tipo</label>' + chips('type', TYPES, type) +
+      '<label class="f-l">Tipo</label>' + chips('type', state.plan.kind === 'rehab' ? TYPES.filter(function (t) { return t !== 'Padel' && t !== 'Corsa'; }) : TYPES, type) +
       '<div id="fStop" class="f-group"><label class="f-l">Motivo dello stop</label>' + chips('reason', STOP_REASONS, 'Infortunio') +
       '<label class="f-l" for="fUntil">Fino al (compreso)</label><input class="f-in" id="fUntil" type="date" value="' + isoDate(addDays(new Date(), 2)) + '"></div>' +
       (ref ? '' : '<div id="fDayBox" class="f-group"><label class="f-l">Giorno della scheda ' + esc(state.plan.name) + '</label>' +
