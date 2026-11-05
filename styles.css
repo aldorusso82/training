@@ -647,3 +647,23 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .hero .day-title { font-size: 20px; margin: 0 0 8px; }
 .hero .btn-sess { min-height: 42px; }
 .music-fab { position: fixed; right: 14px; bottom: calc(var(--safe-b, 0px) + 74px); z-index: 25; width: 52px; height: 52px; border: 0; border-radius: 50%; background: #1db954; color: #fff; font-size: 24px; box-shadow: 0 3px 10px rgba(0,0,0,.35); }
+
+/* ---------- v44: calibrazione header / footer ---------- */
+.top .brand { justify-content: center; padding-right: 54px; padding-left: 54px; margin-bottom: 2px; }
+.top .brand .bn { font-size: 40px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.brand .bn .bt { font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif; font-style: normal; font-weight: 800; font-size: 9px; line-height: 1.15; letter-spacing: .2em; color: #f0d9b5; text-align: left; margin-top: 12px; }
+.top .bowlogo { height: 46px; padding: 3px 6px; top: -4px; }
+.athlete { margin: 0 0 6px; }
+.tabs .tab { min-height: 46px; font-size: 15px; }
+.hero .day-title { text-wrap: balance; }
+.bnav button { min-height: 66px; font-size: 12px; gap: 4px; }
+.bnav svg { width: 28px; height: 28px; }
+.music-fab { bottom: calc(var(--safe-b, 0px) + 82px); }
+.main { padding-bottom: calc(var(--safe-b) + 104px); }
+.coach-box textarea { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; resize: vertical; }
+.coach-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.coach-box .btn-big { margin-top: 6px; }
+.top .brand { padding: 0; }
+.top .brand .bn { display: block; font-size: 34px; text-align: center; }
+.brand .bn .bt { display: inline-block; vertical-align: middle; margin: 0 0 0 6px; font-size: 8px; position: relative; top: 3px; }
+.top .bowlogo { height: 44px; }

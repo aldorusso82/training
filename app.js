@@ -1402,6 +1402,10 @@
       '<div class="d-row"><small>Tipo (settimana)</small>' + pills(count(inWeek, 'type')) + '</div>' +
       '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button>' +
       '<button class="btn-start gray" data-new="Nota">+ Nota</button><button class="btn-start gray" data-new="Stop">+ Stop</button></div>' +
+      '<h3 class="d-h">Invia al coach</h3><div class="coach-box"><textarea id="coachMsg" rows="5" placeholder="Scrivi qui i tuoi appunti, oppure richiama le note degli allenamenti"></textarea>' +
+      '<div class="coach-btns"><button type="button" class="btn-start gray" id="coachRecall">↺ Richiama note</button><button type="button" class="btn-start alt" id="coachAi">✨ Sistema con IA</button></div>' +
+      '<p class="muted small" id="coachHint">«Sistema con IA» copia il testo con le istruzioni e apre Claude: incolla, copia la versione migliorata e riportala qui.</p>' +
+      '<button type="button" class="btn-big btn-red" id="coachSend">💬 Invia al coach</button></div>' +
       '<h3>Progressi carichi</h3>' + progHtml() +
       '<h3 id="histH">Storico</h3><div id="histBox">' + histHtml() + '</div>' +
       '<button class="btn-ghost-dark" id="dExport">Esporta backup dei dati</button>' +
@@ -1433,6 +1437,21 @@
       }
       if (ev.target.id === 'dExport') exportData();
     };
+    var cm = $('coachMsg');
+    $('coachRecall').onclick = function () {
+      var rows = log.filter(function (x) { return x.when.slice(0, 10) >= wStart && x.type !== 'Stop'; }).map(function (x) {
+        return fmtD(x.when.slice(0, 10)) + ' · ' + (x.label || x.type) + (x.dur ? ' · ' + x.dur + "'" : '') + (x.kcal ? ' · ' + x.kcal + ' kcal' : '') + (x.note ? ' — ' + x.note : '');
+      });
+      cm.value = (cm.value ? cm.value + '\n\n' : '') + (rows.length ? 'Ciao coach, questa settimana:\n' + rows.join('\n') : 'Ciao coach, ');
+    };
+    $('coachAi').onclick = function () {
+      if (!cm.value.trim()) { $('coachHint').textContent = 'Scrivi prima qualcosa o richiama le note.'; return; }
+      var prompt = 'Riscrivi questo messaggio per il mio allenatore: chiaro, breve, cordiale, in italiano, senza inventare nulla.\n\n' + cm.value;
+      var done = function () { $('coachHint').textContent = 'Testo copiato. Si apre Claude: incolla, poi copia la versione migliorata e incollala qui sopra.'; window.open('https://claude.ai/new', '_blank'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(prompt).then(done, function () { $('coachHint').textContent = 'Non riesco a copiare: seleziona il testo e copialo a mano.'; });
+      else done();
+    };
+    $('coachSend').onclick = function () { if (cm.value.trim()) sendWhatsApp(cm.value.trim()); else $('coachHint').textContent = 'Il messaggio è vuoto.'; };
   }
   /* ---------- Alimentazione · Rehab · Drills (sezioni del footer) ---------- */
   var INFO = {
