@@ -1,7 +1,7 @@
 {
-  "name": "TRAIN.ALDO",
-  "short_name": "TRAIN.ALDO",
-  "description": "Scheda di allenamento personale di Aldo",
+  "name": "TRAIN.BEYOND",
+  "short_name": "TRAIN.BEYOND",
+  "description": "Train.Beyond · Ordinary Workout",
   "lang": "it",
   "scope": "./",
   "display": "standalone",

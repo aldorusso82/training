@@ -119,6 +119,7 @@
         });
     })
     .then(function (p) {
+      (p.rehab || []).forEach(function (r) { if (r.days) p.plans.push({ id: 'rehab-' + r.id, name: 'Rehab · ' + r.title, kind: 'rehab', months: [], weeks: r.weeks || 0, days: r.days }); });
       state.program = p;
       document.title = 'TRAIN.BEYOND';
       $('athlete').textContent = p.athleteName || 'Aldo'; $('athlete').hidden = false;
@@ -288,7 +289,7 @@
   function mondayOf(d) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() - weekStartDay() + 7) % 7)); return x; }
   function planStart(plan) {
     if (plan.start) return new Date(plan.start + 'T12:00');
-    if (plan.months && plan.months.length < 12) return new Date(new Date().getFullYear(), plan.months[0] - 1, 1);
+    if (plan.months && plan.months.length && plan.months.length < 12) return new Date(new Date().getFullYear(), plan.months[0] - 1, 1);
     var log = getLog();
     for (var i = 0; i < log.length; i++) if (log[i].planId === plan.id) return new Date(log[i].when.slice(0, 10) + 'T12:00');
     var saved = store.get('start.' + plan.id, '');
@@ -299,7 +300,7 @@
   // Programmi a durata (plan.weeks, es. Viviana): settimane dal primo allenamento.
   function planWeek(plan) {
     var today = mondayOf(new Date());
-    if (plan.months && plan.months.length < 12) {
+    if (plan.months && plan.months.length && plan.months.length < 12) {
       var st = planStart(plan), m0 = mondayOf(st);
       if (m0 < st) m0 = new Date(m0.getFullYear(), m0.getMonth(), m0.getDate() + 7);
       var w = today < m0 ? 1 : Math.floor((today - m0) / (7 * DAY_MS)) + 1;
@@ -373,9 +374,16 @@
     });
     return cells;
   }
+  function dayIcon(d) {
+    if (d.ico) return d.ico;
+    var rules = [[/yoga/, '🧘'], [/gamb/, '🦵'], [/conditioning|emom|hiit/, '⏱'], [/potenza|power|circuit|metabolic|cardio|reatt/, '⚡'],
+      [/forza|trazion|stacco|upper|spinta|petto|schiena/, '💪'], [/box|corsa|run/, '🥊'], [/fase|rehab/, '🩺'], [/padel/, '🎾']];
+    var pick = function (t) { for (var i = 0; i < rules.length; i++) if (rules[i][0].test(t)) return rules[i][1]; return ''; };
+    return pick(((d.title || '') + ' ' + (d.tab || '') + ' ' + (d.id || '')).toLowerCase()) || pick(String(d.desc || '').toLowerCase());
+  }
   function tabHtml(d, i, nxt, lbl) {
     return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' +
-      (lbl ? '<small>' + lbl + '</small>' : '') + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + esc(d.tab) + '</button>';
+      (lbl ? '<small>' + lbl + '</small>' : '') + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + '<span class="t-ico" aria-hidden="true">' + dayIcon(d) + '</span><span class="t-lbl">' + esc(d.tab) + '</span></button>';
   }
   function renderTabs() {
     var nav = $('tabs'), nxt = nextDayIndex(), cells = null;   // i giorni della settimana stanno nel Diary
@@ -498,6 +506,7 @@
     var day = state.days[state.day];
     var cur = currentSections(day);
     var wk = planWeek(state.plan);
+    $('athlete').textContent = (state.program.athleteName || 'Aldo') + ' · ' + (state.plan.kind === 'rehab' ? 'Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '') : state.plan.name);
     var h = '<div class="hero"><h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name + ' · Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '')) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
       (day.optional ? ' <span class="opt">opzionale</span>' : '') +
       (state.days.indexOf(day) === nextDayIndex() && day.id !== 'yoga' ? ' <span class="opt nxt">prossimo</span>' : '') + '</h1>' + sessionHtml(day) + '</div>' + (day.id !== 'yoga' ? weekStatsHtml() : '');
@@ -669,9 +678,9 @@
       ? '<div class="rest"><div class="rest-txt">Timer guidato<span>' + (sec.type === 'hiit' ? 'lavoro / recupero con segnale' : sec.type === 'emom' ? 'nuovo minuto con segnale' : 'cambio posizione con segnale') + '</span></div>' +
         '<button class="btn-start" data-guided="' + si + '">Avvia</button></div>'
       : sec.rest
-      ? '<div class="rest"><div class="rest-txt">Recupero ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
+      ? '<div class="rest"><div class="rest-txt">Rest ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
         '<button class="btn-start" data-rest="' + sec.rest + '" data-label="' + lbl + '">Avvia</button></div>'
-      : '<div class="rest rest-free"><div class="rest-txt">Recupero<span>scegli e parte il timer</span></div><div class="rest-chips">' +
+      : '<div class="rest rest-free"><div class="rest-txt">Rest<span>scegli e parte il timer</span></div><div class="rest-chips">' +
         [60, 75, 90, 120].map(function (r) { return '<button class="btn-start chip" data-rest="' + r + '" data-label="' + lbl + '">' + fmtRest(r) + '</button>'; }).join('') + '</div></div>';
 
     var setsHtml = '';
@@ -1333,7 +1342,7 @@
       var todayIso = isoDate(new Date()), cells = '';
       for (var k = 0; k < 7; k++) {
         var d = addDays(mon, k), iso = isoDate(d), ents = lg.filter(function (x) { return x.when.slice(0, 10) === iso; });
-        var act = ents.filter(isAct), stop = lg.some(function (x) { return x.type === 'Stop' && x.when.slice(0, 10) <= iso && iso <= x.until; });
+        var act = ents.filter(function (x) { return isAct(x) || x.type === 'Fisioterapia'; }), stop = lg.some(function (x) { return x.type === 'Stop' && x.when.slice(0, 10) <= iso && iso <= x.until; });
         var st = act.length ? 'done' : stop ? 'stop' : iso < todayIso ? 'rest' : iso === todayIso ? 'today' : 'next';
         var lbl = act.length ? '✓' : stop ? 'Stop' : iso < todayIso ? 'Rest' : iso === todayIso ? 'Oggi' : '·';
         cells += '<div class="wd ' + st + (iso === todayIso ? ' now' : '') + '"><small>' + WD[d.getDay()] + '</small><b>' + d.getDate() + '</b><span>' + lbl + '</span></div>';
@@ -1473,12 +1482,27 @@
     var pr = x.protocols ? (state.program.rehab || []) : [];
     var docs = (state.program.docs || []).filter(function (d) { return d.group === x.group; });
     $('sheetBody').innerHTML = '<div class="sheet-inner form"><p class="info-t">' + esc(x.text) + '</p>' +
-      docs.map(function (d) { return '<button type="button" class="doc" data-vf="' + esc(d.file) + '" data-vt="' + esc(d.title) + '">📄 ' + esc(d.title) + '</button>'; }).join('') +
+      docs.map(function (d) { return '<button type="button" class="doc" data-vf="' + esc(d.file) + '" data-vt="' + esc(d.title) + '"' + (d.thumb ? ' data-th="' + esc(d.thumb) + '"' : '') + '><span class="doc-th">📄</span><span class="doc-t">' + esc(d.title) + '</span></button>'; }).join('') +
+      (x.protocols ? state.program.plans.filter(function (pl) { return pl.kind === 'rehab'; }).map(function (pl) {
+        return '<h3 class="coach-h">' + esc(pl.name) + '</h3><div class="chips">' + pl.days.map(function (d, i) { return '<button type="button" data-rp="' + esc(pl.id) + '" data-rd="' + i + '">' + dayIcon(d) + ' ' + esc(d.tab) + '</button>'; }).join('') + '</div>';
+      }).join('') : '') +
       (x.protocols ? (pr.length ? pr.map(protocolHtml).join('') : '<p class="muted">Nessun protocollo assegnato per ora.</p>') : '') +
       (x.log ? '<button class="btn-big btn-red" id="infLog">+ Registra seduta di fisioterapia</button>' : '') +
       '<button class="btn-big btn-red" id="infWa">' + x.waLbl + '</button></div>';
     showSheet();
+    Array.prototype.forEach.call($('sheetBody').querySelectorAll('.doc[data-th]'), function (b) {
+      var pw = lsGet('trainaldo-vp'); if (!pw) return;   // anteprima solo se la passphrase è già salvata, senza chiederla
+      fetch(b.getAttribute('data-th')).then(function (r) { return r.arrayBuffer(); }).then(function (buf) { return vaultDecrypt(buf, pw); })
+        .then(function (img) { b.querySelector('.doc-th').innerHTML = '<img alt="" src="' + URL.createObjectURL(new Blob([img], { type: 'image/jpeg' })) + '">'; }).catch(function () {});
+    });
     Array.prototype.forEach.call($('sheetBody').querySelectorAll('.doc'), function (b) { b.onclick = function () { openVaultDoc(b.getAttribute('data-vf'), b.getAttribute('data-vt')); }; });
+    Array.prototype.forEach.call($('sheetBody').querySelectorAll('[data-rp]'), function (b) {
+      b.onclick = function () {
+        var pl = state.program.plans.filter(function (z) { return z.id === b.dataset.rp; })[0];
+        closeSheet(false);
+        if (pl) { selectPlan(pl, true); state.day = +b.dataset.rd; store.set('day', state.day); renderTabs(); renderDay(); }
+      };
+    });
     if ($('infLog')) $('infLog').onclick = function () { closeSheet(false); setTimeout(function () { openLogForm('Fisioterapia', 'Seduta di fisioterapia'); }, 50); };
     $('infWa').onclick = function () { sendWhatsApp(x.wa); };
   }

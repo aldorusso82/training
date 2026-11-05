@@ -2177,33 +2177,9 @@
        "desc": "Giornata di padel al posto del circuito: 60' a sensazione."
       }
      ]
-    },
-    {
-     "id": "d5",
-     "tab": "Day 5",
-     "title": "",
-     "sections": [
-      {
-       "type": "timer",
-       "id": "boxing",
-       "sub": "Sessione di boxing",
-       "label": "Boxing",
-       "minutes": 60,
-       "badge": "BOX"
-      },
-      {
-       "type": "run",
-       "label": "Corsa",
-       "minutes": 30,
-       "pace": "a sensazione",
-       "sub": "Dopo il boxing"
-      }
-     ],
-     "desc": "Boxing 60' e corsa 30'.",
-     "optional": true
     }
    ],
-   "note": "Ordine della settimana: Day 1 · Day 2 (o Padel) · riposo/Yoga · Day 3 · Day 4 (o Padel) · Day 5 facoltativo. Scegli il giorno di partenza nel menu Plan: il Day 1 cade quel giorno. Se non giochi a padel fai tutti e 4 gli allenamenti.",
+   "note": "Ordine della settimana: Day 1 · Day 2 (o Padel) · riposo/Yoga · Day 3 · Day 4 (o Padel). Scegli il giorno di partenza nel menu Plan: il Day 1 cade quel giorno. Se non giochi a padel fai tutti e 4 gli allenamenti.",
    "from": "2026-11-09",
    "until": "2026-12-31",
    "weekSlots": {
@@ -2213,9 +2189,7 @@
      3,
      4
     ],
-    "optional": [
-     5
-    ],
+    "optional": [],
     "yoga": [
      2
     ]
@@ -2490,12 +2464,14 @@
   {
    "group": "food",
    "title": "Piano alimentare · 31 marzo 2026",
-   "file": "data/vault/piano-alimentare.enc"
+   "file": "data/vault/piano-alimentare.enc",
+   "thumb": "data/vault/piano-alimentare.thumb.enc"
   },
   {
    "group": "food",
    "title": "Body weight · scansione Fit3D",
-   "file": "data/vault/body-fit3d.enc"
+   "file": "data/vault/body-fit3d.enc",
+   "thumb": "data/vault/body-fit3d.thumb.enc"
   }
  ]
 }
