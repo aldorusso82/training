@@ -844,6 +844,9 @@
       };
     }
   }
+  function navMark(id) {
+    Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === id); });
+  }
   function showSheet() {
     var was = !sheet.hidden;
     $('sheetBody').scrollTop = 0;
@@ -857,6 +860,7 @@
     clearInterval(sheetAnim); sheetAnim = 0; sheetNav = null;
     $('sheetBody').innerHTML = '';
     document.body.style.overflow = '';
+    navMark('');
     if (!fromPop && history.state && history.state.sheet) { ignorePop = true; history.back(); }
   }
   $('sheetClose').onclick = function () { closeSheet(false); };
@@ -1516,11 +1520,11 @@
   }
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
   $('musicFab').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
-  $('navPlan').onclick = function () { if (state.program) openPlans(); };
-  $('navDiary').onclick = function () { if (state.program) openDiary(); };
-  $('navFood').onclick = function () { if (state.program) openInfo('food'); };
-  $('navRehab').onclick = function () { if (state.program) openInfo('rehab'); };
-  $('navDrills').onclick = function () { if (state.program) openInfo('drills'); };
+  $('navPlan').onclick = function () { if (state.program) { openPlans(); navMark('navPlan'); } };
+  $('navDiary').onclick = function () { if (state.program) { openDiary(); navMark('navDiary'); } };
+  $('navFood').onclick = function () { if (state.program) { openInfo('food'); navMark('navFood'); } };
+  $('navRehab').onclick = function () { if (state.program) { openInfo('rehab'); navMark('navRehab'); } };
+  $('navDrills').onclick = function () { if (state.program) { openInfo('drills'); navMark('navDrills'); } };
 
   /* ---------- Audio, vibrazione, schermo acceso ---------- */
   var actx = null, wakeLock = null;
