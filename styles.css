@@ -714,3 +714,28 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .vault-view { bottom: calc(74px + var(--safe-b)); z-index: 90; }
 .vault-ov { bottom: calc(74px + var(--safe-b)); }
 .t-bar { bottom: calc(74px + var(--safe-b)); }
+
+/* ---------- v49: stessa scala di font in tutte le sezioni, header sempre visibile ---------- */
+.sheet-inner { font-size: 14px; }
+.sheet-inner h3, .diary h3, .sheet-inner .d-h { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin: 16px 0 6px; }
+.sheet-inner p, .sheet-inner .info-t { font-size: 14px; line-height: 1.4; }
+.sheet-inner .muted, .sheet-inner .small, .sheet-inner .plan-hint { font-size: 12px; }
+.sheet-inner .pill { font-size: 13px; padding: 3px 9px; }
+.sheet-inner .d-row small { font-size: 12px; }
+.sheet-inner .stat b { font-size: 24px; }
+.sheet-inner .stat small { font-size: 11px; }
+.sheet-inner .prog { font-size: 14px; }
+.sheet-inner .prog small { font-size: 12px; }
+.sheet-inner .entry summary { font-size: 14px; }
+.sheet-inner .e-body { font-size: 13px; }
+.sheet-inner .btn-start { font-size: 15px; min-height: 44px; }
+.sheet-inner .btn-big { font-size: 16px; min-height: 50px; }
+.sheet-inner .btn-ghost-dark { font-size: 14px; }
+.sheet-inner .proto summary { font-size: 14px; }
+.sheet-inner .proto-b p { font-size: 13px; }
+.sheet-inner .doc { font-size: 14px; }
+.sheet-inner .chips button { font-size: 13px; }
+.sheet-inner textarea, .coach-box textarea { font-size: 15px; }
+.sheet { top: var(--hdr, 0px); }
+body.sheet-open .tabs { display: none; }
+.top .brand .bn { cursor: pointer; }

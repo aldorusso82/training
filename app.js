@@ -281,6 +281,7 @@
       if (pl) selectPlan(pl, true);
     };
   }
+  document.querySelector('.top .brand .bn').onclick = function () { closeSheet(false); window.scrollTo(0, 0); };
   $('planBtn').onclick = function () { if (state.program) openPlans(); };
 
   /* ---------- Settimana della scheda e allenamenti fatti ---------- */
@@ -862,6 +863,8 @@
     var was = !sheet.hidden;
     $('sheetBody').scrollTop = 0;
     sheet.hidden = false;
+    document.body.classList.add('sheet-open'); window.scrollTo(0, 0);
+    document.documentElement.style.setProperty('--hdr', document.querySelector('.top').offsetHeight + 'px');
     document.body.style.overflow = 'hidden';
     if (!was) history.pushState({ sheet: 1 }, '');
   }
@@ -871,6 +874,7 @@
     clearInterval(sheetAnim); sheetAnim = 0; sheetNav = null;
     $('sheetBody').innerHTML = '';
     document.body.style.overflow = '';
+    document.body.classList.remove('sheet-open');
     navMark('');
     if (!fromPop && history.state && history.state.sheet) { ignorePop = true; history.back(); }
   }
