@@ -739,3 +739,7 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .sheet { top: var(--hdr, 0px); }
 body.sheet-open .tabs { display: none; }
 .top .brand .bn { cursor: pointer; }
+
+/* ---------- v50: titoli di sezione più grandi ---------- */
+.sheet-inner h3, .diary h3, .sheet-inner .d-h, .sheet-inner.plan-list .coach-h, .sheet-inner .coach-h { font-size: 18px; font-weight: 800; letter-spacing: .03em; text-transform: none; color: var(--ink); margin: 20px 0 8px; }
+.sheet-title { font-size: 22px; }
