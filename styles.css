@@ -610,3 +610,29 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .vault-bar a { color: #fff; font-weight: 700; }
 .vault-bar button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: #fff; color: var(--red); font-weight: 800; }
 .vault-view iframe { flex: 1; width: 100%; border: 0; }
+
+/* ---------- v42: header pulito, Plan compatto, Diary a settimana ---------- */
+.tabs .tab { min-height: 52px; font-size: 17px; font-weight: 800; }
+.hero, .hero .day-title { text-align: center; }
+.hero .sess { justify-content: center; text-align: center; }
+.plan-sel { width: 100%; min-height: 46px; padding: 0 12px; font: inherit; font-size: 15px; font-weight: 700; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); }
+.sheet-inner.plan-list .coach-h { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin: 14px 0 6px; }
+.sheet-inner.plan-list .plan-hint { font-size: 12px; }
+.sheet-inner.plan-list .ord-row { font-size: 14px; }
+.chips.wsrow { display: flex; flex-wrap: nowrap; gap: 4px; }
+.chips.wsrow button { flex: 1; min-width: 0; padding: 0; min-height: 40px; font-size: 13px; }
+.d-h { margin: 14px 0 8px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); }
+.wstrip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 10px; }
+.wd { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px 0; text-align: center; display: grid; gap: 2px; }
+.wd small { font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.wd b { font-size: 18px; line-height: 1; }
+.wd span { font-size: 11px; font-weight: 800; color: var(--ink-2); }
+.wd.done { background: var(--red); border-color: var(--red); }
+.wd.done small, .wd.done b, .wd.done span { color: #fff; }
+.wd.stop { background: #f4f4f6; }
+.wd.rest span { color: #8a8a93; }
+.wd.now { box-shadow: inset 0 0 0 2px var(--ink); }
+.stats.s4 { grid-template-columns: repeat(2, 1fr); }
+.stats .stat { padding: 10px 6px; }
+.stats .stat b { font-size: 26px; }
+.stats .stat small { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }

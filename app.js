@@ -216,17 +216,14 @@
   function openPlans() {
     var cur = planForMonth(thisMonth());
     $('sheetTitle').textContent = 'Plan';
-    $('sheetBody').innerHTML = '<div class="sheet-inner plan-list">' + state.program.plans.map(function (pl) {
-      return '<button class="plan-item' + (pl.id === state.plan.id ? ' on' : '') + '" data-plan="' + esc(pl.id) + '">' +
-        '<span class="plan-n">' + esc(pl.name) + '</span>' +
-        (cur && cur.id === pl.id ? '<span class="plan-badge">questo mese</span>' : '') +
-        (pl.id === state.plan.id ? '<span class="plan-check">✓</span>' : '') + '</button>';
-    }).join('') + '<p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p>' +
-      '<h3 class="coach-h">Ordine dei giorni · ' + esc(state.plan.name) + '</h3><div id="ordList" class="ord-list"></div>' +
-      '<button class="btn-ghost-dark" id="ordReset">Ripristina ordine originale</button>' +
-      '<h3 class="coach-h">La mia settimana inizia di</h3><div class="chips" id="wsChips">' +
+    $('sheetBody').innerHTML = '<div class="sheet-inner plan-list"><h3 class="coach-h">Scheda</h3><select class="plan-sel" id="planSel" aria-label="Scheda">' + state.program.plans.map(function (pl) {
+      return '<option value="' + esc(pl.id) + '"' + (pl.id === state.plan.id ? ' selected' : '') + '>' + esc(pl.name) + (cur && cur.id === pl.id ? ' · questo mese' : '') + '</option>';
+    }).join('') + '</select><p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p>' +
+      '<h3 class="coach-h">La mia settimana inizia di</h3><div class="chips wsrow" id="wsChips">' +
       [1, 2, 3, 4, 5, 6, 0].map(function (g) { return '<button type="button" data-ws="' + g + '" aria-pressed="' + (g === weekStartDay()) + '">' + ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'][g] + '</button>'; }).join('') +
       '</div><p class="plan-hint">Es. se giochi il venerdì e riparti la domenica, scegli Dom. Cambia il conteggio «Settimana N di 4» e le statistiche settimanali.</p>' +
+      '<h3 class="coach-h">Ordine dei giorni · ' + esc(state.plan.name) + '</h3><div id="ordList" class="ord-list"></div>' +
+      '<button class="btn-ghost-dark" id="ordReset">Ripristina ordine originale</button>' +
       '<h3 class="coach-h">Timer</h3>' + chips('tmode', ['A tutto schermo', 'Banner in basso'], store.get('timerMode', 'full') === 'banner' ? 'Banner in basso' : 'A tutto schermo') +
       '<p class="plan-hint">Con il banner puoi consultare gli esercizi mentre il recupero scorre. Puoi anche ridurre il timer mentre è aperto.</p>' +
       (lsGet('trainaldo-coach') ? '<h3 class="coach-h">Atleta (solo per l\'allenatore)</h3><div class="plan-list" id="athList"></div>' : '') + '</div>';
@@ -271,15 +268,14 @@
     if (lsGet('trainaldo-coach')) {
       fetch('data/athletes/index.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (list) {
         var el = $('athList'); if (!el) return;
-        el.innerHTML = [{ id: 'aldo', name: 'Aldo' }].concat(list).map(function (a) {
+        el.innerHTML = [{ id: 'aldo', name: 'Aldo' }, { id: 'arnese', name: 'Fisio Hub · profilo test' }].concat(list).map(function (a) {
           return '<button class="plan-item' + (a.id === ATHLETE ? ' on' : '') + '" data-ath="' + esc(a.id) + '"><span class="plan-n">' + esc(a.name) + '</span>' + (a.id === ATHLETE ? '<span class="plan-check">✓</span>' : '') + '</button>';
         }).join('');
         el.onclick = function (ev) { var b = ev.target.closest('[data-ath]'); if (b) location.href = location.pathname + '?atleta=' + b.dataset.ath; };
       }).catch(function () {});
     }
-    $('sheetBody').querySelector('.plan-list').onclick = function (e) {
-      var b = e.target.closest('.plan-item'); if (!b) return;
-      var pl = state.program.plans.filter(function (x) { return x.id === b.dataset.plan; })[0];
+    $('planSel').onchange = function () {
+      var pl = state.program.plans.filter(function (x) { return x.id === $('planSel').value; })[0];
       closeSheet(false);
       if (pl) selectPlan(pl, true);
     };
@@ -382,7 +378,7 @@
       (lbl ? '<small>' + lbl + '</small>' : '') + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + esc(d.tab) + '</button>';
   }
   function renderTabs() {
-    var nav = $('tabs'), nxt = nextDayIndex(), cells = weekCells();
+    var nav = $('tabs'), nxt = nextDayIndex(), cells = null;   // i giorni della settimana stanno nel Diary
     nav.className = 'tabs' + (cells ? ' wk' : '');
     nav.innerHTML = cells ? cells.map(function (c) {
       return c.i < 0 ? '<div class="tab rest" aria-hidden="true"><small>' + WD[c.wd] + '</small>–</div>' : tabHtml(state.days[c.i], c.i, nxt, WD[c.wd]);
@@ -1331,6 +1327,20 @@
       if (x.type !== 'Stop') return;
       for (var d = new Date(x.when.slice(0, 10) + 'T12:00'); isoDate(d) <= x.until; d = addDays(d, 1)) if (isoDate(d) >= mStart && isoDate(d) <= isoDate(now)) stopDays++;
     });
+    var sumOf = function (arr, f) { return arr.reduce(function (a, x) { return a + (x[f] || 0); }, 0); };
+    var fmtShort = function (m) { return m >= 60 ? Math.floor(m / 60) + 'h' + ('0' + (m % 60)).slice(-2) : m + "'"; };
+    var tile = function (h, v, l) { return '<button type="button" class="stat" data-hist="' + h + '"><b>' + v + '</b><small>' + l + '</small></button>'; };
+    var weekStrip = function (lg, mon) {
+      var todayIso = isoDate(new Date()), cells = '';
+      for (var k = 0; k < 7; k++) {
+        var d = addDays(mon, k), iso = isoDate(d), ents = lg.filter(function (x) { return x.when.slice(0, 10) === iso; });
+        var act = ents.filter(isAct), stop = lg.some(function (x) { return x.type === 'Stop' && x.when.slice(0, 10) <= iso && iso <= x.until; });
+        var st = act.length ? 'done' : stop ? 'stop' : iso < todayIso ? 'rest' : iso === todayIso ? 'today' : 'next';
+        var lbl = act.length ? '✓' : stop ? 'Stop' : iso < todayIso ? 'Rest' : iso === todayIso ? 'Oggi' : '·';
+        cells += '<div class="wd ' + st + (iso === todayIso ? ' now' : '') + '"><small>' + WD[d.getDay()] + '</small><b>' + d.getDate() + '</b><span>' + lbl + '</span></div>';
+      }
+      return '<div class="wstrip">' + cells + '</div>';
+    };
     var count = function (arr, f) { var o = {}; arr.forEach(function (x) { o[x[f]] = (o[x[f]] || 0) + 1; }); return o; };
     var byPlace = count(inMonth, 'place'), byType = count(inMonth, 'type');
     var fmtMin = function (m) { return m >= 60 ? Math.floor(m / 60) + ' h ' + (m % 60 ? (m % 60) + ' min' : '').trim() : m + ' min'; };
@@ -1383,11 +1393,11 @@
     };
 
     var h = '<div class="sheet-inner diary">' + (flash ? '<div class="flash">' + esc(flash) + '</div>' + (log.length ? '<button class="btn-big btn-red card-cta" data-card="' + log[log.length - 1].id + '">📤 Crea la card per i social</button>' : '') : '') +
-      '<div class="stats"><button type="button" class="stat" data-hist="week"><b>' + inWeek.length + '</b><small>allenamenti settimana ›</small></button>' +
-      '<button type="button" class="stat" data-hist="month"><b>' + inMonth.filter(isAct).length + '</b><small>allenamenti mese ›</small></button>' +
-      '<button type="button" class="stat" data-hist="stop"><b>' + stopDays + '</b><small>giorni di stop (mese) ›</small></button></div>' +
-      '<p class="muted small hist-tip">Tocca un numero per vedere lo storico.</p>' +
-      sumRow('Questa settimana', inWeek) + sumRow('Questo mese', inMonth) +
+      '<h3 class="d-h">La mia settimana</h3>' + weekStrip(log, monday) +
+      '<div class="stats">' + tile('week', inWeek.length, 'allenamenti', 'week') + tile('week', fmtShort(sumOf(inWeek, 'dur')), 'tempo', 'week') + tile('week', sumOf(inWeek, 'kcal'), 'kcal', 'week') + '</div>' +
+      '<h3 class="d-h">Questo mese</h3>' +
+      '<div class="stats s4">' + tile('month', inMonth.filter(isAct).length, 'allenamenti', 'month') + tile('month', fmtShort(sumOf(inMonth, 'dur')), 'tempo', 'month') + tile('month', sumOf(inMonth, 'kcal'), 'kcal', 'month') + tile('stop', stopDays, 'giorni di stop', 'stop') + '</div>' +
+      '<p class="muted small hist-tip">Tocca un riquadro per vedere lo storico.</p>' +
       '<div class="d-row"><small>Luogo (mese)</small>' + pills(byPlace) + '</div>' +
       '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
       '<div class="d-row"><small>Tipo (settimana)</small>' + pills(count(inWeek, 'type')) + '</div>' +
