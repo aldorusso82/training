@@ -1,6 +1,6 @@
 /* TRAIN.ALDO — service worker
    A OGNI RILASCIO incrementa VERSION, altrimenti l'iPhone mostra la versione vecchia. */
-var VERSION = 'v40';
+var VERSION = 'v41';
 var CACHE = 'trainaldo-' + VERSION;
 var CORE = [
   './',
@@ -12,7 +12,8 @@ var CORE = [
   'icons/apple-touch-icon.png',
   'icons/icon-192.png',
   'icons/icon-512.png',
-  'img/bow-logo.png'
+  'img/bow-logo.png',
+  'fonts/BarlowCondensed-BlackItalic.woff2'
 ];
 
 self.addEventListener('install', function (e) {
@@ -48,7 +49,7 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
 
   // Scheda: prima la rete (così gli aggiornamenti arrivano subito), poi la cache offline
-  if (url.origin === location.origin && url.pathname.indexOf('/data/') >= 0 && url.pathname.endsWith('.json')) {
+  if (url.origin === location.origin && url.pathname.indexOf('/data/') >= 0 && (url.pathname.endsWith('.json') || url.pathname.indexOf('/data/athletes/') >= 0)) {
     e.respondWith(
       fetch(req).then(function (res) {
         if (res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(url.pathname, copy); }); }

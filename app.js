@@ -48,13 +48,64 @@
   function photoSrc(ex, n) { return IMG_BASE + ex.img + '/' + n + '.jpg'; }
   function ytThumb(id) { return 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg'; }
 
+
+  /* ---------- Cassaforte (file cifrati AES-GCM, chiave da passphrase) ---------- */
+  // Formato file: 'BV1' + salt(16) + iv(12) + testo cifrato. La passphrase resta solo su questo telefono.
+  var keyCache = {};
+  function hex(u) { return Array.prototype.map.call(u, function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  function vaultDecrypt(buf, pass) {
+    var u = new Uint8Array(buf), salt = u.slice(3, 19), iv = u.slice(19, 31), ct = u.slice(31), ck = pass + hex(salt);
+    var kp = keyCache[ck] || (keyCache[ck] = crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey'])
+      .then(function (m) { return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: 600000, hash: 'SHA-256' }, m, { name: 'AES-GCM', length: 256 }, false, ['decrypt']); }));
+    return kp.then(function (k) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, k, ct); });
+  }
+  function askPass(wrong, cancelable) {
+    return new Promise(function (res, rej) {
+      var o = document.createElement('div'); o.className = 'vault-ov';
+      o.innerHTML = '<form class="vault-box"><b>Contenuto riservato</b><p>Inserisci la passphrase per aprirlo.</p>' +
+        '<input type="password" id="vpw" autocomplete="off" autocapitalize="off" placeholder="Passphrase">' +
+        (wrong ? '<p class="vault-err">Passphrase errata. Riprova.</p>' : '') +
+        '<button class="btn-big btn-red" type="submit">Apri</button>' + (cancelable ? '<button class="btn-big" type="button" id="vno">Annulla</button>' : '') + '</form>';
+      document.body.appendChild(o);
+      var f = o.querySelector('form'), i = o.querySelector('#vpw'); i.focus();
+      f.onsubmit = function (e) { e.preventDefault(); var v = i.value.trim(); if (!v) return; o.remove(); res(v); };
+      if (cancelable) o.querySelector('#vno').onclick = function () { o.remove(); rej(new Error('annullato')); };
+    });
+  }
+  function vaultFetch(url, mandatory) {
+    return fetch(url).then(function (r) { if (!r.ok) throw new Error('non trovato'); return r.arrayBuffer(); }).then(function (buf) {
+      function attempt(wrong) {
+        var saved = wrong ? null : lsGet('trainaldo-vp');
+        return (saved ? Promise.resolve(saved) : askPass(wrong, !mandatory)).then(function (pw) {
+          return vaultDecrypt(buf, pw).then(function (out) { lsSet('trainaldo-vp', pw); return out; }, function () { lsSet('trainaldo-vp', ''); return attempt(true); });
+        });
+      }
+      return attempt(false);
+    });
+  }
+  function openVaultDoc(file, title) {
+    vaultFetch(file, false).then(function (buf) {
+      var url = URL.createObjectURL(new Blob([buf], { type: 'application/pdf' }));
+      var o = document.createElement('div'); o.className = 'vault-view';
+      o.innerHTML = '<div class="vault-bar"><b>' + esc(title) + '</b><a href="' + url + '" target="_blank" rel="noopener">Apri a schermo intero</a><button type="button">Chiudi</button></div><iframe src="' + url + '" title="' + esc(title) + '"></iframe>';
+      o.querySelector('button').onclick = function () { o.remove(); URL.revokeObjectURL(url); };
+      document.body.appendChild(o);
+    }).catch(function () {});
+  }
+
   /* ---------- Caricamento ---------- */
   fetch('data/program.json', { cache: 'no-cache' })
     .then(function (r) { return r.json(); })
     .then(function (p) {
       if (ATHLETE === 'aldo') return p;
       return fetch('data/athletes/' + ATHLETE + '.json', { cache: 'no-cache' })
-        .then(function (r) { if (!r.ok) throw new Error('atleta'); return r.json(); })
+        .then(function (r) {
+          if (r.ok) return r.json();
+          // profilo riservato: file cifrato, si apre con la passphrase
+          return vaultFetch('data/athletes/' + ATHLETE + '.enc', true)
+            .then(function (buf) { return JSON.parse(new TextDecoder().decode(buf)); })
+            .catch(function () { throw new Error('atleta'); });
+        })
         .then(function (a) {
           p.plans = a.plans;
           p.athleteName = a.name;
@@ -69,12 +120,9 @@
     })
     .then(function (p) {
       state.program = p;
-      if (p.athleteName) {
-        $('athlete').textContent = 'Atleta: ' + p.athleteName; $('athlete').hidden = false;
-        document.title = 'TRAIN.' + p.athleteName.toUpperCase();
-        document.querySelector('.brand .bn').innerHTML = 'TRAIN<span>.</span>' + esc(p.athleteName.toUpperCase());
-        var mt = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (mt) mt.content = document.title;
-      }
+      document.title = 'TRAIN.BEYOND';
+      $('athlete').textContent = p.athleteName || 'Aldo'; $('athlete').hidden = false;
+      var mt = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (mt) mt.content = 'TRAIN.BEYOND';
       if (p.theme) {   // tema colori del profilo (es. Fisio Hub): {primary, dark, soft}
         var rs = document.documentElement.style;
         if (p.theme.primary) { rs.setProperty('--red', p.theme.primary); var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.content = p.theme.primary; }
@@ -1379,7 +1427,7 @@
   }
   /* ---------- Alimentazione · Rehab · Drills (sezioni del footer) ---------- */
   var INFO = {
-    food: { group: 'food', title: 'Nutrition', text: 'Qui troverai il piano alimentare e i dati corporei (body weight). Non è ancora attivo: sono dati sanitari e li carichiamo solo con un accesso protetto.',
+    food: { group: 'food', title: 'Nutrition', text: 'Piano alimentare e dati corporei (body weight). Sono file riservati: si aprono con la passphrase.',
       wa: 'Ciao, ti scrivo per l\'alimentazione: ', waLbl: '💬 Scrivi al nutrizionista' },
     rehab: { group: 'rehab', title: 'Rehab', text: 'Protocolli scritti dal fisioterapista: vengono inseriti nei giorni e nelle schede, e qui li trovi tutti.',
       log: true, protocols: true, wa: 'Ciao, ti scrivo per la riabilitazione: ', waLbl: '💬 Scrivi al fisioterapista' },
@@ -1397,11 +1445,12 @@
     var pr = x.protocols ? (state.program.rehab || []) : [];
     var docs = (state.program.docs || []).filter(function (d) { return d.group === x.group; });
     $('sheetBody').innerHTML = '<div class="sheet-inner form"><p class="info-t">' + esc(x.text) + '</p>' +
-      docs.map(function (d) { return '<a class="doc" href="' + esc(d.file) + '" target="_blank" rel="noopener">📄 ' + esc(d.title) + '</a>'; }).join('') +
+      docs.map(function (d) { return '<button type="button" class="doc" data-vf="' + esc(d.file) + '" data-vt="' + esc(d.title) + '">📄 ' + esc(d.title) + '</button>'; }).join('') +
       (x.protocols ? (pr.length ? pr.map(protocolHtml).join('') : '<p class="muted">Nessun protocollo assegnato per ora.</p>') : '') +
       (x.log ? '<button class="btn-big btn-red" id="infLog">+ Registra seduta di fisioterapia</button>' : '') +
       '<button class="btn-big btn-red" id="infWa">' + x.waLbl + '</button></div>';
     showSheet();
+    Array.prototype.forEach.call($('sheetBody').querySelectorAll('.doc'), function (b) { b.onclick = function () { openVaultDoc(b.getAttribute('data-vf'), b.getAttribute('data-vt')); }; });
     if ($('infLog')) $('infLog').onclick = function () { closeSheet(false); setTimeout(function () { openLogForm('Fisioterapia', 'Seduta di fisioterapia'); }, 50); };
     $('infWa').onclick = function () { sendWhatsApp(x.wa); };
   }

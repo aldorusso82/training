@@ -2485,5 +2485,17 @@
    "text": "Tanti piccoli sforzi regolari ti proteggono dai grandi stop."
   }
  ],
- "rehab": []
+ "rehab": [],
+ "docs": [
+  {
+   "group": "food",
+   "title": "Piano alimentare · 31 marzo 2026",
+   "file": "data/vault/piano-alimentare.enc"
+  },
+  {
+   "group": "food",
+   "title": "Body weight · scansione Fit3D",
+   "file": "data/vault/body-fit3d.enc"
+  }
+ ]
 }

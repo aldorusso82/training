@@ -591,3 +591,22 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .proto-b p { margin: 0 0 8px; font-size: 16px; line-height: 1.45; }
 .block .proto { border: 0; margin: 0; }
 .doc { display: flex; align-items: center; min-height: 52px; padding: 0 14px; margin: 0 0 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); font-weight: 700; text-decoration: none; }
+
+/* ---------- v41: Train.Beyond, font Barlow Condensed, cassaforte ---------- */
+@font-face { font-family: 'Barlow Condensed'; font-style: italic; font-weight: 900; font-display: swap; src: url(fonts/BarlowCondensed-BlackItalic.woff2) format('woff2'); }
+.brand .bn { font-family: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif; font-style: italic; font-weight: 900; font-size: 40px; line-height: .95; letter-spacing: .5px; color: #fff; }
+.brand .bn span { color: #f28c28; }
+.beyond { margin: 4px 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .32em; color: #f0d9b5; }
+.athlete { margin: 0 0 8px; font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #fff; }
+.doc { width: 100%; text-align: left; font: inherit; font-weight: 700; cursor: pointer; }
+.vault-ov { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.vault-box { background: #fff; border-radius: 14px; padding: 18px; width: 100%; max-width: 340px; display: grid; gap: 10px; }
+.vault-box p { margin: 0; color: var(--ink-2); font-size: 14px; }
+.vault-box input { font: inherit; font-size: 16px; min-height: 48px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; }
+.vault-err { color: #b00020 !important; font-weight: 700; }
+.vault-view { position: fixed; inset: 0; z-index: 90; background: #fff; display: flex; flex-direction: column; }
+.vault-bar { display: flex; align-items: center; gap: 10px; padding: calc(var(--safe-t) + 8px) 12px 8px; background: var(--red); color: #fff; font-size: 13px; }
+.vault-bar b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vault-bar a { color: #fff; font-weight: 700; }
+.vault-bar button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: #fff; color: var(--red); font-weight: 800; }
+.vault-view iframe { flex: 1; width: 100%; border: 0; }
