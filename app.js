@@ -374,11 +374,23 @@
     });
     return cells;
   }
+  // Icone a penna (tratto = colore del testo)
+  var SK = function (p) { return '<svg class="sk" viewBox="0 0 40 40" aria-hidden="true">' + p + '</svg>'; };
+  var ICONS = {
+    leg: SK('<path d="M14 4c-1 8-1 14 1 20l-3 10c3 2 8 2 11 0l-1-9c4-6 4-14 3-21"/><path d="M16 11h8M16 15h8"/>'),
+    power: SK('<path d="M23 3L9 23h9l-3 14 15-21h-9z"/>'),
+    strength: SK('<path d="M5 24c4-3 6-8 8-14 4 2 5 6 4 9 4-1 9 0 12 4 3 4 0 10-6 9-6 0-12-1-18-8z"/><path d="M18 22c2 1 4 1 6 0"/>'),
+    time: SK('<circle cx="20" cy="23" r="12"/><path d="M16 5h8M20 5v6M20 23l5-6"/>'),
+    yoga: SK('<circle cx="20" cy="7" r="3.5"/><path d="M20 11v13M10 4l10 9 10-9M20 24l-8 10M20 24l8 10"/>'),
+    rehab: SK('<path d="M20 34C8 25 5 17 9 11c4-4 9-2 11 2 2-4 7-6 11-2 4 6 1 14-11 23z"/><path d="M10 21h6l3-5 4 9 3-4h5"/>'),
+    padel: SK('<ellipse cx="17" cy="15" rx="10" ry="12"/><path d="M17 27v10M11 12h12M11 18h12"/><circle cx="33" cy="30" r="3"/>'),
+    box: SK('<path d="M9 14c0-6 5-9 11-9s11 3 11 10v8c0 4-3 8-8 8h-6c-5 0-8-3-8-8z"/><path d="M13 31h14M13 20h14"/>')
+  };
   function dayIcon(d) {
-    if (d.ico) return d.ico;
-    var rules = [[/yoga/, '🧘'], [/gamb/, '🦵'], [/conditioning|emom|hiit/, '⏱'], [/potenza|power|circuit|metabolic|cardio|reatt/, '⚡'],
-      [/forza|trazion|stacco|upper|spinta|petto|schiena/, '💪'], [/box|corsa|run/, '🥊'], [/fase|rehab/, '🩺'], [/padel/, '🎾']];
-    var pick = function (t) { for (var i = 0; i < rules.length; i++) if (rules[i][0].test(t)) return rules[i][1]; return ''; };
+    if (d.ico) return ICONS[d.ico] || '';
+    var rules = [[/yoga/, 'yoga'], [/gamb/, 'leg'], [/conditioning|emom|hiit/, 'time'], [/potenza|power|circuit|metabolic|cardio|reatt/, 'power'],
+      [/forza|trazion|stacco|upper|spinta|petto|schiena/, 'strength'], [/box|corsa|run/, 'box'], [/fase|rehab/, 'rehab'], [/padel/, 'padel']];
+    var pick = function (t) { for (var i = 0; i < rules.length; i++) if (rules[i][0].test(t)) return ICONS[rules[i][1]]; return ''; };
     return pick(((d.title || '') + ' ' + (d.tab || '') + ' ' + (d.id || '')).toLowerCase()) || pick(String(d.desc || '').toLowerCase());
   }
   function tabHtml(d, i, nxt, lbl) {
@@ -465,7 +477,7 @@
     var ss = getSession();
     if (ss && ss.start && Date.now() - ss.start > 12 * 3600000) { store.set('session', null); ss = null; }
     if (!ss) {
-      return '<div class="sess"><button class="btn-sess" id="sessStart">▶ Inizia allenamento</button><small>salva l\'ora di inizio e conta i minuti</small></div>';
+      return '<div class="sess"><button class="btn-sess" id="sessStart">▶ Inizia allenamento</button></div>';
     }
     var t = new Date(ss.start);
     return '<div class="sess on"><div><b>● In corso</b> · ' + esc(ss.label || '') + '<br><small>iniziato alle ' + ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2) +
@@ -507,20 +519,21 @@
     var cur = currentSections(day);
     var wk = planWeek(state.plan);
     $('athlete').textContent = (state.program.athleteName || 'Aldo') + ' · ' + (state.plan.kind === 'rehab' ? 'Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '') : state.plan.name);
+    var desc0 = cur.desc || day.desc;
     var h = '<div class="hero"><h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name + ' · Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '')) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
       (day.optional ? ' <span class="opt">opzionale</span>' : '') +
-      (state.days.indexOf(day) === nextDayIndex() && day.id !== 'yoga' ? ' <span class="opt nxt">prossimo</span>' : '') + '</h1>' + sessionHtml(day) + '</div>' + (day.id !== 'yoga' ? weekStatsHtml() : '');
+      (state.days.indexOf(day) === nextDayIndex() && day.id !== 'yoga' ? ' <span class="opt nxt">prossimo</span>' : '') + '</h1>' + (desc0 ? '<p class="hero-desc">' + esc(desc0) + '</p>' : '') + sessionHtml(day) + '</div>' + (day.id !== 'yoga' ? weekStatsHtml() : '');
     if (day.id !== 'yoga') {
       var dn = lastDone(day.id), dw = doneThisWeek(day.id);
       var others = state.days.filter(function (d) { return d.id !== 'yoga' && d.id !== day.id; });
       h += '<div class="day-tools">' +
         (dw ? '<span class="done-flag">✓ Fatto ' + esc(fmtWhen(dw.when)) + '</span>' : dn ? '<span class="done-last">Ultima volta: ' + esc(fmtWhen(dn.when)) + '</span>' : '') +
-        '<span class="tools-right"><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button>' +
-        (others.length ? '<button class="swap-btn" id="swapBtn">⇄ Inverti con…</button>' : '') + '</span></div>' +
+        '<span class="tools-right"><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">' + ICONS.time + '</button>' +
+        (others.length ? '<button class="timer-ico" id="swapBtn" aria-label="Inverti con un altro giorno">⇄</button>' : '') + '</span></div>' +
         '<div class="swap-row" id="swapRow" hidden><small>Scambia il ' + esc(day.tab) + ' con:</small><div class="chips">' +
         others.map(function (d) { return '<button type="button" data-swap="' + esc(d.id) + '">' + esc(d.tab) + '</button>'; }).join('') + '</div></div>';
     } else {
-      h += '<div class="day-tools"><span class="tools-right"><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
+      h += '<div class="day-tools"><span class="tools-right"><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">' + ICONS.time + '</button></span></div>';
     }
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
@@ -531,8 +544,6 @@
       }).join('') + '</div>';
     }
     if (cur.note) h += '<div class="note-box"><b>Nota</b> · ' + esc(cur.note) + '</div>';
-    var desc = cur.desc || day.desc;
-    if (desc) h += '<p class="day-desc">' + esc(desc) + '</p>';
 
     daySections(day).forEach(function (sec, si) {
       if (sec.type === 'note') {
@@ -570,7 +581,6 @@
       };
     });
     if ($('wkStats')) $('wkStats').onclick = function () { openDiary(); };
-    $('calBtn').onclick = openWeekPlanner;
     $('freeTimerBtn').onclick = function () { openFreeTimer(); };
     if ($('waBtn')) $('waBtn').onclick = function () { openCoachMessage(day, cur); };
     $('logBtn').onclick = function () {
@@ -680,7 +690,7 @@
       : sec.rest
       ? '<div class="rest"><div class="rest-txt">Rest ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
         '<button class="btn-start" data-rest="' + sec.rest + '" data-label="' + lbl + '">Avvia</button></div>'
-      : '<div class="rest rest-free"><div class="rest-txt">Rest<span>scegli e parte il timer</span></div><div class="rest-chips">' +
+      : '<div class="rest rest-free"><div class="rest-txt">Rest</div><div class="rest-chips">' +
         [60, 75, 90, 120].map(function (r) { return '<button class="btn-start chip" data-rest="' + r + '" data-label="' + lbl + '">' + fmtRest(r) + '</button>'; }).join('') + '</div></div>';
 
     var setsHtml = '';
@@ -845,6 +855,7 @@
     }
   }
   function navMark(id) {
+    Array.prototype.forEach.call(document.querySelectorAll('.vault-view'), function (v) { v.remove(); });
     Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === id); });
   }
   function showSheet() {
@@ -1285,44 +1296,69 @@
 
   /* ---------- Card social: immagine verticale (storia) da condividere ---------- */
   function shareCard(x) {
+    // Card social in stile disegnato: carta grigia, tratto nero, granata per gli accenti
+    Promise.all([document.fonts.load("italic 900 100px 'Barlow Condensed'"), document.fonts.load("100px 'Caveat Brush'")]).catch(function () {}).then(function () { drawCard(x); });
+  }
+  function drawCard(x) {
     var cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920;
-    var c = cv.getContext('2d'), F = '-apple-system, "SF Pro Display", Helvetica, Arial, sans-serif';
-    c.fillStyle = '#8b1a1a'; c.fillRect(0, 0, 1080, 1920);
-    c.fillStyle = '#1a1414'; c.fillRect(0, 1380, 1080, 540);
+    var c = cv.getContext('2d'), HW = "'Caveat Brush', 'Marker Felt', cursive", BC = "italic 900 %spx 'Barlow Condensed', 'Arial Narrow', sans-serif", F = '-apple-system, "SF Pro Display", Helvetica, Arial, sans-serif';
+    var INK = '#1d1d21', RED = '#8b1a1a', PAPER = '#d3d4d8', DARK = '#2a2b31';
+    c.fillStyle = PAPER; c.fillRect(0, 0, 1080, 1920);
+    c.fillStyle = DARK; c.fillRect(0, 1450, 1080, 470);
     var day = x.when.slice(0, 10), mon = mondayOf(new Date(day + 'T12:00'));
     var wk = getLog().filter(function (y) { return y.when.slice(0, 10) >= isoDate(mon) && y.when.slice(0, 10) <= day && ACTIVE.indexOf(y.type) >= 0; }).length;
     var d = new Date(day + 'T12:00'), when = d.getDate() + ' ' + ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'][d.getMonth()] + ' ' + d.getFullYear();
-    var t = function (txt, px, y, wgt, col, al) { c.font = wgt + ' ' + px + 'px ' + F; c.fillStyle = col; c.textAlign = al || 'left'; c.fillText(txt, al === 'center' ? 540 : 90, y); };
-    t('TRAIN.ALDO', 44, 150, 800, '#f0d9b5');
-    t('FATTO.', 190, 520, 800, '#ffffff');
-    var lbl = (x.type === 'Allenamento' ? (x.label || x.type) : x.type), words = lbl.split(' · '), yy = 640;
-    words.forEach(function (w) { t(w, 56, yy, 700, '#ffffff'); yy += 70; });
-    t(when, 40, yy + 20, 500, 'rgba(255,255,255,.75)');
+    var ctr = function (txt, font, y, col) { c.font = font; c.fillStyle = col; c.textAlign = 'center'; c.fillText(txt, 540, y); };
+    // titolo
+    ctr('TRAIN.BEYOND', BC.replace('%s', 120), 190, RED);
+    ctr('ORDINARY WORKOUT', '700 38px ' + F, 250, INK);
+    c.fillStyle = INK; c.fillRect(90, 290, 900, 5);
+    // riquadro con doppio bordo a mano
+    c.strokeStyle = INK; c.lineWidth = 7; c.lineCap = 'round'; c.lineJoin = 'round';
+    c.strokeRect(100, 360, 880, 760); c.lineWidth = 3; c.strokeRect(112, 372, 856, 736);
+    ctr('Fatto!', '230px ' + HW, 600, INK);
+    var lbl = (x.type === 'Allenamento' ? (x.label || x.type) : x.type), words = lbl.split(' · '), yy = 690;
+    words.forEach(function (w) { ctr(w, '600 52px ' + F, yy, INK); yy += 62; });
+    ctr(when, '500 38px ' + F, yy + 14, '#55565c');
+    // disegno: atleta con bilanciere
+    c.lineWidth = 9; c.strokeStyle = INK;
+    c.beginPath(); c.moveTo(330, 1070); c.lineTo(750, 1070); c.stroke();
+    c.beginPath(); c.arc(540, 885, 28, 0, 7); c.stroke();
+    c.beginPath(); c.moveTo(540, 913); c.lineTo(540, 985); c.lineTo(500, 1070); c.moveTo(540, 985); c.lineTo(580, 1070); c.moveTo(440, 940); c.lineTo(540, 925); c.lineTo(640, 940); c.stroke();
+    c.strokeStyle = RED; c.lineWidth = 11;
+    c.beginPath(); c.moveTo(415, 925); c.lineTo(415, 955); c.moveTo(665, 925); c.lineTo(665, 955); c.moveTo(440, 940); c.lineTo(415, 940); c.moveTo(640, 940); c.lineTo(665, 940); c.stroke();
+    // numeri
     var stats = [];
-    if (x.dur) stats.push([x.dur >= 60 ? Math.floor(x.dur / 60) + 'h ' + ('0' + (x.dur % 60)).slice(-2) : String(x.dur), x.dur >= 60 ? 'tempo' : 'minuti']);
+    if (x.dur) stats.push([x.dur >= 60 ? Math.floor(x.dur / 60) + 'h' + ('0' + (x.dur % 60)).slice(-2) : String(x.dur), x.dur >= 60 ? 'tempo' : 'minuti']);
     if (x.kcal) stats.push([String(x.kcal), 'kcal']);
     stats.push([String(wk), 'in settimana']);
     var n = stats.length, w = 900 / n;
     stats.forEach(function (st, i) {
-      c.font = '800 ' + (n > 2 ? 100 : 130) + 'px ' + F; c.fillStyle = '#fff'; c.textAlign = 'left'; c.fillText(st[0], 90 + i * w, 1130);
-      c.font = '500 34px ' + F; c.fillStyle = 'rgba(255,255,255,.8)'; c.fillText(st[1], 90 + i * w, 1190);
+      var cx = 90 + w * i + w / 2;
+      c.textAlign = 'center'; c.font = '150px ' + HW; c.fillStyle = RED; c.fillText(st[0], cx, 1290);
+      c.font = '500 36px ' + F; c.fillStyle = INK; c.fillText(st[1], cx, 1345);
     });
+    // cartiglio
+    c.save(); c.translate(540, 1405); c.rotate(-0.03);
+    c.fillStyle = '#e7e8ea'; c.strokeStyle = RED; c.lineWidth = 6; c.fillRect(-330, -42, 660, 84); c.strokeRect(-330, -42, 660, 84);
+    c.font = '54px ' + HW; c.fillStyle = RED; c.textAlign = 'center'; c.fillText('Beyond ordinary workout', 0, 18); c.restore();
+    // frase
     var wmL = (state.program.weekMotivation || {})[String(Math.min(wk, 5))] || [], line = wmL.length ? wmL[(+day.slice(8) || 0) % wmL.length] : 'Un allenamento alla volta.';
     c.font = '500 40px ' + F; c.fillStyle = '#ffffff'; c.textAlign = 'left';
-    var ws = String(line).split(' '), ln = '', ly = 1500;
-    ws.forEach(function (w2) { if (c.measureText(ln + w2).width > 900) { c.fillText(ln, 90, ly); ln = ''; ly += 56; } ln += w2 + ' '; });
+    var ws = String(line).split(' '), ln = '', ly = 1580;
+    ws.forEach(function (w2) { if (c.measureText(ln + w2).width > 640) { c.fillText(ln, 90, ly); ln = ''; ly += 56; } ln += w2 + ' '; });
     c.fillText(ln, 90, ly);
     var done = function () {
       cv.toBlob(function (b) {
-        var f = new File([b], 'trainaldo.png', { type: 'image/png' });
-        if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: 'TRAIN.ALDO' }).catch(function () {}); return; }
+        var f = new File([b], 'train-beyond.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: 'TRAIN.BEYOND' }).catch(function () {}); return; }
         var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'trainaldo.png'; document.body.appendChild(a); a.click(); a.remove();
       }, 'image/png');
     };
     var im = new Image();
     im.onload = function () {
-      c.fillStyle = '#fff'; c.beginPath(); c.roundRect ? c.roundRect(780, 1620, 210, 230, 24) : c.rect(780, 1620, 210, 230); c.fill();
-      c.drawImage(im, 790, 1630, 190, 210); done();
+      c.fillStyle = '#fff'; c.beginPath(); c.roundRect ? c.roundRect(780, 1590, 210, 240, 24) : c.rect(780, 1590, 210, 240); c.fill();
+      c.drawImage(im, 790, 1600, 190, 220); done();
     };
     im.onerror = done; im.src = 'img/bow-logo.png';
   }

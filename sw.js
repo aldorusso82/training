@@ -1,6 +1,6 @@
 /* TRAIN.ALDO — service worker
    A OGNI RILASCIO incrementa VERSION, altrimenti l'iPhone mostra la versione vecchia. */
-var VERSION = 'v47';
+var VERSION = 'v48';
 var CACHE = 'trainaldo-' + VERSION;
 var CORE = [
   './',
@@ -13,7 +13,8 @@ var CORE = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'img/bow-logo.png',
-  'fonts/BarlowCondensed-BlackItalic.woff2'
+  'fonts/BarlowCondensed-BlackItalic.woff2',
+  'fonts/CaveatBrush.woff2'
 ];
 
 self.addEventListener('install', function (e) {
