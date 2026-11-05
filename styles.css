@@ -636,3 +636,14 @@ button.stat { font: inherit; color: inherit; cursor: pointer; }
 .stats .stat { padding: 10px 6px; }
 .stats .stat b { font-size: 26px; }
 .stats .stat small { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+
+/* ---------- v43: titolo centrato e più grande, hero più compatto, musica sempre visibile ---------- */
+.top .brand { position: relative; justify-content: center; margin-bottom: 0; }
+.top .brand .bn { font-size: 46px; text-align: center; }
+.top .bowlogo { position: absolute; right: 0; top: -2px; height: 30px; }
+.beyond, .athlete { text-align: center; }
+.beyond { font-size: 13px; margin: 2px 0 2px; }
+.hero { padding: 10px 12px; margin: 0 0 10px; }
+.hero .day-title { font-size: 20px; margin: 0 0 8px; }
+.hero .btn-sess { min-height: 42px; }
+.music-fab { position: fixed; right: 14px; bottom: calc(var(--safe-b, 0px) + 74px); z-index: 25; width: 52px; height: 52px; border: 0; border-radius: 50%; background: #1db954; color: #fff; font-size: 24px; box-shadow: 0 3px 10px rgba(0,0,0,.35); }

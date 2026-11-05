@@ -506,12 +506,12 @@
       var others = state.days.filter(function (d) { return d.id !== 'yoga' && d.id !== day.id; });
       h += '<div class="day-tools">' +
         (dw ? '<span class="done-flag">✓ Fatto ' + esc(fmtWhen(dw.when)) + '</span>' : dn ? '<span class="done-last">Ultima volta: ' + esc(fmtWhen(dn.when)) + '</span>' : '') +
-        '<span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button>' +
+        '<span class="tools-right"><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button>' +
         (others.length ? '<button class="swap-btn" id="swapBtn">⇄ Inverti con…</button>' : '') + '</span></div>' +
         '<div class="swap-row" id="swapRow" hidden><small>Scambia il ' + esc(day.tab) + ' con:</small><div class="chips">' +
         others.map(function (d) { return '<button type="button" data-swap="' + esc(d.id) + '">' + esc(d.tab) + '</button>'; }).join('') + '</div></div>';
     } else {
-      h += '<div class="day-tools"><span class="tools-right"><button class="music-ico" id="musicBtn" aria-label="Musica">🎵</button><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
+      h += '<div class="day-tools"><span class="tools-right"><button class="timer-ico" id="calBtn" aria-label="Pianifica in calendario">📅</button><button class="timer-ico" id="freeTimerBtn" aria-label="Timer">⏱</button></span></div>';
     }
     h += reminderHtml();
     if (state.plan.note && day.id !== 'yoga') h += '<div class="note-box"><b>Regole</b> · ' + esc(state.plan.note) + '</div>';
@@ -560,7 +560,6 @@
         buzz(15);
       };
     });
-    $('musicBtn').onclick = function () { openMusic(day); };
     if ($('wkStats')) $('wkStats').onclick = function () { openDiary(); };
     $('calBtn').onclick = openWeekPlanner;
     $('freeTimerBtn').onclick = function () { openFreeTimer(); };
@@ -1473,6 +1472,7 @@
     document.body.appendChild(a); a.click(); a.remove();
   }
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
+  $('musicFab').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
   $('navPlan').onclick = function () { if (state.program) openPlans(); };
   $('navDiary').onclick = function () { if (state.program) openDiary(); };
   $('navFood').onclick = function () { if (state.program) openInfo('food'); };
