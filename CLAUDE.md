@@ -159,3 +159,4 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v48: footer sempre visibile sopra a tutto (sheet, timer, visualizzatore file); icone giorno a penna SVG (ICONS); hero con descrizione e senza 'salva l'ora'; tolti calendario (17) e 'scegli e parte il timer'; strumenti compatti (⏱ ⇄ solo icone); intestazione blocchi a destra; card social in stile disegnato grigio/granata/nero (font Caveat Brush self-hosted).
 - v49: scala font unica nelle sezioni (.sheet-inner 14px, titoli 12px maiuscoli); header Train.Beyond sempre visibile sopra le sezioni (senza tab Day), un tocco sul titolo torna alla home.
 - v50: titoli di sezione 18px (Plan, Diary, Nutrition, Rehab, Drills), titolo sheet 22px.
+- v51: header position:fixed (altezza in --hdr con ResizeObserver); fix settimana Diary (classe .rest in conflitto → .s-rest); numeri riquadri più piccoli (20px).

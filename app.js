@@ -281,6 +281,10 @@
       if (pl) selectPlan(pl, true);
     };
   }
+  (function () {   // header fisso: lo spazio sotto segue l'altezza reale (cambia con le tab e con le sezioni)
+    var top = document.querySelector('.top'), setH = function () { document.documentElement.style.setProperty('--hdr', top.offsetHeight + 'px'); };
+    setH(); if (window.ResizeObserver) new ResizeObserver(setH).observe(top); window.addEventListener('resize', setH);
+  })();
   document.querySelector('.top .brand .bn').onclick = function () { closeSheet(false); window.scrollTo(0, 0); };
   $('planBtn').onclick = function () { if (state.program) openPlans(); };
 
@@ -1389,11 +1393,11 @@
         var act = ents.filter(function (x) { return isAct(x) || x.type === 'Fisioterapia'; }), stop = lg.some(function (x) { return x.type === 'Stop' && x.when.slice(0, 10) <= iso && iso <= x.until; });
         var st = act.length ? 'done' : stop ? 'stop' : iso < todayIso ? 'rest' : iso === todayIso ? 'today' : 'next';
         var lbl = act.length ? '✓' : stop ? 'Stop' : iso < todayIso ? 'Rest' : iso === todayIso ? 'Oggi' : '·';
-        cells += '<div class="wd ' + st + (iso === todayIso ? ' now' : '') + '"><small>' + WD[d.getDay()] + '</small><b>' + d.getDate() + '</b><span>' + lbl + '</span></div>';
+        cells += '<div class="wd s-' + st + (iso === todayIso ? ' now' : '') + '"><small>' + WD[d.getDay()] + '</small><b>' + d.getDate() + '</b><span>' + lbl + '</span></div>';
       }
       return '<div class="wstrip">' + cells + '</div>';
     };
-    var count = function (arr, f) { var o = {}; arr.forEach(function (x) { o[x[f]] = (o[x[f]] || 0) + 1; }); return o; };
+    var count = function (arr, f) { var o = {}; arr.forEach(function (x) { if (x[f]) o[x[f]] = (o[x[f]] || 0) + 1; }); return o; };
     var byPlace = count(inMonth, 'place'), byType = count(inMonth, 'type');
     var fmtMin = function (m) { return m >= 60 ? Math.floor(m / 60) + ' h ' + (m % 60 ? (m % 60) + ' min' : '').trim() : m + ' min'; };
     var sumRow = function (title, arr) {
