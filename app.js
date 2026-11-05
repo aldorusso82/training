@@ -1352,9 +1352,9 @@
     c.font = '54px ' + HW; c.fillStyle = RED; c.textAlign = 'center'; c.fillText('Beyond ordinary workout', 0, 18); c.restore();
     // frase
     var wmL = (state.program.weekMotivation || {})[String(Math.min(wk, 5))] || [], line = wmL.length ? wmL[(+day.slice(8) || 0) % wmL.length] : 'Un allenamento alla volta.';
-    c.font = '500 40px ' + F; c.fillStyle = '#ffffff'; c.textAlign = 'left';
-    var ws = String(line).split(' '), ln = '', ly = 1580;
-    ws.forEach(function (w2) { if (c.measureText(ln + w2).width > 640) { c.fillText(ln, 90, ly); ln = ''; ly += 56; } ln += w2 + ' '; });
+    c.font = '58px ' + HW; c.fillStyle = '#ffffff'; c.textAlign = 'left';
+    var ws = String(line).split(' '), ln = '', ly = 1590;
+    ws.forEach(function (w2) { if (c.measureText(ln + w2).width > 640) { c.fillText(ln, 90, ly); ln = ''; ly += 66; } ln += w2 + ' '; });
     c.fillText(ln, 90, ly);
     var done = function () {
       cv.toBlob(function (b) {
@@ -1454,9 +1454,9 @@
       '<h3 class="d-h">Questo mese</h3>' +
       '<div class="stats s4">' + tile('month', inMonth.filter(isAct).length, 'allenamenti', 'month') + tile('month', fmtShort(sumOf(inMonth, 'dur')), 'tempo', 'month') + tile('month', sumOf(inMonth, 'kcal'), 'kcal', 'month') + tile('stop', stopDays, 'giorni di stop', 'stop') + '</div>' +
       '<p class="muted small hist-tip">Tocca un riquadro per vedere lo storico.</p>' +
-      '<div class="d-row"><small>Luogo (mese)</small>' + pills(byPlace) + '</div>' +
-      '<div class="d-row"><small>Tipo (mese)</small>' + pills(byType) + '</div>' +
-      '<div class="d-row"><small>Tipo (settimana)</small>' + pills(count(inWeek, 'type')) + '</div>' +
+      '<div class="d-cols"><div class="d-row"><small>Luogo</small>' + pills(byPlace) + '</div>' +
+      '<div class="d-row"><small>Tipo · mese</small>' + pills(byType) + '</div>' +
+      '<div class="d-row"><small>Tipo · sett.</small>' + pills(count(inWeek, 'type')) + '</div></div>' +
       '<div class="d-actions"><button class="btn-start" data-new="Allenamento">+ Allenamento</button><button class="btn-start alt" data-new="Fisioterapia">+ Fisioterapia</button>' +
       '<button class="btn-start gray" data-new="Nota">+ Nota</button><button class="btn-start gray" data-new="Stop">+ Stop</button></div>' +
       '<h3 class="d-h">Invia al coach</h3><div class="coach-box"><textarea id="coachMsg" rows="5" placeholder="Scrivi qui i tuoi appunti, oppure richiama le note degli allenamenti"></textarea>' +
