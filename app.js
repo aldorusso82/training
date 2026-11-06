@@ -285,7 +285,7 @@
     var top = document.querySelector('.top'), setH = function () { document.documentElement.style.setProperty('--hdr', top.offsetHeight + 'px'); };
     setH(); if (window.ResizeObserver) new ResizeObserver(setH).observe(top); window.addEventListener('resize', setH);
   })();
-  document.querySelector('.top .brand .bn').onclick = function () { closeSheet(false); window.scrollTo(0, 0); };
+  document.querySelector('.top .brand').onclick = function () { closeSheet(false); window.scrollTo(0, 0); };
   $('planBtn').onclick = function () { if (state.program) openPlans(); };
 
   /* ---------- Settimana della scheda e allenamenti fatti ---------- */

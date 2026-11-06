@@ -773,3 +773,4 @@ body { padding-top: var(--hdr, 190px); }
 body.rehab-blue { --red: #1d4e89; --red-dark: #123660; --red-soft: #dde8f5; }
 
 .home-ico { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.top .brand { cursor: pointer; min-height: 44px; align-items: center; -webkit-tap-highlight-color: transparent; }

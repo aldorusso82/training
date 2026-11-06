@@ -167,3 +167,4 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v56 (06/11): Lucas Chaves ha 3 piani: «Novembre Strength» (months [11,12], Day 1 dal suo testo), «Rehab» e «Practice» (ex Tecnico/Drills; months []). Footer «Drills» rinominato «Practice» (id navDrills invariato). Foto nuove: Monster_Walk, Elliptical_Trainer, Leg_Extensions, Leg_Press (la leg press monopodalica usa la foto a due gambe).
 - v57 (06/11): icona casetta (.home-ico) in alto a sinistra nell'header: indica che il titolo/fascia riporta alla schermata di allenamento.
 - v58 (06/11): footer Plan · Practice (icona pallone) · Nutrition · Rehab · Diary; «Scheda» → «Scheda di lavoro»; recuperi dei blocchi di Lucas (Strength/Rehab) senza «rest» = chip a scelta 1'/75''/90''/2'; tolta la scritta «tra un giro e l'altro».
+- v59: tutta la fascia con la casetta (.brand) è cliccabile e riporta alla home.
