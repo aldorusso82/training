@@ -1,0 +1,319 @@
+{
+ "name": "Lucas Chaves",
+ "yoga": false,
+ "cooldown": false,
+ "exercises": {
+  "c_ankle_kb": {
+   "name": "Mobilità caviglia con KB",
+   "equip": "Kettlebell"
+  },
+  "c_calf_ecc": {
+   "name": "Eccentrica calf pesante",
+   "img": "Standing_Dumbbell_Calf_Raise",
+   "equip": "Carico pesante",
+   "kg": true,
+   "cue": "Sali con due piedi, scendi lento su un piede solo (fase eccentrica) con il carico più pesante che controlli."
+  },
+  "c_step_down": {
+   "name": "Step down",
+   "equip": "Step",
+   "kg": true
+  },
+  "c_dlr": {
+   "name": "DLR con bilanciere",
+   "img": "Romanian_Deadlift",
+   "equip": "Bilanciere",
+   "kg": true
+  },
+  "c_dlr_trap": {
+   "name": "DLR con trap bar",
+   "img": "Trap_Bar_Deadlift",
+   "equip": "Trap bar",
+   "kg": true
+  },
+  "c_spanish": {
+   "name": "Isometria su Spanish squat",
+   "video": "hgFxm5KIF7M",
+   "equip": "Elastico",
+   "cue": "Elastico dietro le ginocchia, schiena inclinata indietro quasi seduto. Tieni la posizione con tibie verticali e quadricipiti in tensione."
+  },
+  "c_sissy": {
+   "name": "Sissy squat",
+   "img": "Weighted_Sissy_Squat",
+   "equip": "Corpo libero",
+   "kg": true
+  },
+  "c_pogo": {
+   "name": "Pogo hops avanti e indietro",
+   "equip": "Corpo libero"
+  },
+  "c_run_drill": {
+   "name": "Corsa con calciata e skip alto",
+   "img": "Fast_Skipping",
+   "equip": "Corsa",
+   "cue": "Alterna corsa, calciata dietro e skip alto, inserendo anche cambi di senso."
+  },
+  "c_t_palleggio": {
+   "name": "Palleggio: accelerazioni e decelerazioni",
+   "equip": "Palla"
+  },
+  "c_t_arresti": {
+   "name": "Arresti monopodalici (1 tempo, 2 tempi)",
+   "equip": "Palla"
+  },
+  "c_t_shift": {
+   "name": "Shift",
+   "equip": "Palla"
+  },
+  "c_t_cambi": {
+   "name": "Cambi di direzione in palleggio",
+   "equip": "Palla"
+  },
+  "c_t_layup": {
+   "name": "Layup",
+   "equip": "Palla"
+  },
+  "c_t_partenze": {
+   "name": "Partenze dinamiche, arresto ad aprire, step back",
+   "equip": "Palla"
+  },
+  "c_t_shoot": {
+   "name": "Shooting machine",
+   "equip": "Shooting machine"
+  }
+ },
+ "plans": [
+  {
+   "id": "rehab",
+   "name": "Rehab",
+   "kind": "rehab",
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "days": [
+    {
+     "id": "d1",
+     "tab": "Day 1",
+     "title": "Rehab",
+     "desc": "Mobilità caviglia, forza eccentrica e isometrica gambe, pliometria leggera e corsa con drill.",
+     "sections": [
+      {
+       "type": "mobility",
+       "label": "Mobilità",
+       "items": [
+        {
+         "ex": "c_ankle_kb",
+         "reps": ""
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 1,
+       "rest": 0,
+       "kind": "Rehab",
+       "items": [
+        {
+         "code": "A1",
+         "ex": "c_calf_ecc",
+         "reps": "carico pesante"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 2,
+       "rest": 60,
+       "kind": "Rehab",
+       "items": [
+        {
+         "code": "B1",
+         "ex": "c_step_down",
+         "reps": "8"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "rest": 90,
+       "kind": "Rehab",
+       "items": [
+        {
+         "code": "C1",
+         "ex": "c_dlr",
+         "reps": "8",
+         "alts": [
+          "c_dlr_trap"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 2,
+       "rest": 60,
+       "kind": "Rehab",
+       "items": [
+        {
+         "code": "D1",
+         "ex": "c_spanish",
+         "reps": "45''",
+         "time": 45
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "E",
+       "sets": 1,
+       "rest": 0,
+       "kind": "Rehab",
+       "items": [
+        {
+         "code": "E1",
+         "ex": "c_sissy",
+         "reps": ""
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "F",
+       "sets": 2,
+       "rest": 60,
+       "kind": "Rehab",
+       "items": [
+        {
+         "code": "F1",
+         "ex": "c_pogo",
+         "reps": "20''",
+         "time": 20
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "G",
+       "sets": 1,
+       "rest": 0,
+       "kind": "Rehab",
+       "items": [
+        {
+         "code": "G1",
+         "ex": "c_run_drill",
+         "reps": "5'"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tecnico",
+   "name": "Tecnico (Drills)",
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "days": [
+    {
+     "id": "d1",
+     "tab": "Day 1",
+     "title": "Tecnico",
+     "desc": "Palleggio, arresti, lavoro a metà campo (¼ campo, 40') e shooting machine.",
+     "sections": [
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 1,
+       "rest": 0,
+       "kind": "Tecnico",
+       "items": [
+        {
+         "code": "A1",
+         "ex": "c_t_palleggio",
+         "reps": "7'"
+        },
+        {
+         "code": "A2",
+         "ex": "c_t_arresti",
+         "reps": "1 tempo, 2 tempi"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 1,
+       "rest": 0,
+       "kind": "Tecnico · ¼ campo 40'",
+       "items": [
+        {
+         "code": "B1",
+         "ex": "c_t_shift",
+         "reps": "6'"
+        },
+        {
+         "code": "B2",
+         "ex": "c_t_cambi",
+         "reps": "7'"
+        },
+        {
+         "code": "B3",
+         "ex": "c_t_layup",
+         "reps": "5'"
+        },
+        {
+         "code": "B4",
+         "ex": "c_t_partenze",
+         "reps": "10'"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 1,
+       "rest": 0,
+       "kind": "Tecnico",
+       "items": [
+        {
+         "code": "C1",
+         "ex": "c_t_shoot",
+         "reps": "15'"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
