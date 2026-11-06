@@ -171,7 +171,6 @@
        "type": "block",
        "letter": "A",
        "sets": 4,
-       "rest": 90,
        "kind": "Strength",
        "items": [
         {
@@ -185,7 +184,6 @@
        "type": "block",
        "letter": "B",
        "sets": 3,
-       "rest": 0,
        "kind": "Strength",
        "items": [
         {
@@ -199,7 +197,6 @@
        "type": "block",
        "letter": "C",
        "sets": 3,
-       "rest": 0,
        "kind": "Strength",
        "items": [
         {
@@ -213,7 +210,6 @@
        "type": "block",
        "letter": "D",
        "sets": 4,
-       "rest": 0,
        "kind": "Strength",
        "items": [
         {
@@ -227,7 +223,6 @@
        "type": "block",
        "letter": "E",
        "sets": 4,
-       "rest": 0,
        "kind": "Strength",
        "items": [
         {
@@ -241,7 +236,6 @@
        "type": "block",
        "letter": "F",
        "sets": 1,
-       "rest": 0,
        "kind": "Strength",
        "items": [
         {
@@ -281,7 +275,6 @@
        "type": "block",
        "letter": "A",
        "sets": 1,
-       "rest": 0,
        "kind": "Rehab",
        "items": [
         {
@@ -295,7 +288,6 @@
        "type": "block",
        "letter": "B",
        "sets": 2,
-       "rest": 60,
        "kind": "Rehab",
        "items": [
         {
@@ -309,7 +301,6 @@
        "type": "block",
        "letter": "C",
        "sets": 3,
-       "rest": 90,
        "kind": "Rehab",
        "items": [
         {
@@ -326,7 +317,6 @@
        "type": "block",
        "letter": "D",
        "sets": 2,
-       "rest": 60,
        "kind": "Rehab",
        "items": [
         {
@@ -341,7 +331,6 @@
        "type": "block",
        "letter": "E",
        "sets": 1,
-       "rest": 0,
        "kind": "Rehab",
        "items": [
         {
@@ -355,7 +344,6 @@
        "type": "block",
        "letter": "F",
        "sets": 2,
-       "rest": 60,
        "kind": "Rehab",
        "items": [
         {
@@ -370,7 +358,6 @@
        "type": "block",
        "letter": "G",
        "sets": 1,
-       "rest": 0,
        "kind": "Rehab",
        "items": [
         {

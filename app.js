@@ -217,7 +217,7 @@
   function openPlans() {
     var cur = planForMonth(thisMonth());
     $('sheetTitle').textContent = 'Plan';
-    $('sheetBody').innerHTML = '<div class="sheet-inner plan-list"><h3 class="coach-h">Scheda</h3><select class="plan-sel" id="planSel" aria-label="Scheda">' + state.program.plans.map(function (pl) {
+    $('sheetBody').innerHTML = '<div class="sheet-inner plan-list"><h3 class="coach-h">Scheda di lavoro</h3><select class="plan-sel" id="planSel" aria-label="Scheda di lavoro">' + state.program.plans.map(function (pl) {
       return '<option value="' + esc(pl.id) + '"' + (pl.id === state.plan.id ? ' selected' : '') + '>' + esc(pl.name) + (cur && cur.id === pl.id ? ' · questo mese' : '') + '</option>';
     }).join('') + '</select><p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p>' +
       '<h3 class="coach-h">La mia settimana inizia di</h3><div class="chips wsrow" id="wsChips">' +
@@ -693,7 +693,7 @@
       ? '<div class="rest"><div class="rest-txt">Timer guidato<span>' + (sec.type === 'hiit' ? 'lavoro / recupero con segnale' : sec.type === 'emom' ? 'nuovo minuto con segnale' : 'cambio posizione con segnale') + '</span></div>' +
         '<button class="btn-start" data-guided="' + si + '">Avvia</button></div>'
       : sec.rest
-      ? '<div class="rest"><div class="rest-txt">Rest ' + fmtRest(sec.rest) + '<span>tra un giro e l\'altro</span></div>' +
+      ? '<div class="rest"><div class="rest-txt">Rest ' + fmtRest(sec.rest) + '</div>' +
         '<button class="btn-start" data-rest="' + sec.rest + '" data-label="' + lbl + '">Avvia</button></div>'
       : '<div class="rest rest-free"><div class="rest-txt">Rest</div><div class="rest-chips">' +
         [60, 75, 90, 120].map(function (r) { return '<button class="btn-start chip" data-rest="' + r + '" data-label="' + lbl + '">' + fmtRest(r) + '</button>'; }).join('') + '</div></div>';
