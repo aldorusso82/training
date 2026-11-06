@@ -80,27 +80,186 @@
   "c_t_shoot": {
    "name": "Shooting machine",
    "equip": "Shooting machine"
+  },
+  "c_monster": {
+   "name": "Monster walk con elastico",
+   "img": "Monster_Walk",
+   "equip": "Elastico",
+   "cue": "Attivazione glutei e stabilità del bacino: passi laterali controllati con elastico, ginocchia in linea con i piedi."
+  },
+  "c_dorsi": {
+   "name": "Mobilità caviglia in carico (dorsiflessione)",
+   "equip": "Corpo libero",
+   "cue": "Tallone incollato a terra, ginocchio in avanti, movimento lento."
+  },
+  "c_hipthrust": {
+   "name": "Hip thrust",
+   "img": "Barbell_Hip_Thrust",
+   "equip": "Bilanciere",
+   "kg": true,
+   "cue": "Carico pulito, fermo isometrico di 1'' in massimo accorciamento in alto, zero stress sul ginocchio."
+  },
+  "c_rdl_s": {
+   "name": "RDL (stacco rumeno)",
+   "img": "Romanian_Deadlift",
+   "equip": "Manubri o bilanciere",
+   "kg": true,
+   "cue": "Controllo eccentrico lento della catena posteriore, schiena neutra e bacino in asse."
+  },
+  "c_legext": {
+   "name": "Leg extension con isometria",
+   "img": "Leg_Extensions",
+   "equip": "Macchina",
+   "kg": true,
+   "cue": "Discesa lenta (3''), poi 30-45'' di isometria pesante a circa 45° per desensibilizzare il tendine."
+  },
+  "c_legpress1": {
+   "name": "Leg press monopodalica (focus sinistra)",
+   "img": "Leg_Press",
+   "equip": "Leg press",
+   "kg": true,
+   "cue": "Carico stimolante e solido per colmare il deficit di spinta; movimento pulito, eccentrica in 2-3''. Evita l'affondo profondo se senti compressione. Foto: leg press a due gambe."
+  },
+  "c_calf_h": {
+   "name": "Calf raise eccentrica pesante (su rialzo)",
+   "img": "Standing_Dumbbell_Calf_Raise",
+   "equip": "Rialzo",
+   "kg": true,
+   "cue": "Salita a due piedi, discesa monopodalica lentissima (3-4''). Fondamentale per la frenata e per togliere lavoro compressivo al ginocchio."
+  },
+  "c_ellip": {
+   "name": "Ellittica",
+   "img": "Elliptical_Trainer",
+   "equip": "Ellittica",
+   "cue": "Ritmo costante, resistenza bassissima/moderata: prolunga il lavoro in catena chiusa, detensiona l'articolazione e ripristina il pattern ciclico."
   }
  },
  "plans": [
   {
-   "id": "rehab",
-   "name": "Rehab",
-   "kind": "rehab",
+   "id": "nov-strength",
+   "name": "Novembre Strength",
    "months": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
     11,
     12
    ],
+   "days": [
+    {
+     "id": "d1",
+     "tab": "Day 1",
+     "title": "Strength",
+     "desc": "Warm-up e attivazione, catena posteriore, quadricipite, rinforzo distale e chiusura metabolica in ellittica.",
+     "sections": [
+      {
+       "type": "mobility",
+       "label": "Warm-up & attivazione 10-12'",
+       "items": [
+        {
+         "ex": "c_monster",
+         "reps": "3 × 10 passi per lato"
+        },
+        {
+         "ex": "c_dorsi",
+         "reps": "2 × 10 lente per lato"
+        },
+        {
+         "ex": "c_pogo",
+         "reps": "2 × 20-30''"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 4,
+       "rest": 90,
+       "kind": "Strength",
+       "items": [
+        {
+         "code": "A1",
+         "ex": "c_hipthrust",
+         "reps": "10-12"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 3,
+       "rest": 0,
+       "kind": "Strength",
+       "items": [
+        {
+         "code": "B1",
+         "ex": "c_rdl_s",
+         "reps": "10-12"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "rest": 0,
+       "kind": "Strength",
+       "items": [
+        {
+         "code": "C1",
+         "ex": "c_legext",
+         "reps": "10 + iso 30-45''"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 4,
+       "rest": 0,
+       "kind": "Strength",
+       "items": [
+        {
+         "code": "D1",
+         "ex": "c_legpress1",
+         "reps": "8-10"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "E",
+       "sets": 4,
+       "rest": 0,
+       "kind": "Strength",
+       "items": [
+        {
+         "code": "E1",
+         "ex": "c_calf_h",
+         "reps": "10-12 per lato"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "F",
+       "sets": 1,
+       "rest": 0,
+       "kind": "Strength",
+       "items": [
+        {
+         "code": "F1",
+         "ex": "c_ellip",
+         "reps": "20-25'"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rehab",
+   "name": "Rehab",
+   "kind": "rehab",
+   "months": [],
    "days": [
     {
      "id": "d1",
@@ -227,21 +386,8 @@
   },
   {
    "id": "tecnico",
-   "name": "Tecnico (Drills)",
-   "months": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
-   ],
+   "name": "Practice",
+   "months": [],
    "days": [
     {
      "id": "d1",

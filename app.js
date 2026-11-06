@@ -1524,7 +1524,7 @@
       wa: 'Ciao, ti scrivo per l\'alimentazione: ', waLbl: '💬 Scrivi al nutrizionista' },
     rehab: { group: 'rehab', title: 'Rehab', text: 'Protocolli scritti dal fisioterapista: vengono inseriti nei giorni e nelle schede, e qui li trovi tutti.',
       log: true, protocols: true, wa: 'Ciao, ti scrivo per la riabilitazione: ', waLbl: '💬 Scrivi al fisioterapista' },
-    drills: { title: 'Drills', text: 'Drills di basket e tecnica: arriveranno quando l\'app si aprirà a tutti.',
+    drills: { title: 'Practice', text: 'Drills di basket e tecnica: arriveranno quando l\'app si aprirà a tutti.',
       wa: 'Ciao coach, ti scrivo per i drills: ', waLbl: '💬 Scrivi al coach' }
   };
   // Protocollo di rehab scritto (program.json → rehab: [{id, title, text}]); si apre dalla voce Rehab o dentro un giorno con {type:'protocol', ref:id}
