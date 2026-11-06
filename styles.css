@@ -768,3 +768,6 @@ body { padding-top: var(--hdr, 190px); }
 .d-cols .d-row small { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .d-cols .pill { font-size: 12px; padding: 3px 8px; }
 .r-quote, .flash { font-family: 'Caveat Brush', 'Marker Felt', cursive; font-style: normal; font-size: 20px; line-height: 1.25; color: var(--ink); }
+
+/* Rehab: tutto blu */
+body.rehab-blue { --red: #1d4e89; --red-dark: #123660; --red-soft: #dde8f5; }

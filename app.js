@@ -200,7 +200,7 @@
     return state.days.indexOf(train[k]);
   }
   function selectPlan(plan, manual) {
-    state.plan = plan;
+    state.plan = plan; blueTheme(false);
     state.days = orderDays(plan, resolveDays(plan));
     if (state.program.yoga) state.days.push(buildYogaDay());
     var today = isoDate(new Date());
@@ -862,6 +862,14 @@
   function navMark(id) {
     Array.prototype.forEach.call(document.querySelectorAll('.vault-view'), function (v) { v.remove(); });
     Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === id); });
+    blueTheme(id === 'navRehab');
+  }
+  // Rehab = tutto blu (sezione Rehab o scheda di rehab); i profili con tema proprio restano invariati
+  function blueTheme(on) {
+    var blue = !!on || !!(state.plan && state.plan.kind === 'rehab');
+    if (state.program && state.program.theme) blue = false;
+    document.body.classList.toggle('rehab-blue', blue);
+    var tc = document.querySelector('meta[name="theme-color"]'); if (tc) { if (!tc.dataset.o) tc.dataset.o = tc.content; tc.content = blue ? '#1d4e89' : tc.dataset.o; }
   }
   function showSheet() {
     var was = !sheet.hidden;
