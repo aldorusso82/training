@@ -560,7 +560,7 @@
   }
   function renderDay() {
     if (state.view === 'home') return;
-    document.body.classList.remove('is-home'); $('secTitle').textContent = 'Training'; blueTheme(false);
+    document.body.classList.remove('is-home'); $('secTitle').textContent = 'Workout'; blueTheme(false);
     Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === 'navPlan'); });
     var day = state.days[state.day];
     var cur = currentSections(day);
