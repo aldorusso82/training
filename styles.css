@@ -889,3 +889,17 @@ body.prac-grey .btn-log { border-color: var(--or); color: #1b1b1f; background: #
 body.prac-grey .bnav .home-btn .hb-c { background: var(--or); color: #1b1b1f; }
 .quad.q-practice { box-shadow: inset 0 5px 0 #f28c28; }
 .quad.q-practice svg { stroke: #f5c518 !important; }
+
+/* ---------- v70: filetto su tutti i quadranti, nome atleta più grande e più basso, footer più basso e stretto ---------- */
+.quad { box-shadow: inset 0 5px 0 #f28c28; }
+.idrow { grid-template-columns: 52px 1fr 52px; margin: 10px 0 10px; }
+.idrow .athlete { font-size: 28px; font-weight: 900; letter-spacing: .06em; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.top .bowlogo { height: 48px; }
+.bnav { left: 44px; right: 44px; bottom: calc(var(--safe-b) * .12); }
+.bnav button { padding-top: 0; }
+.sheet { bottom: calc(76px + var(--safe-b) * .12); }
+.t-bar { bottom: calc(76px + var(--safe-b) * .12); }
+.music-fab { bottom: calc(var(--safe-b, 0px) * .12 + 88px); }
+.main { padding-bottom: calc(var(--safe-b) * .12 + 100px); }
+.bnav { left: 30px; right: 30px; }
+.bnav button, .bnav .home-btn { font-size: 12px; }

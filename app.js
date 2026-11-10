@@ -3,7 +3,7 @@
   'use strict';
 
   var APP_VERSION = '1.13.0';
-  var APP_BUILD = '69';
+  var APP_BUILD = '70';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {}, view: 'home' };
 
@@ -124,6 +124,8 @@
       state.program = p;
       document.title = 'TRAIN.BEYOND';
       $('athlete').textContent = p.athleteName || 'Aldo'; $('athlete').hidden = false;
+      (function () { var el = $('athlete'), fs = 28; el.style.fontSize = fs + 'px'; var w = el.parentNode.clientWidth - 2 * 60;
+        while (fs > 18 && el.scrollWidth > w) { fs -= 1; el.style.fontSize = fs + 'px'; } })();
       var mt = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (mt) mt.content = 'TRAIN.BEYOND';
       if (p.theme) {   // tema colori del profilo (es. Fisio Hub): {primary, dark, soft}
         var rs = document.documentElement.style;
