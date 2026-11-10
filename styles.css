@@ -788,3 +788,6 @@ body.is-home .tabs, body.is-home .music-fab, body.sheet-open .sec-row { display:
 .quad.q-rehab svg { stroke: #1d4e89; }
 .quad.q-off { opacity: .45; }
 .quad:active { background: #f1f2f4; }
+
+/* ---------- v61: iPhone zooma da solo quando si tocca un campo con testo < 16px (nota esercizio, note, select) ---------- */
+textarea, select, .f-in, .plan-sel, .sheet-inner textarea, .coach-box textarea, .ex-note { font-size: 16px; }
