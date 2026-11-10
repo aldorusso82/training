@@ -870,3 +870,22 @@ body.nutri-green .music-fab { display: none; }
 .set-btn svg { width: 26px; height: 26px; }
 .idrow { grid-template-columns: 56px 1fr 56px; }
 .idrow .athlete { font-size: 24px; letter-spacing: .04em; white-space: nowrap; }
+
+/* ---------- v69: Practice = grigio con accenti arancio e giallo (basket / padel) ---------- */
+body.prac-grey { --or: #f28c28; --ye: #f5c518; }
+body.prac-grey .top { box-shadow: inset 0 -4px 0 var(--or); }
+body.prac-grey .sec-row h2 small { color: var(--or); }
+body.prac-grey .hero { box-shadow: inset 0 4px 0 var(--ye); }
+body.prac-grey .hero .day-title small { color: var(--ye); }
+body.prac-grey .hero .btn-sess, body.prac-grey .hero .opt.nxt { background: var(--or); color: #1b1b1f; }
+body.prac-grey .tab[aria-selected="true"] { box-shadow: inset 0 -4px 0 var(--or); }
+body.prac-grey .tab.next:not([aria-selected="true"]) { box-shadow: inset 0 0 0 2px var(--ye); }
+body.prac-grey .block { border-left: 4px solid var(--or); }
+body.prac-grey .block:nth-of-type(even) { border-left-color: var(--ye); }
+body.prac-grey .block .letter { background: var(--or); color: #1b1b1f; }
+body.prac-grey .block.mob .letter { background: var(--ye); color: #1b1b1f; }
+body.prac-grey .set-sq.on { background: var(--or); border-color: var(--or); color: #1b1b1f; }
+body.prac-grey .btn-log { border-color: var(--or); color: #1b1b1f; background: #fff; box-shadow: inset 0 -4px 0 var(--ye); }
+body.prac-grey .bnav .home-btn .hb-c { background: var(--or); color: #1b1b1f; }
+.quad.q-practice { box-shadow: inset 0 5px 0 #f28c28; }
+.quad.q-practice svg { stroke: #f5c518 !important; }
