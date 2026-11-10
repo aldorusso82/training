@@ -3,7 +3,7 @@
   'use strict';
 
   var APP_VERSION = '1.13.0';
-  var APP_BUILD = '67';
+  var APP_BUILD = '68';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {}, view: 'home' };
 
