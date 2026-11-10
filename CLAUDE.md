@@ -168,3 +168,5 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v57 (06/11): icona casetta (.home-ico) in alto a sinistra nell'header: indica che il titolo/fascia riporta alla schermata di allenamento.
 - v58 (06/11): footer Plan · Practice (icona pallone) · Nutrition · Rehab · Diary; «Scheda» → «Scheda di lavoro»; recuperi dei blocchi di Lucas (Strength/Rehab) senza «rest» = chip a scelta 1'/75''/90''/2'; tolta la scritta «tra un giro e l'altro».
 - v59: tutta la fascia con la casetta (.brand) è cliccabile e riporta alla home.
+
+- v60 (10/11): home = «Plan» (renderHome, state.view 'home'|'training') con 4 quadranti Strength · Practice · Nutrition · Rehab; planOfKind(): Strength = piani senza kind 'rehab'/'practice', Practice = piano con `kind:'practice'` (Lucas: id tecnico). La pagina dei Day si chiama «Training» (secTitle nell'header, riga .sec-row con ingranaggio = Impostazioni/openPlans). Footer Plan · Nutrition · Rehab · Diary · Drills (navDrills = clip YouTube di basket, ancora segnaposto). Brand/casetta e «Plan» riportano alla home (goHome).
