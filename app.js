@@ -204,11 +204,12 @@
   function selectPlan(plan, manual, go) {
     state.plan = plan; if (go) state.view = 'training'; blueTheme(false);
     state.days = orderDays(plan, resolveDays(plan));
-    if (state.program.yoga) state.days.push(buildYogaDay());
+    if (state.program.yoga && plan.kind !== 'nutrition') state.days.push(buildYogaDay());
     var today = isoDate(new Date());
     if (manual) { if (go !== 'quad') store.set('plan', { id: plan.id, auto: (planForMonth(thisMonth()) || {}).id }); state.day = nextDayIndex(); }
     else if (store.get('lastOpen', '') !== today) state.day = nextDayIndex();
     else state.day = Math.min(store.get('day', 0), state.days.length - 1);
+    if (plan.kind === 'nutrition') state.day = (new Date().getDay() + 6) % 7;
     store.set('lastOpen', today);
     store.set('day', state.day);
     $('planName').textContent = plan.name + ' - impostazioni';
@@ -404,6 +405,30 @@
     return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' +
       (lbl ? '<small>' + lbl + '</small>' : '') + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + '<span class="t-ico" aria-hidden="true">' + dayIcon(d) + '</span><span class="t-lbl">' + esc(d.tab) + '</span></button>';
   }
+  function setSec(t, sub) { $('secTitle').innerHTML = esc(t) + (sub ? '<small>' + esc(sub) + '</small>' : ''); }
+  /* ---------- Nutrition: giorni con i pasti (Colazione, Pranzo, Spuntini…) ---------- */
+  var MEALS = ['Colazione', 'Spuntino mattina', 'Pranzo', 'Spuntino pomeriggio', 'Cena'];
+  var WDAYS = [['Lun', 'Lunedì'], ['Mar', 'Martedì'], ['Mer', 'Mercoledì'], ['Gio', 'Giovedì'], ['Ven', 'Venerdì'], ['Sab', 'Sabato'], ['Dom', 'Domenica']];
+  function defaultNutritionPlan() {
+    return { id: 'nutrizione', name: 'Piano alimentare', kind: 'nutrition', months: [], days: WDAYS.map(function (w, i) {
+      return { id: 'n' + (i + 1), tab: w[0], title: w[1], sections: MEALS.map(function (m) { return { type: 'meal', label: m }; }) };
+    }) };
+  }
+  function renderMeals(day) {
+    var h = '<div class="hero"><h1 class="day-title"><small>' + esc(state.plan.name) + '</small>' + esc(day.title || day.tab) + '</h1>' +
+      '<p class="hero-desc">Pasti del giorno. Il piano del nutrizionista compare qui; intanto puoi annotare cosa mangi.</p></div>';
+    (day.sections || []).forEach(function (sec, si) {
+      var k = 'meal.' + state.plan.id + '.' + day.id + '.' + si, v = store.get(k, '');
+      h += '<section class="block meal"><div class="block-head"><b>' + esc(sec.label) + '</b></div>' +
+        (sec.text ? String(sec.text).split('\n').map(function (l) { return '<p class="meal-t">' + esc(l) + '</p>'; }).join('') : '') +
+        '<textarea class="f-in" rows="2" data-meal="' + esc(k) + '" placeholder="cosa mangi / note">' + esc(v) + '</textarea></section>';
+    });
+    h += '<div class="log-cta"><button class="btn-log" id="mealDocs">📄 Piano alimentare e documenti</button><button class="btn-wa" id="mealWa">💬 Scrivi al nutrizionista</button></div>';
+    $('main').innerHTML = h;
+    $('main').querySelectorAll('[data-meal]').forEach(function (t) { t.oninput = function () { store.set(t.dataset.meal, t.value); }; });
+    $('mealDocs').onclick = function () { openInfo('food'); navMark('navFood'); };
+    $('mealWa').onclick = function () { sendWhatsApp(INFO.food.wa); };
+  }
   /* ---------- Home = Plan (4 quadranti) ---------- */
   var QICO = {
     strength: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>',
@@ -411,6 +436,7 @@
     food: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c-2-2-6-1-6 4 0 4 3 9 6 9s6-5 6-9c0-5-4-6-6-4zM12 7c0-2 1-3 3-3"/></svg>',
     rehab: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.500-7 10-7 10z"/><path d="M7 12h3l1.500-2.500L13 14l1-2h3"/></svg>'
   };
+  var SETICO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h8M18 7h2M4 17h2M12 17h8"/><circle cx="15" cy="7" r="2.500"/><circle cx="9" cy="17" r="2.500"/></svg>';
   function planOfKind(kind) {
     var ps = state.program.plans;
     if (kind === 'strength') {
@@ -419,22 +445,22 @@
       var pk = pickPlan(); if (ok(pk)) return pk;
       return ps.filter(ok)[0] || null;
     }
+    if (kind === 'nutrition') return ps.filter(function (p) { return p.kind === 'nutrition'; })[0] || defaultNutritionPlan();
     return ps.filter(function (p) { return p.kind === kind; })[0] || null;
   }
   function renderHome() {
     state.view = 'home';
-    document.body.classList.add('is-home'); $('secTitle').textContent = 'Plan'; blueTheme(false);
-    $('athlete').textContent = state.program.athleteName || 'Aldo';
-    var q = [['strength', 'Strength', true], ['practice', 'Practice', !!planOfKind('practice')], ['food', 'Nutrition', true], ['rehab', 'Rehab', true]];
+    document.body.classList.add('is-home'); setSec('Planning - Workout'); blueTheme(false);
+    var q = [['practice', 'Practice', !!planOfKind('practice')], ['strength', 'Strength', true], ['nutrition', 'Nutrition', true], ['rehab', 'Rehab', true]];
     $('main').innerHTML = '<div class="quads">' + q.map(function (x) {
-      return '<button type="button" class="quad q-' + x[0] + (x[2] ? '' : ' q-off') + '" data-q="' + x[0] + '">' + QICO[x[0]] + '<span>' + x[1] + '</span></button>';
-    }).join('') + '</div>';
+      return '<button type="button" class="quad q-' + x[0] + (x[2] ? '' : ' q-off') + '" data-q="' + x[0] + '">' + QICO[x[0] === 'nutrition' ? 'food' : x[0]] + '<span>' + x[1] + '</span></button>';
+    }).join('') + '</div><button type="button" class="set-btn" id="gearBtn">' + SETICO + '<span>Impostazioni</span></button>';
+    $('gearBtn').onclick = function () { if (state.program) { openPlans(); navMark(''); } };
     $('main').querySelector('.quads').onclick = function (ev) {
       var b = ev.target.closest('[data-q]'); if (!b) return;
       var k = b.dataset.q;
-      if (k === 'food') { openInfo('food'); navMark('navFood'); return; }
-      if (k === 'rehab') { openInfo('rehab'); navMark('navRehab'); return; }
       var pl = planOfKind(k);
+      if (k === 'rehab' && !pl) { openInfo('rehab'); navMark('navRehab'); return; }
       if (!pl) { $('sheetTitle').textContent = 'Practice'; $('sheetBody').innerHTML = '<div class="sheet-inner form"><p class="info-t">Nessuna scheda Practice per ora.</p></div>'; showSheet(); return; }
       selectPlan(pl, true, 'quad'); window.scrollTo(0, 0);
     };
@@ -442,7 +468,7 @@
   }
   function goHome() { closeSheet(false); if (state.program) renderHome(); }
   function renderTabs() {
-    var nav = $('tabs'), nxt = nextDayIndex(), cells = null;   // i giorni della settimana stanno nel Diary
+    var nav = $('tabs'), nxt = state.plan && state.plan.kind === 'nutrition' ? -1 : nextDayIndex(), cells = null;   // i giorni della settimana stanno nel Diary
     nav.className = 'tabs' + (cells ? ' wk' : '');
     nav.innerHTML = cells ? cells.map(function (c) {
       return c.i < 0 ? '<div class="tab rest" aria-hidden="true"><small>' + WD[c.wd] + '</small>–</div>' : tabHtml(state.days[c.i], c.i, nxt, WD[c.wd]);
@@ -560,12 +586,12 @@
   }
   function renderDay() {
     if (state.view === 'home') return;
-    document.body.classList.remove('is-home'); $('secTitle').textContent = 'Workout'; blueTheme(false);
+    document.body.classList.remove('is-home'); setSec(state.plan.kind === 'nutrition' ? 'Nutrition' : 'Workout', state.plan.name); blueTheme(false);
     Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === 'navPlan'); });
     var day = state.days[state.day];
+    if (state.plan.kind === 'nutrition') return renderMeals(day);
     var cur = currentSections(day);
     var wk = planWeek(state.plan);
-    $('athlete').textContent = (state.program.athleteName || 'Aldo') + ' · ' + (state.plan.kind === 'rehab' ? 'Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '') : state.plan.name);
     var desc0 = cur.desc || day.desc;
     var h = '<div class="hero"><h1 class="day-title"><small>' + esc(day.id === 'yoga' ? 'Sempre disponibile' : state.plan.name + ' · Settimana ' + wk.n + (wk.tot ? ' di ' + wk.tot : '')) + '</small>' + esc(day.tab) + (day.title ? ' — ' + esc(day.title) : '') +
       (day.optional ? ' <span class="opt">opzionale</span>' : '') +
@@ -904,14 +930,16 @@
   function navMark(id) {
     Array.prototype.forEach.call(document.querySelectorAll('.vault-view'), function (v) { v.remove(); });
     Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === (id || 'navPlan')); });
-    blueTheme(id === 'navRehab');
+    blueTheme(id === 'navRehab' ? 'rehab' : id === 'navFood' ? 'nutrition' : false);
   }
   // Rehab = tutto blu (sezione Rehab o scheda di rehab); i profili con tema proprio restano invariati
   function blueTheme(on) {
-    var blue = !!on || !!(state.view !== 'home' && state.plan && state.plan.kind === 'rehab');
-    if (state.program && state.program.theme) blue = false;
-    document.body.classList.toggle('rehab-blue', blue);
-    var tc = document.querySelector('meta[name="theme-color"]'); if (tc) { if (!tc.dataset.o) tc.dataset.o = tc.content; tc.content = blue ? '#1d4e89' : tc.dataset.o; }
+    var k = on === true ? 'rehab' : (on || (state.view !== 'home' && state.plan ? state.plan.kind : ''));
+    if (state.program && state.program.theme) k = '';
+    document.body.classList.toggle('rehab-blue', k === 'rehab');
+    document.body.classList.toggle('nutri-green', k === 'nutrition');
+    document.body.classList.toggle('prac-grey', k === 'practice');
+    var tc = document.querySelector('meta[name="theme-color"]'); if (tc) { if (!tc.dataset.o) tc.dataset.o = tc.content; tc.content = k === 'rehab' ? '#1d4e89' : k === 'nutrition' ? '#2f6b4f' : k === 'practice' ? '#4a4d55' : tc.dataset.o; }
   }
   function showSheet() {
     var was = !sheet.hidden;
@@ -1615,7 +1643,6 @@
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
   $('musicFab').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
   $('navPlan').onclick = function () { goHome(); };
-  $('gearBtn').onclick = function () { if (state.program) { openPlans(); navMark(''); } };
   $('navDiary').onclick = function () { if (state.program) { openDiary(); navMark('navDiary'); } };
   $('navFood').onclick = function () { if (state.program) { openInfo('food'); navMark('navFood'); } };
   $('navRehab').onclick = function () { if (state.program) { openInfo('rehab'); navMark('navRehab'); } };
