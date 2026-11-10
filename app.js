@@ -1615,7 +1615,7 @@
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
   $('musicFab').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
   $('navPlan').onclick = function () { goHome(); };
-  $('navSet').onclick = function () { if (state.program) { openPlans(); navMark('navSet'); } };
+  $('gearBtn').onclick = function () { if (state.program) { openPlans(); navMark(''); } };
   $('navDiary').onclick = function () { if (state.program) { openDiary(); navMark('navDiary'); } };
   $('navFood').onclick = function () { if (state.program) { openInfo('food'); navMark('navFood'); } };
   $('navRehab').onclick = function () { if (state.program) { openInfo('rehab'); navMark('navRehab'); } };

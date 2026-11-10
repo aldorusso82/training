@@ -174,3 +174,4 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v62 (10/11): Impostazioni = voce del footer (icona cursori, al centro: Plan · Nutrition · Impostazioni · Rehab · Diary · Drills), tolto l'ingranaggio dall'header; quadranti home più bassi (112px) e colorati: Strength granata, Practice grafite, Nutrition verde, Rehab blu.
 - v63 (10/11): la pagina dei Day si chiama «Workout» (non più «Training»: Aldo non leggeva il nome).
 - v64 (10/11): select «Scheda di lavoro» in Impostazioni più grande (58px, 18px).
+- v65 (10/11): footer flottante (sale dal bordo, arrotondato) = Nutrition · Rehab · HOME (tondo, centrale, id navPlan) · Diary · Drills; Impostazioni solo come pulsante a cursori in alto a destra nella home (gearBtn) e non più nel footer.
