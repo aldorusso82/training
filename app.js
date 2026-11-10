@@ -3,6 +3,7 @@
   'use strict';
 
   var APP_VERSION = '1.13.0';
+  var APP_BUILD = '67';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {}, view: 'home' };
 
@@ -228,7 +229,7 @@
       '</div><p class="plan-hint">Es. se giochi il venerdì e riparti la domenica, scegli Dom. Cambia il conteggio «Settimana N di 4» e le statistiche settimanali.</p>' +
       '<h3 class="coach-h">Ordine dei giorni · ' + esc(state.plan.name) + '</h3><div id="ordList" class="ord-list"></div>' +
       '<button class="btn-ghost-dark" id="ordReset">Ripristina ordine originale</button>' +
-      '<h3 class="coach-h">Timer</h3>' + chips('tmode', ['A tutto schermo', 'Banner in basso'], store.get('timerMode', 'full') === 'banner' ? 'Banner in basso' : 'A tutto schermo') +
+      '<h3 class="coach-h">Aggiornamento app</h3><button class="btn-ghost-dark" id="updBtn">↻ Cerca aggiornamenti · v' + APP_BUILD + '</button><p class="plan-hint">Se non vedi le novità, tocca qui: svuota la copia salvata e ricarica l\'app.</p>' + '<h3 class="coach-h">Timer</h3>' + chips('tmode', ['A tutto schermo', 'Banner in basso'], store.get('timerMode', 'full') === 'banner' ? 'Banner in basso' : 'A tutto schermo') +
       '<p class="plan-hint">Con il banner puoi consultare gli esercizi mentre il recupero scorre. Puoi anche ridurre il timer mentre è aperto.</p>' +
       (lsGet('trainaldo-coach') ? '<h3 class="coach-h">Atleta (solo per l\'allenatore)</h3><div class="plan-list" id="athList"></div>' : '') + '</div>';
     showSheet();
@@ -241,6 +242,11 @@
       }).join('');
     };
     drawOrd();
+    $('updBtn').onclick = function () {
+      var go = function () { location.reload(); };
+      Promise.resolve(navigator.serviceWorker ? navigator.serviceWorker.getRegistrations() : []).then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); })
+        .then(function () { return window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : 0; }).then(go, go);
+    };
     var tm = $('sheetBody').querySelector('.chips[data-name="tmode"]');
     tm.onclick = function (ev) {
       var b = ev.target.closest('button'); if (!b) return;
@@ -1902,10 +1908,16 @@
   /* ---------- Service worker ---------- */
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     var hadController = !!navigator.serviceWorker.controller;
-    navigator.serviceWorker.register('sw.js').catch(function () {});
+    var swReg = null;
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (r) { swReg = r; r.update().catch(function () {}); }).catch(function () {});
     navigator.serviceWorker.addEventListener('controllerchange', function () {
       if (hadController) location.reload();
     });
+    // l'app dell'iPhone resta in memoria: a ogni ritorno in primo piano (e ogni 5 minuti) cerca una versione nuova
+    var chk = function () { if (swReg) swReg.update().catch(function () {}); };
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) chk(); });
+    window.addEventListener('pageshow', chk);
+    setInterval(chk, 300000);
   }
 })();
 
