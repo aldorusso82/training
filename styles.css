@@ -804,3 +804,7 @@ body.is-home .sec-row button { display: none; }
 .quad.q-rehab { background: #1d4e89; }
 .quad:active { filter: brightness(.9); background-blend-mode: normal; }
 .quad.q-off { opacity: .45; }
+
+/* ---------- v64: menu a tendina «Scheda di lavoro» più grande ---------- */
+.plan-sel { min-height: 58px; font-size: 18px; font-weight: 800; padding: 0 14px; border-radius: 14px; border: 2px solid var(--red); }
+.sheet-inner.plan-list .coach-h:first-child { font-size: 14px; }
