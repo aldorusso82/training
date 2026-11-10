@@ -4,7 +4,7 @@
 
   var APP_VERSION = '1.13.0';
   var IMG_BASE = 'img/';
-  var state = { program: null, plan: null, days: [], day: 0, variant: {} };
+  var state = { program: null, plan: null, days: [], day: 0, variant: {}, view: 'home' };
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -132,7 +132,9 @@
       }
       state.variant = store.get('variant', {});
       $('version').textContent = 'v' + APP_VERSION + ' · schede aggiornate al ' + (p.updated || '—');
+      state.view = 'home';
       selectPlan(pickPlan(), false);
+      renderHome();
     })
     .catch(function (err) {
       if (err && err.message === 'atleta') {
@@ -199,12 +201,12 @@
     for (var n = 0; n < train.length; n++) { var c = train[(k + n) % train.length]; if (!doneThisWeek(c.id)) return state.days.indexOf(c); }
     return state.days.indexOf(train[k]);
   }
-  function selectPlan(plan, manual) {
-    state.plan = plan; blueTheme(false);
+  function selectPlan(plan, manual, go) {
+    state.plan = plan; if (go) state.view = 'training'; blueTheme(false);
     state.days = orderDays(plan, resolveDays(plan));
     if (state.program.yoga) state.days.push(buildYogaDay());
     var today = isoDate(new Date());
-    if (manual) { store.set('plan', { id: plan.id, auto: (planForMonth(thisMonth()) || {}).id }); state.day = nextDayIndex(); }
+    if (manual) { if (go !== 'quad') store.set('plan', { id: plan.id, auto: (planForMonth(thisMonth()) || {}).id }); state.day = nextDayIndex(); }
     else if (store.get('lastOpen', '') !== today) state.day = nextDayIndex();
     else state.day = Math.min(store.get('day', 0), state.days.length - 1);
     store.set('lastOpen', today);
@@ -216,7 +218,7 @@
   }
   function openPlans() {
     var cur = planForMonth(thisMonth());
-    $('sheetTitle').textContent = 'Plan';
+    $('sheetTitle').textContent = 'Impostazioni';
     $('sheetBody').innerHTML = '<div class="sheet-inner plan-list"><h3 class="coach-h">Scheda di lavoro</h3><select class="plan-sel" id="planSel" aria-label="Scheda di lavoro">' + state.program.plans.map(function (pl) {
       return '<option value="' + esc(pl.id) + '"' + (pl.id === state.plan.id ? ' selected' : '') + '>' + esc(pl.name) + (cur && cur.id === pl.id ? ' · questo mese' : '') + '</option>';
     }).join('') + '</select><p class="plan-hint">All\'inizio di ogni mese l\'app apre da sola la scheda del mese.</p>' +
@@ -285,7 +287,8 @@
     var top = document.querySelector('.top'), setH = function () { document.documentElement.style.setProperty('--hdr', top.offsetHeight + 'px'); };
     setH(); if (window.ResizeObserver) new ResizeObserver(setH).observe(top); window.addEventListener('resize', setH);
   })();
-  document.querySelector('.top .brand').onclick = function () { closeSheet(false); window.scrollTo(0, 0); };
+  document.querySelector('.top .brand').onclick = function () { goHome(); };
+  $('gearBtn').onclick = function () { if (state.program) openPlans(); };
   $('planBtn').onclick = function () { if (state.program) openPlans(); };
 
   /* ---------- Settimana della scheda e allenamenti fatti ---------- */
@@ -402,6 +405,43 @@
     return '<button class="tab' + (d.optional ? ' opt-tab' : '') + (i === nxt ? ' next' : '') + '" role="tab" data-i="' + i + '" aria-selected="' + (i === state.day) + '">' +
       (lbl ? '<small>' + lbl + '</small>' : '') + (d.id !== 'yoga' && doneThisWeek(d.id) ? '<span class="chk">✓</span>' : '') + '<span class="t-ico" aria-hidden="true">' + dayIcon(d) + '</span><span class="t-lbl">' + esc(d.tab) + '</span></button>';
   }
+  /* ---------- Home = Plan (4 quadranti) ---------- */
+  var QICO = {
+    strength: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>',
+    practice: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.500"/></svg>',
+    food: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c-2-2-6-1-6 4 0 4 3 9 6 9s6-5 6-9c0-5-4-6-6-4zM12 7c0-2 1-3 3-3"/></svg>',
+    rehab: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.500-7 10-7 10z"/><path d="M7 12h3l1.500-2.500L13 14l1-2h3"/></svg>'
+  };
+  function planOfKind(kind) {
+    var ps = state.program.plans;
+    if (kind === 'strength') {
+      var ok = function (p) { return p.kind !== 'rehab' && p.kind !== 'practice'; };
+      if (state.plan && ok(state.plan)) return state.plan;
+      var pk = pickPlan(); if (ok(pk)) return pk;
+      return ps.filter(ok)[0] || null;
+    }
+    return ps.filter(function (p) { return p.kind === kind; })[0] || null;
+  }
+  function renderHome() {
+    state.view = 'home';
+    document.body.classList.add('is-home'); $('secTitle').textContent = 'Plan'; blueTheme(false);
+    $('athlete').textContent = state.program.athleteName || 'Aldo';
+    var q = [['strength', 'Strength', true], ['practice', 'Practice', !!planOfKind('practice')], ['food', 'Nutrition', true], ['rehab', 'Rehab', true]];
+    $('main').innerHTML = '<div class="quads">' + q.map(function (x) {
+      return '<button type="button" class="quad q-' + x[0] + (x[2] ? '' : ' q-off') + '" data-q="' + x[0] + '">' + QICO[x[0]] + '<span>' + x[1] + '</span></button>';
+    }).join('') + '</div>';
+    $('main').querySelector('.quads').onclick = function (ev) {
+      var b = ev.target.closest('[data-q]'); if (!b) return;
+      var k = b.dataset.q;
+      if (k === 'food') { openInfo('food'); navMark('navFood'); return; }
+      if (k === 'rehab') { openInfo('rehab'); navMark('navRehab'); return; }
+      var pl = planOfKind(k);
+      if (!pl) { $('sheetTitle').textContent = 'Practice'; $('sheetBody').innerHTML = '<div class="sheet-inner form"><p class="info-t">Nessuna scheda Practice per ora.</p></div>'; showSheet(); return; }
+      selectPlan(pl, true, 'quad'); window.scrollTo(0, 0);
+    };
+    navMark('navPlan'); window.scrollTo(0, 0);
+  }
+  function goHome() { closeSheet(false); if (state.program) renderHome(); }
   function renderTabs() {
     var nav = $('tabs'), nxt = nextDayIndex(), cells = null;   // i giorni della settimana stanno nel Diary
     nav.className = 'tabs' + (cells ? ' wk' : '');
@@ -520,6 +560,9 @@
       '<div><b>' + kc + '</b><small>kcal</small></div><span class="wk-hint">Storico ›</span></button>';
   }
   function renderDay() {
+    if (state.view === 'home') return;
+    document.body.classList.remove('is-home'); $('secTitle').textContent = 'Training'; blueTheme(false);
+    Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === 'navPlan'); });
     var day = state.days[state.day];
     var cur = currentSections(day);
     var wk = planWeek(state.plan);
@@ -861,12 +904,12 @@
   }
   function navMark(id) {
     Array.prototype.forEach.call(document.querySelectorAll('.vault-view'), function (v) { v.remove(); });
-    Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === id); });
+    Array.prototype.forEach.call(document.querySelectorAll('.bnav button'), function (b) { b.classList.toggle('on', b.id === (id || 'navPlan')); });
     blueTheme(id === 'navRehab');
   }
   // Rehab = tutto blu (sezione Rehab o scheda di rehab); i profili con tema proprio restano invariati
   function blueTheme(on) {
-    var blue = !!on || !!(state.plan && state.plan.kind === 'rehab');
+    var blue = !!on || !!(state.view !== 'home' && state.plan && state.plan.kind === 'rehab');
     if (state.program && state.program.theme) blue = false;
     document.body.classList.toggle('rehab-blue', blue);
     var tc = document.querySelector('meta[name="theme-color"]'); if (tc) { if (!tc.dataset.o) tc.dataset.o = tc.content; tc.content = blue ? '#1d4e89' : tc.dataset.o; }
@@ -1520,11 +1563,11 @@
   }
   /* ---------- Alimentazione · Rehab · Drills (sezioni del footer) ---------- */
   var INFO = {
-    food: { group: 'food', title: 'Nutrition', text: 'Piano alimentare e dati corporei (body weight). Sono file riservati: si aprono con la passphrase.',
+    food: { group: 'food', title: 'Nutrition', text: 'Piano alimentare, pasti, consigli e pills. I file riservati si aprono con la passphrase.',
       wa: 'Ciao, ti scrivo per l\'alimentazione: ', waLbl: '💬 Scrivi al nutrizionista' },
     rehab: { group: 'rehab', title: 'Rehab', text: 'Protocolli scritti dal fisioterapista: vengono inseriti nei giorni e nelle schede, e qui li trovi tutti.',
       log: true, protocols: true, wa: 'Ciao, ti scrivo per la riabilitazione: ', waLbl: '💬 Scrivi al fisioterapista' },
-    drills: { title: 'Practice', text: 'Drills di basket e tecnica: arriveranno quando l\'app si aprirà a tutti.',
+    drills: { title: 'Drills', text: 'Clip YouTube di basket: i drills arriveranno qui.',
       wa: 'Ciao coach, ti scrivo per i drills: ', waLbl: '💬 Scrivi al coach' }
   };
   // Protocollo di rehab scritto (program.json → rehab: [{id, title, text}]); si apre dalla voce Rehab o dentro un giorno con {type:'protocol', ref:id}
@@ -1556,7 +1599,7 @@
       b.onclick = function () {
         var pl = state.program.plans.filter(function (z) { return z.id === b.dataset.rp; })[0];
         closeSheet(false);
-        if (pl) { selectPlan(pl, true); state.day = +b.dataset.rd; store.set('day', state.day); renderTabs(); renderDay(); }
+        if (pl) { selectPlan(pl, true, true); state.day = +b.dataset.rd; store.set('day', state.day); renderTabs(); renderDay(); }
       };
     });
     if ($('infLog')) $('infLog').onclick = function () { closeSheet(false); setTimeout(function () { openLogForm('Fisioterapia', 'Seduta di fisioterapia'); }, 50); };
@@ -1572,7 +1615,7 @@
   }
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
   $('musicFab').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
-  $('navPlan').onclick = function () { if (state.program) { openPlans(); navMark('navPlan'); } };
+  $('navPlan').onclick = function () { goHome(); };
   $('navDiary').onclick = function () { if (state.program) { openDiary(); navMark('navDiary'); } };
   $('navFood').onclick = function () { if (state.program) { openInfo('food'); navMark('navFood'); } };
   $('navRehab').onclick = function () { if (state.program) { openInfo('rehab'); navMark('navRehab'); } };

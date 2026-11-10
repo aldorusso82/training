@@ -774,3 +774,17 @@ body.rehab-blue { --red: #1d4e89; --red-dark: #123660; --red-soft: #dde8f5; }
 
 .home-ico { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 .top .brand { cursor: pointer; min-height: 44px; align-items: center; -webkit-tap-highlight-color: transparent; }
+
+/* ---------- v60: home = Plan con 4 quadranti, titolo sezione nell'header ---------- */
+.sec-row { display: flex; align-items: center; justify-content: space-between; margin: 2px 0 6px; }
+.sec-row h2 { margin: 0; font-size: 22px; font-weight: 800; color: #fff; }
+.sec-row button { width: 44px; height: 44px; border: 0; border-radius: 12px; background: rgba(255,255,255,.18); color: #fff; display: none; align-items: center; justify-content: center; }
+.sec-row svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+body.is-home .sec-row button { display: flex; }
+body.is-home .tabs, body.is-home .music-fab, body.sheet-open .sec-row { display: none; }
+.quads { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.quad { aspect-ratio: 1 / 1; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font: inherit; font-size: 18px; font-weight: 800; }
+.quad svg { width: 56px; height: 56px; fill: none; stroke: var(--red); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.quad.q-rehab svg { stroke: #1d4e89; }
+.quad.q-off { opacity: .45; }
+.quad:active { background: #f1f2f4; }
