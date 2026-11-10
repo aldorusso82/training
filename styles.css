@@ -791,3 +791,16 @@ body.is-home .tabs, body.is-home .music-fab, body.sheet-open .sec-row { display:
 
 /* ---------- v61: iPhone zooma da solo quando si tocca un campo con testo < 16px (nota esercizio, note, select) ---------- */
 textarea, select, .f-in, .plan-sel, .sheet-inner textarea, .coach-box textarea, .ex-note { font-size: 16px; }
+
+/* ---------- v62: quadranti più piccoli e colorati, Impostazioni nel footer (6 voci) ---------- */
+body.is-home .sec-row button { display: none; }
+.bnav button { font-size: 9px; letter-spacing: -.04em; }
+.quads { gap: 10px; }
+.quad { aspect-ratio: auto; min-height: 112px; border: 0; border-radius: 16px; color: #fff; gap: 8px; font-size: 16px; }
+.quad svg { width: 40px; height: 40px; stroke: #fff !important; }
+.quad.q-strength { background: var(--red); }
+.quad.q-practice { background: #2b2c33; }
+.quad.q-food { background: #2f6b4f; }
+.quad.q-rehab { background: #1d4e89; }
+.quad:active { filter: brightness(.9); background-blend-mode: normal; }
+.quad.q-off { opacity: .45; }

@@ -288,7 +288,6 @@
     setH(); if (window.ResizeObserver) new ResizeObserver(setH).observe(top); window.addEventListener('resize', setH);
   })();
   document.querySelector('.top .brand').onclick = function () { goHome(); };
-  $('gearBtn').onclick = function () { if (state.program) openPlans(); };
   $('planBtn').onclick = function () { if (state.program) openPlans(); };
 
   /* ---------- Settimana della scheda e allenamenti fatti ---------- */
@@ -1616,6 +1615,7 @@
   $('diaryBtn').onclick = function () { if (state.program) openDiary(); };
   $('musicFab').onclick = function () { if (state.program) openMusic(state.days[state.day]); };
   $('navPlan').onclick = function () { goHome(); };
+  $('navSet').onclick = function () { if (state.program) { openPlans(); navMark('navSet'); } };
   $('navDiary').onclick = function () { if (state.program) { openDiary(); navMark('navDiary'); } };
   $('navFood').onclick = function () { if (state.program) { openInfo('food'); navMark('navFood'); } };
   $('navRehab').onclick = function () { if (state.program) { openInfo('rehab'); navMark('navRehab'); } };
