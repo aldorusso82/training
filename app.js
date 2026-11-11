@@ -103,9 +103,9 @@
         .then(function (r) {
           if (r.ok) return r.json();
           // profilo riservato: file cifrato, si apre con la passphrase
-          return vaultFetch('data/athletes/' + ATHLETE + '.enc', true)
+          return vaultFetch('data/athletes/' + ATHLETE + '.enc', false)
             .then(function (buf) { return JSON.parse(new TextDecoder().decode(buf)); })
-            .catch(function () { throw new Error('atleta'); });
+            .catch(function (e) { throw new Error(e && e.message === 'annullato' ? 'annullato' : 'atleta'); });
         })
         .then(function (a) {
           p.plans = a.plans;
@@ -140,6 +140,11 @@
       renderHome();
     })
     .catch(function (err) {
+      if (err && err.message === 'annullato') {   // passphrase non ricordata: torna al profilo di Aldo
+        lsSet('trainaldo-athlete', 'aldo');
+        location.replace(location.pathname);
+        return;
+      }
       if (err && err.message === 'atleta') {
         lsSet('trainaldo-athlete', 'aldo');
         $('main').innerHTML = '<p class="loading">Atleta «' + esc(ATHLETE) + '» non trovato. Controlla il link ricevuto.</p>';
