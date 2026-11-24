@@ -145,9 +145,674 @@
    "img": "Dumbbell_Rear_Lunge",
    "equip": "Manubrio",
    "kg": true
+  },
+  "h_mob": {
+   "name": "Mobilità testa-piedi",
+   "video": "CI2vyjUGU20",
+   "equip": "Tappetino"
+  },
+  "h_gatto": {
+   "name": "Posizione del gatto",
+   "img": "Cat_Stretch",
+   "video": "_avTXcUirag",
+   "equip": "Tappetino"
+  },
+  "h_deadbug": {
+   "name": "Dead bug",
+   "video": "jbWmbhElf3Q",
+   "equip": "Tappetino"
+  },
+  "h_jj": {
+   "name": "Jumping jack",
+   "video": "bT2iY8IjEU0"
+  },
+  "h_sideplank_dx": {
+   "name": "Side plank destro",
+   "video": "_R389Jk0tIo",
+   "equip": "Tappetino"
+  },
+  "h_sideplank_sx": {
+   "name": "Side plank sinistro",
+   "video": "_R389Jk0tIo",
+   "equip": "Tappetino"
+  },
+  "h_wallsit": {
+   "name": "Wall sit",
+   "video": "-cdph8hv0O0"
+  },
+  "h_wallsit_mono": {
+   "name": "Wall sit monopodalico (dx/sx)",
+   "video": "mUMPn8nq3R0"
+  },
+  "h_bulgarian": {
+   "name": "Squat bulgaro",
+   "video": "vgn7bSXkgkA",
+   "equip": "Panca/sedia, manubri",
+   "kg": true
+  },
+  "h_lateral": {
+   "name": "Alzate laterali",
+   "img": "Side_Lateral_Raise",
+   "video": "5Dyh1z6E6rM",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "h_hipthrust_mono": {
+   "name": "Hip thrust monopodalico (dx/sx)",
+   "video": "gyOE_J0AqTc",
+   "equip": "Panca",
+   "kg": true
+  },
+  "h_bench_db": {
+   "name": "Spinta su panca",
+   "img": "Dumbbell_Bench_Press",
+   "video": "2AopA8XXMDw",
+   "equip": "Panca, manubri",
+   "kg": true
+  },
+  "h_kickback": {
+   "name": "Kick back tricipiti",
+   "video": "F0hRXsCylig",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "h_stepup": {
+   "name": "Step-up con manubri",
+   "img": "Dumbbell_Step_Ups",
+   "video": "4ykKCIhLFy8",
+   "equip": "Step, manubri",
+   "kg": true
+  },
+  "h_cobra": {
+   "name": "Posizione del cobra",
+   "video": "PBwXQKFmuRg",
+   "equip": "Tappetino"
+  },
+  "h_birddog": {
+   "name": "Bird-dog",
+   "video": "k2azbhhuKuM",
+   "equip": "Tappetino"
+  },
+  "h_bridge_mono": {
+   "name": "Bridge monopodalico",
+   "img": "Single_Leg_Glute_Bridge",
+   "video": "SHbg7Jm0L7c",
+   "equip": "Tappetino"
+  },
+  "h_plank4": {
+   "name": "Plank sulle mani (4 appoggi)",
+   "video": "25K3GX4MtoY",
+   "equip": "Tappetino"
+  },
+  "h_hollow": {
+   "name": "Barchetta (hollow plank)",
+   "video": "tKp4zsSO_c0",
+   "equip": "Tappetino"
+  },
+  "h_squat": {
+   "name": "Squat",
+   "img": "Barbell_Squat",
+   "video": "tr5PgWEebNA",
+   "equip": "Bilanciere",
+   "kg": true
+  },
+  "h_panca": {
+   "name": "Panca piana",
+   "video": "TBlRSmcqnRA",
+   "equip": "Panca, bilanciere",
+   "kg": true
+  },
+  "h_hipthruster": {
+   "name": "Hip thrust",
+   "img": "Barbell_Hip_Thrust",
+   "video": "5S8SApGU_Lk",
+   "equip": "Panca, bilanciere",
+   "kg": true
+  },
+  "h_military": {
+   "name": "Military press con manubri",
+   "img": "Standing_Dumbbell_Press",
+   "video": "OB1xYsuhJjM",
+   "equip": "Manubri",
+   "kg": true
+  },
+  "h_latmachine": {
+   "name": "Lat machine",
+   "video": "5s6KGLTMgoI",
+   "equip": "Lat machine",
+   "kg": true
+  },
+  "h_legext": {
+   "name": "Leg extension",
+   "img": "Leg_Extensions",
+   "video": "4ZDm5EbiFI8",
+   "equip": "Macchina",
+   "kg": true
+  },
+  "h_crunch": {
+   "name": "Crunch",
+   "img": "Crunches",
+   "video": "Dbr2J9375oo",
+   "equip": "Tappetino"
+  },
+  "h_squat_free": {
+   "name": "Squat a corpo libero",
+   "img": "Bodyweight_Squat",
+   "video": "8VPkT0YTLHI"
+  },
+  "h_pushup": {
+   "name": "Push up",
+   "img": "Pushups",
+   "video": "WDIpL0pjun0",
+   "equip": "Tappetino"
+  },
+  "h_crunch_scelta": {
+   "name": "Crunch a scelta",
+   "equip": "Tappetino",
+   "q": "crunch addominali esercizi tutorial"
+  },
+  "h_plank6": {
+   "name": "Plank (6 appoggi)",
+   "video": "cJEkoS4T-ag",
+   "equip": "Tappetino"
+  },
+  "h_deadlift": {
+   "name": "Stacchi da terra",
+   "img": "Barbell_Deadlift",
+   "video": "x9xRrTqPHdU",
+   "equip": "Bilanciere",
+   "kg": true
+  },
+  "h_curlez": {
+   "name": "Curl con bilanciere EZ",
+   "video": "BV6gPYF5JmE",
+   "equip": "Bilanciere EZ",
+   "kg": true
+  },
+  "h_pistol": {
+   "name": "Pistol TRX",
+   "video": "sTtgBOMgAuE",
+   "equip": "TRX"
+  },
+  "h_row": {
+   "name": "Tirata rematore",
+   "video": "_g4LMgFYCrA",
+   "equip": "Manubrio",
+   "kg": true
+  },
+  "h_squatbox": {
+   "name": "Squat box",
+   "video": "rMEPHwNhQfo",
+   "equip": "Box"
+  },
+  "h_pushdown": {
+   "name": "Push down",
+   "video": "vdwP7HxDAo4",
+   "equip": "Corda ai cavi",
+   "kg": true
   }
  },
  "plans": [
+  {
+   "id": "v-house",
+   "name": "Scheda House Nov–Dic",
+   "months": [],
+   "from": "2026-11-12",
+   "until": "2027-01-01",
+   "weeks": 7,
+   "note": "Scheda House di Francesco Cubelli, 7 settimane dal 12/11/2026 · Obiettivo: base muscolare · 3 giorni. Aumenta i carichi gradualmente (cura l'esecuzione). Recupero 45''–90'' in base alla stanchezza. Percepisci i muscoli richiesti. Aggiorniamoci nella settimana per aumentare o diminuire gli esercizi. Recap a fine settimana: stato fisico, pesi usati, allenamenti fatti. Scrivi ogni dubbio.",
+   "days": [
+    {
+     "id": "d1",
+     "tab": "Day 1",
+     "title": "G-1",
+     "desc": "Total body: mobilità, stabilità e lavoro di gambe e spalle.",
+     "sections": [
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 1,
+       "items": [
+        {
+         "code": "A1",
+         "ex": "h_mob",
+         "reps": "1 giro"
+        }
+       ],
+       "rest": 0,
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 2,
+       "items": [
+        {
+         "code": "B1",
+         "ex": "h_gatto",
+         "reps": "15"
+        },
+        {
+         "code": "B2",
+         "ex": "h_deadbug",
+         "reps": "10 per lato"
+        },
+        {
+         "code": "B3",
+         "ex": "h_jj",
+         "time": 60
+        }
+       ],
+       "rest": 0,
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "items": [
+        {
+         "code": "C1",
+         "ex": "h_sideplank_dx",
+         "time": 30
+        },
+        {
+         "code": "C2",
+         "ex": "h_sideplank_sx",
+         "time": 30
+        },
+        {
+         "code": "C3",
+         "ex": "h_wallsit",
+         "time": 60
+        },
+        {
+         "code": "C4",
+         "ex": "h_wallsit_mono",
+         "time": 30
+        }
+       ],
+       "rest": 0
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 3,
+       "items": [
+        {
+         "code": "D",
+         "ex": "h_bulgarian",
+         "reps": "12 per lato"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "E",
+       "sets": 3,
+       "items": [
+        {
+         "code": "E",
+         "ex": "h_lateral",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "F",
+       "sets": 3,
+       "items": [
+        {
+         "code": "F",
+         "ex": "h_hipthrust_mono",
+         "reps": "12-15 per lato"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "G",
+       "sets": 3,
+       "items": [
+        {
+         "code": "G",
+         "ex": "h_bench_db",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "H",
+       "sets": 3,
+       "items": [
+        {
+         "code": "H",
+         "ex": "h_kickback",
+         "reps": "12 per lato"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "I",
+       "sets": 3,
+       "items": [
+        {
+         "code": "I",
+         "ex": "h_stepup",
+         "reps": "12 per lato"
+        }
+       ]
+      },
+      {
+       "type": "note",
+       "label": "Stretching",
+       "text": "Total body: chiudi con lo stretching di tutto il corpo."
+      }
+     ]
+    },
+    {
+     "id": "d2",
+     "tab": "Day 2",
+     "title": "G-2",
+     "desc": "Total body: catena posteriore, stabilità, panca, spinta e tirata.",
+     "sections": [
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 1,
+       "items": [
+        {
+         "code": "A1",
+         "ex": "h_mob",
+         "reps": "1 giro"
+        }
+       ],
+       "rest": 0,
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 2,
+       "items": [
+        {
+         "code": "B1",
+         "ex": "h_cobra",
+         "reps": "15"
+        },
+        {
+         "code": "B2",
+         "ex": "h_birddog",
+         "reps": "10 per lato"
+        },
+        {
+         "code": "B3",
+         "ex": "h_bridge_mono",
+         "reps": "15"
+        }
+       ],
+       "rest": 0,
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "items": [
+        {
+         "code": "C1",
+         "ex": "h_plank4",
+         "time": 30
+        },
+        {
+         "code": "C2",
+         "ex": "h_hollow",
+         "time": 30
+        },
+        {
+         "code": "C3",
+         "ex": "h_wallsit",
+         "time": 60
+        },
+        {
+         "code": "C4",
+         "ex": "h_wallsit_mono",
+         "time": 30
+        }
+       ],
+       "rest": 0
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 3,
+       "items": [
+        {
+         "code": "D",
+         "ex": "h_squat",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "E",
+       "sets": 3,
+       "items": [
+        {
+         "code": "E",
+         "ex": "h_panca",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "F",
+       "sets": 3,
+       "items": [
+        {
+         "code": "F",
+         "ex": "h_hipthruster",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "G",
+       "sets": 3,
+       "items": [
+        {
+         "code": "G",
+         "ex": "h_military",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "H",
+       "sets": 3,
+       "items": [
+        {
+         "code": "H",
+         "ex": "h_latmachine",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "I",
+       "sets": 3,
+       "items": [
+        {
+         "code": "I",
+         "ex": "h_legext",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "note",
+       "label": "Stretching",
+       "text": "Total body: chiudi con lo stretching di tutto il corpo."
+      }
+     ]
+    },
+    {
+     "id": "d3",
+     "tab": "Day 3",
+     "title": "G-3",
+     "desc": "Total body: stacchi, trazioni, squat e braccia.",
+     "sections": [
+      {
+       "type": "block",
+       "letter": "A",
+       "sets": 1,
+       "items": [
+        {
+         "code": "A1",
+         "ex": "h_mob",
+         "reps": "1 giro"
+        }
+       ],
+       "rest": 0,
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "B",
+       "sets": 2,
+       "items": [
+        {
+         "code": "B1",
+         "ex": "h_crunch",
+         "reps": "20"
+        },
+        {
+         "code": "B2",
+         "ex": "h_squat_free",
+         "reps": "20"
+        },
+        {
+         "code": "B3",
+         "ex": "h_pushup",
+         "reps": "10"
+        }
+       ],
+       "rest": 0,
+       "kind": "Mobility"
+      },
+      {
+       "type": "block",
+       "letter": "C",
+       "sets": 3,
+       "items": [
+        {
+         "code": "C1",
+         "ex": "h_crunch_scelta",
+         "reps": "20"
+        },
+        {
+         "code": "C2",
+         "ex": "h_plank6",
+         "time": 30
+        },
+        {
+         "code": "C3",
+         "ex": "h_wallsit",
+         "time": 60
+        }
+       ],
+       "rest": 0
+      },
+      {
+       "type": "block",
+       "letter": "D",
+       "sets": 3,
+       "items": [
+        {
+         "code": "D",
+         "ex": "h_deadlift",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "E",
+       "sets": 3,
+       "items": [
+        {
+         "code": "E",
+         "ex": "h_curlez",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "F",
+       "sets": 3,
+       "items": [
+        {
+         "code": "F",
+         "ex": "h_pistol",
+         "reps": "12 per lato"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "G",
+       "sets": 3,
+       "items": [
+        {
+         "code": "G",
+         "ex": "h_row",
+         "reps": "12 per lato"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "H",
+       "sets": 3,
+       "items": [
+        {
+         "code": "H",
+         "ex": "h_squatbox",
+         "reps": "15"
+        }
+       ]
+      },
+      {
+       "type": "block",
+       "letter": "I",
+       "sets": 3,
+       "items": [
+        {
+         "code": "I",
+         "ex": "h_pushdown",
+         "reps": "12"
+        }
+       ]
+      },
+      {
+       "type": "note",
+       "label": "Stretching",
+       "text": "Total body: chiudi con lo stretching di tutto il corpo."
+      }
+     ]
+    }
+   ],
+   "start": "2026-11-12"
+  },
   {
    "id": "v-6sett",
    "name": "Programma 6–7 settimane",
@@ -512,7 +1177,8 @@
      ]
     }
    ],
-   "weeks": 7
+   "weeks": 7,
+   "until": "2026-11-11"
   }
  ]
 }

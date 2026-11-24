@@ -183,3 +183,5 @@ index.html · styles.css · app.js · data/program.json · img/ · icons/ · man
 - v70 (10/11): filetto arancio su tutti i 4 quadranti; nome atleta 28px (si riduce da solo se lungo) più in basso; footer più basso (bottom safe*.12) e stretto (left/right 30px).
 
 - v72 (24/11): registrazione con data passata (Diary → + Allenamento → «Data e ora»): la settimana della scheda (entry.week) si calcola dalla data scelta, non da oggi (planWeek(plan, at)); le serie spuntate di oggi si azzerano solo se l'allenamento è di oggi. Eliminare = Diary → riga dello storico → ✕ Elimina (con conferma). Alternative per esercizio (casa/palestra) = item con `alts` (già supportato); contenuti da definire con Aldo.
+
+- v73 (24/11): Viviana ha il nuovo piano `v-house` «Scheda House Nov–Dic» (PDF di Francesco Cubelli del 12/11/2026, 3 giorni G-1/G-2/G-3, 7 settimane, `start` 2026-11-12, from/until 2026-11-12→2027-01-01; esercizi `h_*`, video dei link del PDF tutti verificati con oembed). Il vecchio «Programma 6–7 settimane» ha `until` 2026-11-11 e resta consultabile dal menu Scheda. «Crunch a scelta» senza video (solo ricerca YouTube). Stretching total body = sezione note senza video.
