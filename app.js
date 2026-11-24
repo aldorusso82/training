@@ -3,7 +3,7 @@
   'use strict';
 
   var APP_VERSION = '1.13.0';
-  var APP_BUILD = '70';
+  var APP_BUILD = '72';
   var IMG_BASE = 'img/';
   var state = { program: null, plan: null, days: [], day: 0, variant: {}, view: 'home' };
 
@@ -319,8 +319,8 @@
   }
   // Schede mensili: blocchi di 4 settimane (lun–dom) dal primo lunedì del mese; i giorni prima contano come settimana 1.
   // Programmi a durata (plan.weeks, es. Viviana): settimane dal primo allenamento.
-  function planWeek(plan) {
-    var today = mondayOf(new Date());
+  function planWeek(plan, at) {
+    var today = mondayOf(at || new Date());
     if (plan.months && plan.months.length && plan.months.length < 12) {
       var st = planStart(plan), m0 = mondayOf(st);
       if (m0 < st) m0 = new Date(m0.getFullYear(), m0.getMonth(), m0.getDate() + 7);
@@ -1371,18 +1371,17 @@
       var entry = { id: Date.now(), when: $('fWhen').value || localDT(new Date()), type: t,
         place: act ? val('place') : '', label: act ? $('fLabel').value.trim() : '', dur: act ? (+$('fDur').value || 0) : 0, note: $('fNote').value.trim() };
       if (act && +$('fKcal').value) entry.kcal = +$('fKcal').value;
-      if (ref && ACTIVE_DAY.indexOf(t) >= 0) entry.week = planWeek(state.plan).n;
       if (t === 'Stop') { entry.reason = val('reason'); entry.until = $('fUntil').value || entry.when.slice(0, 10); entry.label = entry.reason; }
       if (!ref && ACTIVE_DAY.indexOf(t) >= 0) {
         var dr = val('dayref'), dd = state.days.filter(function (d) { return d.tab === dr; })[0];
         if (dd) { ref = { planId: state.plan.id, dayId: dd.id }; if (!entry.label || (t !== 'Allenamento' && entry.label === t)) entry.label = t !== 'Allenamento' ? t + ' · ' + state.plan.name + ' · ' + dd.tab : '';
           if (!entry.label) entry.label = state.plan.name + ' · ' + dd.tab; }
       }
-      if (ref && ACTIVE_DAY.indexOf(t) >= 0) { entry.planId = ref.planId; entry.dayId = ref.dayId; }
+      if (ref && ACTIVE_DAY.indexOf(t) >= 0) { entry.planId = ref.planId; entry.dayId = ref.dayId; entry.week = planWeek(state.plan, new Date(entry.when)).n; }
       var log = getLog(); log.push(entry);
       log.sort(function (a, b) { return a.when < b.when ? -1 : 1; });
       store.set('log', log); if (pre.sess) store.set('session', null);
-      if (ref && ACTIVE_DAY.indexOf(t) >= 0) clearSets(ref.planId, ref.dayId);
+      if (ref && ACTIVE_DAY.indexOf(t) >= 0 && entry.when.slice(0, 10) === isoDate(new Date())) clearSets(ref.planId, ref.dayId);
       if (entry.place) store.set('lastPlace', entry.place);
       if (ACTIVE.indexOf(t) >= 0) store.set('remindSnooze', '');
       closeSheet(false);
